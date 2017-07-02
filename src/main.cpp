@@ -37,21 +37,12 @@ public:
 
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data());
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-        std::cout << "Available extensions:" << std::endl;
-        for (const auto& extension : availableExtensions)
-            std::cout << "\t" << extension.extensionName << std::endl;
-
-        std::cout << "Available layers;" << std::endl;
-        for (const auto& layer : availableLayers)
-            std::cout << "\t" << layer.layerName << std::endl;
     }
 
     void run()
     {
         initWindow();
         initVulkan();
-        setupDebugCallback();
         mainLoop();
         cleanup();
     }
@@ -62,9 +53,9 @@ private:
     std::vector<VkExtensionProperties> availableExtensions;
     std::vector<VkLayerProperties> availableLayers;
 
-    VkInstance instance;
-
-    VkDebugReportCallbackEXT callback;
+    VkInstance m_instance = VK_NULL_HANDLE;
+    VkDebugReportCallbackEXT m_callback = VK_NULL_HANDLE;
+    VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugReportFlagsEXT flags,
@@ -132,6 +123,11 @@ private:
         return { standardValidationLayer };
     }
 
+    bool isPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice)
+    {
+        return true;
+    }
+
     void initWindow()
     {
         glfwInit();
@@ -143,6 +139,13 @@ private:
     }
 
     void initVulkan()
+    {
+        createInstance();
+        setupDebugCallback();
+        pickPhysicalDevice();
+    }
+
+    void createInstance()
     {
         VkApplicationInfo appInfo = {};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -163,7 +166,7 @@ private:
         createInfo.enabledLayerCount = static_cast<uint32_t>(layerNames.size());
         createInfo.ppEnabledLayerNames = layerNames.data();
 
-        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
+        if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS)
             throw std::runtime_error("Failed to create instance");
 
         std::cout << "Enabled extensions:" << std::endl;
@@ -184,8 +187,32 @@ private:
         createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
         createInfo.pfnCallback = debugCallback;
 
-        if (vkCreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS)
+        if (vkCreateDebugReportCallbackEXT(m_instance, &createInfo, nullptr, &m_callback) != VK_SUCCESS)
             throw std::runtime_error("Failed to set up debug callback");
+    }
+
+    void pickPhysicalDevice()
+    {
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
+
+        if (deviceCount == 0)
+            throw std::runtime_error("Failed to find GPUs with Vulkan support");
+
+        std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
+        vkEnumeratePhysicalDevices(m_instance, &deviceCount, physicalDevices.data());
+
+        for (const auto& physicalDevice : physicalDevices)
+        {
+            if (isPhysicalDeviceSuitable(physicalDevice))
+            {
+                m_physicalDevice = physicalDevice;
+                break;
+            }
+        }
+
+        if (m_physicalDevice == VK_NULL_HANDLE)
+            throw std::runtime_error("Failed to find a suitable GPU");
     }
 
     void mainLoop()
@@ -198,8 +225,8 @@ private:
 
     void cleanup()
     {
-        vkDestroyDebugReportCallbackEXT(instance, callback, nullptr);
-        vkDestroyInstance(instance, nullptr);
+        vkDestroyDebugReportCallbackEXT(m_instance, m_callback, nullptr);
+        vkDestroyInstance(m_instance, nullptr);
 
         glfwDestroyWindow(window);
 
