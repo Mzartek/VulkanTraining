@@ -18,6 +18,11 @@ public:
     VkPhysicalDevice GetPhysicalDevice();
     const VkPhysicalDevice GetPhysicalDevice() const;
 
+    const VkPhysicalDeviceProperties GetPhysicalDeviceProperties() const;
+    const VkPhysicalDeviceFeatures GetPhysicalDeviceFeatures() const;
+
+    std::pair<int, VkQueueFamilyProperties> GetGraphicsQueueInfos() const;
+
 private:
     VkPhysicalDevice m_physicalDevice;
 };

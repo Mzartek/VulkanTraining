@@ -1,7 +1,7 @@
 #ifndef VT_GAME_MODE_INCLUDE_H
 #define VT_GAME_MODE_INCLUDE_H
 
-#include "VTPhysicalDevice.h"
+#include "VTDevice.h"
 
 namespace VT
 {
@@ -25,6 +25,7 @@ private:
     VTWindow* m_vtWindow;
     VTInstance* m_vtInstance;
     VTPhysicalDevice* m_vtPhysicalDevice;
+    VTDevice* m_vtDevice;
 };
 }
 

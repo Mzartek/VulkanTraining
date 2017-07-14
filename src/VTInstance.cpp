@@ -1,11 +1,14 @@
 #include "VTInstance.h"
 
+#include "VTInstanceExtensionsManager.h"
+#include "VTInstanceLayersManager.h"
+
 #include <iostream>
 #include <cstring>
 
 namespace
 {
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugReportFlagsEXT flags,
     VkDebugReportObjectTypeEXT objType,
     uint64_t obj,
@@ -35,11 +38,11 @@ VTInstance::VTInstance(const VTWindow& vtWindow, bool enableValidationLayers)
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    InitAvailableExtensions();
-    InitAvailableLayers();
+    VTInstanceExtensionsManager extensionsManager;
+    VTInstanceLayersManager layersManager;
 
-    auto extensionNames = GetExtensionNames(enableValidationLayers);
-    auto layerNames = GetLayerNames(enableValidationLayers);
+    auto extensionNames = extensionsManager.GetMinimalExtensionNames(enableValidationLayers);
+    auto layerNames = layersManager.GetMinimalLayerNames(enableValidationLayers);
 
     VkInstanceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -81,74 +84,5 @@ VkInstance VTInstance::GetInstance()
 const VkInstance VTInstance::GetInstance() const
 {
     return m_instance;
-}
-
-void VTInstance::InitAvailableExtensions()
-{
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-    m_availableExtensions.resize(extensionCount);
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, m_availableExtensions.data());
-}
-
-void VTInstance::InitAvailableLayers()
-{
-    uint32_t layerCount = 0;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    m_availableLayers.resize(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, m_availableLayers.data());
-}
-
-bool VTInstance::CheckExtensionSupport(const char* extensionName)
-{
-    for (const auto& extension : m_availableExtensions)
-        if (strcmp(extensionName, extension.extensionName) == 0)
-            return true;
-
-    return false;
-}
-
-bool VTInstance::CheckLayerSupport(const char* layerName)
-{
-    for (const auto& layer : m_availableLayers)
-        if (strcmp(layerName, layer.layerName) == 0)
-            return true;
-
-    return false;
-}
-
-std::vector<const char*> VTInstance::GetExtensionNames(bool enableValidationLayers)
-{
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    std::vector<const char*> extensions;
-    for (uint32_t i = 0; i < glfwExtensionCount; ++i)
-    {
-        if (CheckExtensionSupport(glfwExtensions[i]))
-            extensions.push_back(glfwExtensions[i]);
-        else
-            throw std::runtime_error("A required extension is not available");
-    }
-
-    if (enableValidationLayers)
-        extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-
-    return extensions;
-}
-
-std::vector<const char*> VTInstance::GetLayerNames(bool enableValidationLayers)
-{
-    if (!enableValidationLayers) return {};
-
-    const char* standardValidationLayer = "VK_LAYER_LUNARG_standard_validation";
-    if (!CheckLayerSupport(standardValidationLayer))
-        throw std::runtime_error("A required layer is not available");
-
-    return { standardValidationLayer };
 }
 }
