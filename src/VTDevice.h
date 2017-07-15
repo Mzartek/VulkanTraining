@@ -16,13 +16,13 @@ public:
     VTDevice& operator=(VTDevice&& other) = delete;
 
     VkDevice GetDevice();
-    const VkDevice GetDevice() const;
+    VkDevice GetDevice() const;
+
+    std::vector<VkQueue> GetGraphicsQueues() const;
 
 private:
+    const VTPhysicalDevice& m_physicalDevice;
     VkDevice m_device;
-
-    uint32_t m_graphicsQueueIndex;
-    uint32_t m_graphicsQueueCount;
 };
 }
 

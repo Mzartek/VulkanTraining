@@ -15,7 +15,7 @@ VTDeviceExtensionsManager::VTDeviceExtensionsManager(const VTPhysicalDevice& vtP
     this->SetAvailableExtensions(availableExtensions);
 }
 
-std::vector<const char*> VTDeviceExtensionsManager::GetMinimalExtensionNames(bool enableValidationLayers)
+std::vector<const char*> VTDeviceExtensionsManager::GetMinimalExtensionNames(bool /*enableValidationLayers*/)
 {
     return {};
 }

@@ -5,18 +5,60 @@
 
 namespace
 {
-bool IsPhysicalDeviceSuitable(VkPhysicalDevice physicalDevice)
+struct QueueFamiliesHelper
 {
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+    QueueFamiliesHelper(const VkPhysicalDevice& physicalDevice)
+        : m_hasGraphicsQueue(false)
+        , m_graphicsQueueIndex(0)
+        , m_graphicsQueueCount(0)
+    {
+        uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
 
-    for (const auto& queueFamily : queueFamilies)
-        if (queueFamily.queueCount && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-            return true;
+        for (uint32_t i = 0; i < queueFamilies.size(); ++i)
+        {
+            const auto& queueFamily = queueFamilies[i];
+            if (queueFamily.queueCount)
+            {
+                if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+                {
+                    m_hasGraphicsQueue = true;
+                    m_graphicsQueueIndex = i;
+                    m_graphicsQueueCount = queueFamily.queueCount;
+                }
+            }
 
+        }
+    }
+
+    bool HasGraphicsQueue() const
+    {
+        return m_hasGraphicsQueue;
+    }
+
+    uint32_t GetGraphicsQueueIndex() const
+    {
+        return m_graphicsQueueIndex;
+    }
+
+    uint32_t GetGraphicsQueueCount() const
+    {
+        return m_graphicsQueueCount;
+    }
+
+private:
+    bool m_hasGraphicsQueue;
+    uint32_t m_graphicsQueueIndex;
+    uint32_t m_graphicsQueueCount;
+};
+
+bool AreQueueFamiliesSuitable(const QueueFamiliesHelper& queueFamiliesHelper)
+{
+    if (queueFamiliesHelper.HasGraphicsQueue())
+        return true;
     return false;
 }
 
@@ -30,6 +72,8 @@ int RatePhysicalDeviceSuitability(VkPhysicalDevice physicalDevice)
     int score = physicalDeviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1000 : 0;
     score += physicalDeviceProperties.limits.maxImageDimension2D;
     score += physicalDeviceFeatures.geometryShader ? 100 : 0;
+
+    return score;
 }
 }
 
@@ -47,21 +91,26 @@ VTPhysicalDevice::VTPhysicalDevice(const VTInstance& vtInstance)
     std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
     vkEnumeratePhysicalDevices(vtInstance.GetInstance(), &deviceCount, physicalDevices.data());
 
-    std::multimap<int, VkPhysicalDevice> candidates;
+    std::multimap<int, std::pair<VkPhysicalDevice, QueueFamiliesHelper>> candidates;
 
     for (const auto& physicalDevice : physicalDevices)
     {
-        if (IsPhysicalDeviceSuitable(physicalDevice))
+        const QueueFamiliesHelper queueFamiliesHelper(physicalDevice);
+        if (AreQueueFamiliesSuitable(queueFamiliesHelper))
         {
             const int score = RatePhysicalDeviceSuitability(physicalDevice);
-            candidates.insert(std::make_pair(score, physicalDevice));
+            candidates.insert({ score, { physicalDevice, queueFamiliesHelper }});
         }
     }
 
     if (!candidates.empty())
     {
         if (candidates.rbegin()->first > 0)
-            m_physicalDevice = candidates.rbegin()->second;
+        {
+            m_physicalDevice = candidates.rbegin()->second.first;
+            m_graphicsQueueIndex = candidates.rbegin()->second.second.GetGraphicsQueueIndex();
+            m_graphicsQueueCount = candidates.rbegin()->second.second.GetGraphicsQueueCount();
+        }
     }
     else
         throw std::runtime_error("Failed to find a suitable GPU");
@@ -72,7 +121,7 @@ VkPhysicalDevice VTPhysicalDevice::GetPhysicalDevice()
     return m_physicalDevice;
 }
 
-const VkPhysicalDevice VTPhysicalDevice::GetPhysicalDevice() const
+VkPhysicalDevice VTPhysicalDevice::GetPhysicalDevice() const
 {
     return m_physicalDevice;
 }
@@ -93,21 +142,13 @@ const VkPhysicalDeviceFeatures VTPhysicalDevice::GetPhysicalDeviceFeatures() con
     return physicalDeviceFeatures;
 }
 
-std::pair<int, VkQueueFamilyProperties> VTPhysicalDevice::GetGraphicsQueueInfos() const
+uint32_t VTPhysicalDevice::GetGraphicsQueueIndex() const
 {
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyCount, nullptr);
+    return m_graphicsQueueIndex;
+}
 
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyCount, queueFamilies.data());
-
-    for (int i = 0; i < queueFamilies.size(); ++i)
-    {
-        const auto& queueFamily = queueFamilies[i];
-        if (queueFamily.queueCount && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-            return { i, queueFamily };
-    }
-
-    return { -1, {} };
+uint32_t VTPhysicalDevice::GetGraphicsQueueCount() const
+{
+    return m_graphicsQueueCount;
 }
 }

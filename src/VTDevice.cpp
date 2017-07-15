@@ -8,35 +8,30 @@
 namespace VT
 {
 VTDevice::VTDevice(const VTPhysicalDevice& vtPhysicalDevice, bool enableValidationLayers)
-    : m_device(VK_NULL_HANDLE)
+    : m_physicalDevice(vtPhysicalDevice)
+    , m_device(VK_NULL_HANDLE)
 {
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
     // Graphics Queue
     {
         float queuePriority = 1.0f;
-        const auto graphicsQueueInfos = vtPhysicalDevice.GetGraphicsQueueInfos();
-        if (graphicsQueueInfos.first < 0)
-            throw std::runtime_error("Failed to retrieve graphics queue infos");
-
-        m_graphicsQueueIndex = graphicsQueueInfos.first;
-        m_graphicsQueueCount = graphicsQueueInfos.second.queueCount;
 
         VkDeviceQueueCreateInfo queueCreateInfo = {};
         queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-        queueCreateInfo.queueFamilyIndex = m_graphicsQueueIndex;
-        queueCreateInfo.queueCount = m_graphicsQueueCount;
+        queueCreateInfo.queueFamilyIndex = m_physicalDevice.GetGraphicsQueueIndex();
+        queueCreateInfo.queueCount = m_physicalDevice.GetGraphicsQueueCount();
         queueCreateInfo.pQueuePriorities = &queuePriority;
 
         queueCreateInfos.push_back(queueCreateInfo);
     }
 
-    VTDeviceExtensionsManager extensionsManager(vtPhysicalDevice);
-    VTDeviceLayersManager layersManager(vtPhysicalDevice);
+    VTDeviceExtensionsManager extensionsManager(m_physicalDevice);
+    VTDeviceLayersManager layersManager(m_physicalDevice);
 
     auto extensionNames = extensionsManager.GetMinimalExtensionNames(enableValidationLayers);
     auto layerNames = layersManager.GetMinimalLayerNames(enableValidationLayers);
 
-    VkPhysicalDeviceFeatures deviceFeatures = vtPhysicalDevice.GetPhysicalDeviceFeatures();
+    VkPhysicalDeviceFeatures deviceFeatures = m_physicalDevice.GetPhysicalDeviceFeatures();
 
     VkDeviceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -63,8 +58,17 @@ VkDevice VTDevice::GetDevice()
     return m_device;
 }
 
-const VkDevice VTDevice::GetDevice() const
+VkDevice VTDevice::GetDevice() const
 {
     return m_device;
+}
+
+std::vector<VkQueue> VTDevice::GetGraphicsQueues() const
+{
+    std::vector<VkQueue> graphicsQueues(m_physicalDevice.GetGraphicsQueueCount());
+    for (uint32_t i = 0; i < graphicsQueues.size(); ++i)
+        vkGetDeviceQueue(m_device, m_physicalDevice.GetGraphicsQueueIndex(), i, &graphicsQueues[i]);
+
+    return graphicsQueues;
 }
 }

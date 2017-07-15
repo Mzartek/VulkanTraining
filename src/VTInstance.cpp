@@ -9,14 +9,14 @@
 namespace
 {
 VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-    VkDebugReportFlagsEXT flags,
-    VkDebugReportObjectTypeEXT objType,
-    uint64_t obj,
-    size_t location,
-    int32_t code,
-    const char* layerPrefix,
+    VkDebugReportFlagsEXT /*flags*/,
+    VkDebugReportObjectTypeEXT /*objType*/,
+    uint64_t /*obj*/,
+    size_t /*location*/,
+    int32_t /*code*/,
+    const char* /*layerPrefix*/,
     const char* msg,
-    void* userData)
+    void* /*userData*/)
 {
     std::cerr << "Validation layer: " << msg << std::endl;
 
@@ -81,7 +81,7 @@ VkInstance VTInstance::GetInstance()
     return m_instance;
 }
 
-const VkInstance VTInstance::GetInstance() const
+VkInstance VTInstance::GetInstance() const
 {
     return m_instance;
 }

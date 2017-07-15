@@ -16,15 +16,19 @@ public:
     VTPhysicalDevice& operator=(VTPhysicalDevice&& other) = delete;
 
     VkPhysicalDevice GetPhysicalDevice();
-    const VkPhysicalDevice GetPhysicalDevice() const;
+    VkPhysicalDevice GetPhysicalDevice() const;
 
     const VkPhysicalDeviceProperties GetPhysicalDeviceProperties() const;
     const VkPhysicalDeviceFeatures GetPhysicalDeviceFeatures() const;
 
-    std::pair<int, VkQueueFamilyProperties> GetGraphicsQueueInfos() const;
+    uint32_t GetGraphicsQueueIndex() const;
+    uint32_t GetGraphicsQueueCount() const;
 
 private:
     VkPhysicalDevice m_physicalDevice;
+
+    uint32_t m_graphicsQueueIndex;
+    uint32_t m_graphicsQueueCount;
 };
 }
 

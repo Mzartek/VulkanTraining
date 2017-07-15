@@ -18,7 +18,7 @@ public:
     VTInstance& operator=(VTInstance&& other) = delete;
 
     VkInstance GetInstance();
-    const VkInstance GetInstance() const;
+    VkInstance GetInstance() const;
 
 private:
     VkInstance m_instance;
