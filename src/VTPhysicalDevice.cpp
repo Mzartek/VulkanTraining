@@ -7,36 +7,49 @@ namespace
 {
 struct QueueFamiliesHelper
 {
-    QueueFamiliesHelper(const VkPhysicalDevice& physicalDevice)
+    QueueFamiliesHelper(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface)
         : m_hasGraphicsQueue(false)
+        , m_hasPresentQueue(false)
         , m_graphicsQueueIndex(0)
-        , m_graphicsQueueCount(0)
+        , m_presentQueueIndex(0)
     {
         uint32_t queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 
-        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+        m_queueFamilyProperties.resize(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, m_queueFamilyProperties.data());
 
-        for (uint32_t i = 0; i < queueFamilies.size(); ++i)
+        for (uint32_t i = 0; i < m_queueFamilyProperties.size(); ++i)
         {
-            const auto& queueFamily = queueFamilies[i];
+            const auto& queueFamily = m_queueFamilyProperties[i];
             if (queueFamily.queueCount)
             {
                 if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
                 {
                     m_hasGraphicsQueue = true;
                     m_graphicsQueueIndex = i;
-                    m_graphicsQueueCount = queueFamily.queueCount;
+                }
+
+                VkBool32 presentSupport = false;
+                vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
+                if (presentSupport)
+                {
+                    m_hasPresentQueue = true;
+                    m_presentQueueIndex = i;
                 }
             }
 
         }
     }
 
-    bool HasGraphicsQueue() const
+    bool IsComplete() const
     {
-        return m_hasGraphicsQueue;
+        return m_hasGraphicsQueue && m_hasPresentQueue;
+    }
+
+    std::vector<VkQueueFamilyProperties> GetQueueFamilyProperties()
+    {
+        return m_queueFamilyProperties;
     }
 
     uint32_t GetGraphicsQueueIndex() const
@@ -44,23 +57,20 @@ struct QueueFamiliesHelper
         return m_graphicsQueueIndex;
     }
 
-    uint32_t GetGraphicsQueueCount() const
+    uint32_t GetPresentQueueIndex() const
     {
-        return m_graphicsQueueCount;
+        return m_presentQueueIndex;
     }
 
 private:
-    bool m_hasGraphicsQueue;
-    uint32_t m_graphicsQueueIndex;
-    uint32_t m_graphicsQueueCount;
-};
+    std::vector<VkQueueFamilyProperties> m_queueFamilyProperties;
 
-bool AreQueueFamiliesSuitable(const QueueFamiliesHelper& queueFamiliesHelper)
-{
-    if (queueFamiliesHelper.HasGraphicsQueue())
-        return true;
-    return false;
-}
+    bool m_hasGraphicsQueue;
+    bool m_hasPresentQueue;
+
+    uint32_t m_graphicsQueueIndex;
+    uint32_t m_presentQueueIndex;
+};
 
 int RatePhysicalDeviceSuitability(VkPhysicalDevice physicalDevice)
 {
@@ -79,7 +89,7 @@ int RatePhysicalDeviceSuitability(VkPhysicalDevice physicalDevice)
 
 namespace VT
 {
-VTPhysicalDevice::VTPhysicalDevice(const VTInstance& vtInstance)
+VTPhysicalDevice::VTPhysicalDevice(const VTInstance& vtInstance, const VTSurface& vtSurface)
     : m_physicalDevice(VK_NULL_HANDLE)
 {
     uint32_t deviceCount = 0;
@@ -95,8 +105,8 @@ VTPhysicalDevice::VTPhysicalDevice(const VTInstance& vtInstance)
 
     for (const auto& physicalDevice : physicalDevices)
     {
-        const QueueFamiliesHelper queueFamiliesHelper(physicalDevice);
-        if (AreQueueFamiliesSuitable(queueFamiliesHelper))
+        const QueueFamiliesHelper queueFamiliesHelper(physicalDevice, vtSurface.GetSurface());
+        if (queueFamiliesHelper.IsComplete())
         {
             const int score = RatePhysicalDeviceSuitability(physicalDevice);
             candidates.insert({ score, { physicalDevice, queueFamiliesHelper }});
@@ -108,8 +118,9 @@ VTPhysicalDevice::VTPhysicalDevice(const VTInstance& vtInstance)
         if (candidates.rbegin()->first > 0)
         {
             m_physicalDevice = candidates.rbegin()->second.first;
+            m_queueFamilyProperties = candidates.rbegin()->second.second.GetQueueFamilyProperties();
             m_graphicsQueueIndex = candidates.rbegin()->second.second.GetGraphicsQueueIndex();
-            m_graphicsQueueCount = candidates.rbegin()->second.second.GetGraphicsQueueCount();
+            m_presentQueueIndex = candidates.rbegin()->second.second.GetPresentQueueIndex();
         }
     }
     else
@@ -142,13 +153,18 @@ const VkPhysicalDeviceFeatures VTPhysicalDevice::GetPhysicalDeviceFeatures() con
     return physicalDeviceFeatures;
 }
 
+uint32_t VTPhysicalDevice::GetQueueCount(uint32_t index) const
+{
+    return m_queueFamilyProperties[index].queueCount;
+}
+
 uint32_t VTPhysicalDevice::GetGraphicsQueueIndex() const
 {
     return m_graphicsQueueIndex;
 }
 
-uint32_t VTPhysicalDevice::GetGraphicsQueueCount() const
+uint32_t VTPhysicalDevice::GetPresentQueueIndex() const
 {
-    return m_graphicsQueueCount;
+    return m_presentQueueIndex;
 }
 }

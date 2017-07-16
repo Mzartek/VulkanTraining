@@ -1,6 +1,7 @@
 #ifndef VT_GAME_MODE_INCLUDE_H
 #define VT_GAME_MODE_INCLUDE_H
 
+#include "VTSurface.h"
 #include "VTDevice.h"
 
 namespace VT
@@ -22,8 +23,9 @@ public:
     virtual void CleanUp() = 0;
 
 private:
-    VTWindow* m_vtWindow;
     VTInstance* m_vtInstance;
+    VTWindow* m_vtWindow;
+    VTSurface* m_vtSurface;
     VTPhysicalDevice* m_vtPhysicalDevice;
     VTDevice* m_vtDevice;
 };

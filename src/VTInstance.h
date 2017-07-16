@@ -10,7 +10,7 @@ namespace VT
 class VTInstance
 {
 public:
-    VTInstance(const VTWindow& vtWindow, bool enableValidationLayers);
+    VTInstance(const std::string& applicationName, bool enableValidationLayers);
     virtual ~VTInstance();
     VTInstance(const VTInstance& other) = delete;
     VTInstance(VTInstance&& other) = delete;
@@ -23,6 +23,7 @@ public:
 private:
     VkInstance m_instance;
     VkDebugReportCallbackEXT m_callback;
+    VkSurfaceKHR m_surface;
 };
 }
 

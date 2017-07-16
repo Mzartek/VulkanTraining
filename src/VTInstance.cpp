@@ -26,13 +26,13 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 
 namespace VT
 {
-VTInstance::VTInstance(const VTWindow& vtWindow, bool enableValidationLayers)
+VTInstance::VTInstance(const std::string& applicationName, bool enableValidationLayers)
     : m_instance(VK_NULL_HANDLE)
     , m_callback(VK_NULL_HANDLE)
 {
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = vtWindow.GetTitle().c_str();
+    appInfo.pApplicationName = applicationName.c_str();
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "VT";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
