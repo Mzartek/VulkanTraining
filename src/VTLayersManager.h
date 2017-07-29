@@ -12,6 +12,10 @@ class VTLayersManager
 public:
     VTLayersManager() = default;
     virtual ~VTLayersManager() = default;
+    VTLayersManager(const VTLayersManager& other) = delete;
+    VTLayersManager(VTLayersManager&& other) = delete;
+    VTLayersManager& operator=(const VTLayersManager& other) = delete;
+    VTLayersManager& operator=(VTLayersManager&& other) = delete;
 
     bool CheckLayerSupport(const char* layerName);
 

@@ -61,15 +61,15 @@ VTDevice::VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vt
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create device");
 
-    uint32_t queueFamilyIndex = vtQueueFamiliesManager.GetGraphicsQueueIndex();
-    m_graphicsQueues.resize(vtQueueFamiliesManager.GetIndexQueueCount(queueFamilyIndex));
+    const uint32_t graphicsQueueFamilyIndex = vtQueueFamiliesManager.GetGraphicsQueueIndex();
+    m_graphicsQueues.resize(vtQueueFamiliesManager.GetIndexQueueCount(graphicsQueueFamilyIndex));
     for (uint32_t i = 0; i < m_graphicsQueues.size(); ++i)
-        vkGetDeviceQueue(m_device, queueFamilyIndex, i, &m_graphicsQueues[i]);
+        vkGetDeviceQueue(m_device, graphicsQueueFamilyIndex, i, &m_graphicsQueues[i]);
 
-    queueFamilyIndex = vtQueueFamiliesManager.GetPresentQueueIndex();
-    m_presentQueues.resize(vtQueueFamiliesManager.GetIndexQueueCount(queueFamilyIndex));
+    const uint32_t presentQueueFamilyIndex = vtQueueFamiliesManager.GetPresentQueueIndex();
+    m_presentQueues.resize(vtQueueFamiliesManager.GetIndexQueueCount(presentQueueFamilyIndex));
     for (uint32_t i = 0; i < m_presentQueues.size(); ++i)
-        vkGetDeviceQueue(m_device, queueFamilyIndex, i, &m_presentQueues[i]);
+        vkGetDeviceQueue(m_device, presentQueueFamilyIndex, i, &m_presentQueues[i]);
 }
 
 VTDevice::~VTDevice()

@@ -17,6 +17,12 @@ VTDeviceExtensionsManager::VTDeviceExtensionsManager(const VTPhysicalDevice& vtP
 
 std::vector<const char*> VTDeviceExtensionsManager::GetMinimalExtensionNames(bool /*enableValidationLayers*/)
 {
-    return {};
+    std::vector<const char*> extensions;
+    if (this->CheckExtensionSupport(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
+        extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    else
+        std::runtime_error("SwapChain extension is not available");
+
+    return extensions;
 }
 }

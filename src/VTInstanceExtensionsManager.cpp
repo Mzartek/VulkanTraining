@@ -34,7 +34,12 @@ std::vector<const char*> VTInstanceExtensionsManager::GetMinimalExtensionNames(b
     }
 
     if (enableValidationLayers)
-        extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+    {
+        if (this->CheckExtensionSupport(VK_EXT_DEBUG_REPORT_EXTENSION_NAME))
+            extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        else
+            throw std::runtime_error("Debug report extension is not available");
+    }
 
     return extensions;
 }

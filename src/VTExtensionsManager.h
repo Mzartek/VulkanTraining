@@ -12,6 +12,10 @@ class VTExtensionsManager
 public:
     VTExtensionsManager() = default;
     virtual ~VTExtensionsManager() = default;
+    VTExtensionsManager(const VTExtensionsManager& other) = delete;
+    VTExtensionsManager(VTExtensionsManager&& other) = delete;
+    VTExtensionsManager& operator=(const VTExtensionsManager& other) = delete;
+    VTExtensionsManager& operator=(VTExtensionsManager&& other) = delete;
 
     bool CheckExtensionSupport(const char* extensionName);
 

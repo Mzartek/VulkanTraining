@@ -10,6 +10,11 @@ class VTDeviceLayersManager final : public VTLayersManager
 {
 public:
     VTDeviceLayersManager(const VTPhysicalDevice& vtPhysicalDevice);
+    virtual ~VTDeviceLayersManager() = default;
+    VTDeviceLayersManager(const VTDeviceLayersManager& other) = delete;
+    VTDeviceLayersManager(VTDeviceLayersManager&& other) = delete;
+    VTDeviceLayersManager& operator=(const VTDeviceLayersManager& other) = delete;
+    VTDeviceLayersManager& operator=(VTDeviceLayersManager&& other) = delete;
 
     std::vector<const char*> GetMinimalLayerNames(bool enableValidationLayers) override;
 };
