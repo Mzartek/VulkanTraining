@@ -31,10 +31,10 @@ GameMode::GameMode(int width, int height, const std::string& title)
     m_vtSurface = new VTSurface(*m_vtInstance, *m_vtWindow);
     assert(m_vtSurface);
 
-    m_vtPhysicalDevice = new VTPhysicalDevice(*m_vtInstance, *m_vtSurface);
+    m_vtPhysicalDevice = new VTPhysicalDevice(*m_vtInstance);
     assert(m_vtPhysicalDevice);
 
-    m_vtDevice = new VTDevice(*m_vtPhysicalDevice, enableValidationLayers);
+    m_vtDevice = new VTDevice(*m_vtPhysicalDevice, *m_vtSurface, enableValidationLayers);
     assert(m_vtDevice);
 }
 

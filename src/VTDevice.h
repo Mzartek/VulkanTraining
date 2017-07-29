@@ -2,13 +2,14 @@
 #define VT_DEVICE_INCLUDE_H
 
 #include "VTPhysicalDevice.h"
+#include "VTSurface.h"
 
 namespace VT
 {
 class VTDevice
 {
 public:
-    VTDevice(const VTPhysicalDevice& vtPhysicalDevice, bool enableValidationLayers);
+    VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface, bool enableValidationLayers);
     virtual ~VTDevice();
     VTDevice(const VTDevice& other) = delete;
     VTDevice(VTDevice&& other) = delete;
