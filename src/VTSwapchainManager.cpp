@@ -1,10 +1,11 @@
-#include "VTSwapChainManager.h"
+#include "VTSwapchainManager.h"
 
 #include <stdexcept>
+#include <limits>
 
 namespace VT
 {
-VTSwapChainManager::VTSwapChainManager(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface)
+VTSwapchainManager::VTSwapchainManager(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface)
     : m_surface(vtSurface)
 {
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vtPhysicalDevice.GetPhysicalDevice(), vtSurface.GetSurface(), &m_surfaceCapabilities);
@@ -22,7 +23,7 @@ VTSwapChainManager::VTSwapChainManager(const VTPhysicalDevice& vtPhysicalDevice,
     vkGetPhysicalDeviceSurfacePresentModesKHR(vtPhysicalDevice.GetPhysicalDevice(), vtSurface.GetSurface(), &availablePresentModesCount, m_availablePresentModes.data());
 }
 
-VkSurfaceFormatKHR VTSwapChainManager::GetSurfaceFormat() const
+VkSurfaceFormatKHR VTSwapchainManager::GetSurfaceFormat() const
 {
     if (m_availableSurfaceFormats.empty())
         throw std::runtime_error("No available surface formats");
@@ -42,7 +43,12 @@ VkSurfaceFormatKHR VTSwapChainManager::GetSurfaceFormat() const
     return surfaceFormat;
 }
 
-VkPresentModeKHR VTSwapChainManager::GetPresentMode() const
+VkSurfaceCapabilitiesKHR VTSwapchainManager::GetSurfaceCapabilities() const
+{
+    return m_surfaceCapabilities;
+}
+
+VkPresentModeKHR VTSwapchainManager::GetPresentMode() const
 {
     if (m_availablePresentModes.empty())
         throw std::runtime_error("No available present modes");
@@ -58,7 +64,7 @@ VkPresentModeKHR VTSwapChainManager::GetPresentMode() const
     return presentMode;
 }
 
-VkExtent2D VTSwapChainManager::GetExtent2D() const
+VkExtent2D VTSwapchainManager::GetExtent2D() const
 {
     if (m_surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         return m_surfaceCapabilities.currentExtent;
@@ -71,5 +77,15 @@ VkExtent2D VTSwapChainManager::GetExtent2D() const
     extent2D.height = std::max(m_surfaceCapabilities.minImageExtent.height, std::min(m_surfaceCapabilities.maxImageExtent.height, windowHeight));
 
     return extent2D;
+}
+
+uint32_t VTSwapchainManager::GetImageCount() const
+{
+    uint32_t imageCount = m_surfaceCapabilities.minImageCount + 1;
+
+    if (m_surfaceCapabilities.maxImageCount > 0 && imageCount > m_surfaceCapabilities.maxImageCount)
+        return m_surfaceCapabilities.maxImageCount;
+
+    return imageCount;
 }
 }

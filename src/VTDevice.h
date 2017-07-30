@@ -19,11 +19,15 @@ public:
     VkDevice GetDevice();
     VkDevice GetDevice() const;
 
+    const VTPhysicalDevice& GetRelatedPhysicalDevice() const;
+    const VTSurface& GetRelatedSurface() const;
+
     const std::vector<VkQueue>& GetGraphicsQueues() const;
     const std::vector<VkQueue>& GetPresentQueues() const;
 
 private:
     const VTPhysicalDevice& m_physicalDevice;
+    const VTSurface& m_surface;
     VkDevice m_device;
 
     std::vector<VkQueue> m_graphicsQueues;

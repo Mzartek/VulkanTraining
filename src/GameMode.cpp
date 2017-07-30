@@ -19,6 +19,7 @@ GameMode::GameMode(int width, int height, const std::string& title)
     , m_vtSurface(nullptr)
     , m_vtPhysicalDevice(nullptr)
     , m_vtDevice(nullptr)
+    , m_vtSwapchain(nullptr)
 {
     glfwInit();
 
@@ -36,11 +37,15 @@ GameMode::GameMode(int width, int height, const std::string& title)
 
     m_vtDevice = new VTDevice(*m_vtPhysicalDevice, *m_vtSurface, enableValidationLayers);
     assert(m_vtDevice);
+
+    m_vtSwapchain = new VTSwapchain(*m_vtDevice);
+    assert(m_vtSwapchain);
 }
 
 GameMode::~GameMode()
 {
-    delete m_vtDevice,
+    delete m_vtSwapchain;
+    delete m_vtDevice;
     delete m_vtPhysicalDevice;
     delete m_vtSurface;
     delete m_vtWindow;

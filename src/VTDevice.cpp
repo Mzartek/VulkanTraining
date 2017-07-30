@@ -11,6 +11,7 @@ namespace VT
 {
 VTDevice::VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface, bool enableValidationLayers)
     : m_physicalDevice(vtPhysicalDevice)
+    , m_surface(vtSurface)
     , m_device(VK_NULL_HANDLE)
 {
     VTQueueFamiliesManager vtQueueFamiliesManager(vtPhysicalDevice, vtSurface);
@@ -85,6 +86,16 @@ VkDevice VTDevice::GetDevice()
 VkDevice VTDevice::GetDevice() const
 {
     return m_device;
+}
+
+const VTPhysicalDevice& VTDevice::GetRelatedPhysicalDevice() const
+{
+    return m_physicalDevice;
+}
+
+const VTSurface& VTDevice::GetRelatedSurface() const
+{
+    return m_surface;
 }
 
 const std::vector<VkQueue>& VTDevice::GetGraphicsQueues() const

@@ -1,8 +1,7 @@
 #ifndef VT_GAME_MODE_INCLUDE_H
 #define VT_GAME_MODE_INCLUDE_H
 
-#include "VTSurface.h"
-#include "VTDevice.h"
+#include "VTSwapchain.h"
 
 namespace VT
 {
@@ -28,6 +27,8 @@ private:
     VTSurface* m_vtSurface;
     VTPhysicalDevice* m_vtPhysicalDevice;
     VTDevice* m_vtDevice;
+    VTSwapchain* m_vtSwapchain;
+
 };
 }
 
