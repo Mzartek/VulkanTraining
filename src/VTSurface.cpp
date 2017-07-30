@@ -6,6 +6,7 @@ namespace VT
 {
 VTSurface::VTSurface(const VTInstance& vtInstance, VTWindow& vtWindow)
     : m_instance(vtInstance)
+    , m_window(vtWindow)
     , m_surface(VK_NULL_HANDLE)
 {
     VkResult result = glfwCreateWindowSurface(m_instance.GetInstance(), vtWindow.GetWindow(), nullptr, &m_surface);
@@ -26,5 +27,10 @@ VkSurfaceKHR VTSurface::GetSurface()
 VkSurfaceKHR VTSurface::GetSurface() const
 {
     return m_surface;
+}
+
+const VTWindow& VTSurface::GetRelatedWindow() const
+{
+    return m_window;
 }
 }

@@ -19,8 +19,11 @@ public:
     VkSurfaceKHR GetSurface();
     VkSurfaceKHR GetSurface() const;
 
+    const VTWindow& GetRelatedWindow() const;
+
 private:
     const VTInstance& m_instance;
+    const VTWindow& m_window;
     VkSurfaceKHR m_surface;
 };
 }

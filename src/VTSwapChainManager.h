@@ -18,8 +18,11 @@ public:
 
     VkSurfaceFormatKHR GetSurfaceFormat() const;
     VkPresentModeKHR GetPresentMode() const;
+    VkExtent2D GetExtent2D() const;
 
 private:
+    const VTSurface& m_surface;
+
     VkSurfaceCapabilitiesKHR m_surfaceCapabilities;
     std::vector<VkSurfaceFormatKHR> m_availableSurfaceFormats;
     std::vector<VkPresentModeKHR> m_availablePresentModes;
