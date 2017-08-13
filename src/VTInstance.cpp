@@ -44,26 +44,26 @@ VTInstance::VTInstance(const std::string& applicationName, bool enableValidation
     auto extensionNames = extensionsManager.GetMinimalExtensionNames(enableValidationLayers);
     auto layerNames = layersManager.GetMinimalLayerNames(enableValidationLayers);
 
-    VkInstanceCreateInfo createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    createInfo.pApplicationInfo = &appInfo;
-    createInfo.enabledExtensionCount = static_cast<uint32_t>(extensionNames.size());
-    createInfo.ppEnabledExtensionNames = extensionNames.data();
-    createInfo.enabledLayerCount = static_cast<uint32_t>(layerNames.size());
-    createInfo.ppEnabledLayerNames = layerNames.data();
+    VkInstanceCreateInfo instanceCreateInfo = {};
+    instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    instanceCreateInfo.pApplicationInfo = &appInfo;
+    instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(extensionNames.size());
+    instanceCreateInfo.ppEnabledExtensionNames = extensionNames.data();
+    instanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(layerNames.size());
+    instanceCreateInfo.ppEnabledLayerNames = layerNames.data();
 
-    VkResult result = vkCreateInstance(&createInfo, nullptr, &m_instance);
+    VkResult result = vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create instance");
 
     if (enableValidationLayers)
     {
-        VkDebugReportCallbackCreateInfoEXT createInfo = {};
-        createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-        createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-        createInfo.pfnCallback = debugCallback;
+        VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo = {};
+        debugReportCallbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+        debugReportCallbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+        debugReportCallbackCreateInfo.pfnCallback = debugCallback;
 
-        result = vkCreateDebugReportCallbackEXT(m_instance, &createInfo, nullptr, &m_callback);
+        result = vkCreateDebugReportCallbackEXT(m_instance, &debugReportCallbackCreateInfo, nullptr, &m_callback);
         if (result != VK_SUCCESS)
             throw std::runtime_error("Failed to create callback");
     }

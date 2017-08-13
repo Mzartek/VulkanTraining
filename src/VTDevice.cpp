@@ -48,17 +48,17 @@ VTDevice::VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vt
 
     VkPhysicalDeviceFeatures deviceFeatures = m_physicalDevice.GetPhysicalDeviceFeatures();
 
-    VkDeviceCreateInfo createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
-    createInfo.pQueueCreateInfos = queueCreateInfos.data();
-    createInfo.enabledExtensionCount = static_cast<uint32_t>(extensionNames.size());
-    createInfo.ppEnabledExtensionNames = extensionNames.data();
-    createInfo.enabledLayerCount= static_cast<uint32_t>(layerNames.size());
-    createInfo.ppEnabledLayerNames = layerNames.data();
-    createInfo.pEnabledFeatures = &deviceFeatures;
+    VkDeviceCreateInfo deviceCreateInfo = {};
+    deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+    deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+    deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(extensionNames.size());
+    deviceCreateInfo.ppEnabledExtensionNames = extensionNames.data();
+    deviceCreateInfo.enabledLayerCount= static_cast<uint32_t>(layerNames.size());
+    deviceCreateInfo.ppEnabledLayerNames = layerNames.data();
+    deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
 
-    VkResult result = vkCreateDevice(m_physicalDevice.GetPhysicalDevice(), &createInfo, nullptr, &m_device);
+    VkResult result = vkCreateDevice(m_physicalDevice.GetPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create device");
 

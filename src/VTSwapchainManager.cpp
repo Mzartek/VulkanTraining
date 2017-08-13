@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <limits>
+#include <algorithm>
 
 namespace VT
 {
