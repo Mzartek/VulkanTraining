@@ -4,7 +4,7 @@
 
 namespace VT
 {
-bool VTLayersManager::CheckLayerSupport(const char* layerName)
+bool LayersManager::CheckLayerSupport(const char* layerName)
 {
     for (const auto& layer : m_availableLayers)
         if (strcmp(layerName, layer.layerName) == 0)
@@ -13,7 +13,7 @@ bool VTLayersManager::CheckLayerSupport(const char* layerName)
     return false;
 }
 
-void VTLayersManager::SetAvailableLayers(const std::vector<VkLayerProperties>& availableLayers)
+void LayersManager::SetAvailableLayers(const std::vector<VkLayerProperties>& availableLayers)
 {
     m_availableLayers = availableLayers;
 }

@@ -5,17 +5,17 @@
 
 namespace VT
 {
-class VTPhysicalDevice
+class PhysicalDevice
 {
     static std::vector<VkPhysicalDevice> AvailablePhysicalDevices;
 
 public:
-    VTPhysicalDevice(const VTInstance& vtInstance);
-    virtual ~VTPhysicalDevice() = default;
-    VTPhysicalDevice(const VTPhysicalDevice& other) = delete;
-    VTPhysicalDevice(VTPhysicalDevice&& other) = delete;
-    VTPhysicalDevice& operator=(const VTPhysicalDevice& other) = delete;
-    VTPhysicalDevice& operator=(VTPhysicalDevice&& other) = delete;
+    PhysicalDevice(const Instance& instance);
+    virtual ~PhysicalDevice() = default;
+    PhysicalDevice(const PhysicalDevice& other) = delete;
+    PhysicalDevice(PhysicalDevice&& other) = delete;
+    PhysicalDevice& operator=(const PhysicalDevice& other) = delete;
+    PhysicalDevice& operator=(PhysicalDevice&& other) = delete;
 
     VkPhysicalDevice GetPhysicalDevice();
     VkPhysicalDevice GetPhysicalDevice() const;

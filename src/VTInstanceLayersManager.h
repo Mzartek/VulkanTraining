@@ -5,15 +5,15 @@
 
 namespace VT
 {
-class VTInstanceLayersManager final : public VTLayersManager
+class InstanceLayersManager final : public LayersManager
 {
 public:
-    VTInstanceLayersManager();
-    virtual ~VTInstanceLayersManager() = default;
-    VTInstanceLayersManager(const VTInstanceLayersManager& other) = delete;
-    VTInstanceLayersManager(VTInstanceLayersManager&& other) = delete;
-    VTInstanceLayersManager& operator=(const VTInstanceLayersManager& other) = delete;
-    VTInstanceLayersManager& operator=(VTInstanceLayersManager&& other) = delete;
+    InstanceLayersManager();
+    virtual ~InstanceLayersManager() = default;
+    InstanceLayersManager(const InstanceLayersManager& other) = delete;
+    InstanceLayersManager(InstanceLayersManager&& other) = delete;
+    InstanceLayersManager& operator=(const InstanceLayersManager& other) = delete;
+    InstanceLayersManager& operator=(InstanceLayersManager&& other) = delete;
 
     std::vector<const char*> GetMinimalLayerNames(bool enableValidationLayers) override;
 };

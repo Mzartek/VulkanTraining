@@ -8,15 +8,15 @@
 
 namespace VT
 {
-class VTWindow
+class Window
 {
 public:
-    VTWindow(int width, int height, const std::string& title);
-    virtual ~VTWindow();
-    VTWindow(const VTWindow& other) = delete;
-    VTWindow(VTWindow&& other) = delete;
-    VTWindow& operator=(const VTWindow& other) = delete;
-    VTWindow& operator=(VTWindow&& other) = delete;
+    Window(int width, int height, const std::string& title);
+    virtual ~Window();
+    Window(const Window& other) = delete;
+    Window(Window&& other) = delete;
+    Window& operator=(const Window& other) = delete;
+    Window& operator=(Window&& other) = delete;
 
     GLFWwindow* GetWindow();
     const GLFWwindow* GetWindow() const;

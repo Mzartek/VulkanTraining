@@ -5,15 +5,15 @@
 
 namespace VT
 {
-class VTSwapchain
+class Swapchain
 {
 public:
-    VTSwapchain(const VTDevice& vtDevice);
-    virtual ~VTSwapchain();
-    VTSwapchain(const VTSwapchain& other) = delete;
-    VTSwapchain(VTSwapchain&& other) = delete;
-    VTSwapchain& operator=(const VTSwapchain& other) = delete;
-    VTSwapchain& operator=(VTSwapchain&& other) = delete;
+    Swapchain(const Device& device);
+    virtual ~Swapchain();
+    Swapchain(const Swapchain& other) = delete;
+    Swapchain(Swapchain&& other) = delete;
+    Swapchain& operator=(const Swapchain& other) = delete;
+    Swapchain& operator=(Swapchain&& other) = delete;
 
     VkSwapchainKHR GetSwapchain();
     VkSwapchainKHR GetSwapchain() const;
@@ -21,7 +21,7 @@ public:
     const std::vector<VkImage>& GetImages() const;
 
 private:
-    const VTDevice& m_device;
+    const Device& m_device;
     VkSwapchainKHR m_swapchain;
 
     std::vector<VkImage> m_images;

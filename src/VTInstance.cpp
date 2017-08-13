@@ -26,7 +26,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 
 namespace VT
 {
-VTInstance::VTInstance(const std::string& applicationName, bool enableValidationLayers)
+Instance::Instance(const std::string& applicationName, bool enableValidationLayers)
     : m_instance(VK_NULL_HANDLE)
     , m_callback(VK_NULL_HANDLE)
 {
@@ -38,8 +38,8 @@ VTInstance::VTInstance(const std::string& applicationName, bool enableValidation
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    VTInstanceExtensionsManager extensionsManager;
-    VTInstanceLayersManager layersManager;
+    InstanceExtensionsManager extensionsManager;
+    InstanceLayersManager layersManager;
 
     auto extensionNames = extensionsManager.GetMinimalExtensionNames(enableValidationLayers);
     auto layerNames = layersManager.GetMinimalLayerNames(enableValidationLayers);
@@ -69,19 +69,19 @@ VTInstance::VTInstance(const std::string& applicationName, bool enableValidation
     }
 }
 
-VTInstance::~VTInstance()
+Instance::~Instance()
 {
     if (m_callback != VK_NULL_HANDLE)
         vkDestroyDebugReportCallbackEXT(m_instance, m_callback, nullptr);
     vkDestroyInstance(m_instance, nullptr);
 }
 
-VkInstance VTInstance::GetInstance()
+VkInstance Instance::GetInstance()
 {
     return m_instance;
 }
 
-VkInstance VTInstance::GetInstance() const
+VkInstance Instance::GetInstance() const
 {
     return m_instance;
 }

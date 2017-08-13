@@ -6,7 +6,7 @@
 
 namespace VT
 {
-VTInstanceExtensionsManager::VTInstanceExtensionsManager()
+InstanceExtensionsManager::InstanceExtensionsManager()
 {
     uint32_t extensionCount = 0;
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
@@ -17,7 +17,7 @@ VTInstanceExtensionsManager::VTInstanceExtensionsManager()
     this->SetAvailableExtensions(availableExtensions);
 }
 
-std::vector<const char*> VTInstanceExtensionsManager::GetMinimalExtensionNames(bool enableValidationLayers)
+std::vector<const char*> InstanceExtensionsManager::GetMinimalExtensionNames(bool enableValidationLayers)
 {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;

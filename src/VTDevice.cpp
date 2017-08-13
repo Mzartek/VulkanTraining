@@ -9,22 +9,22 @@
 
 namespace VT
 {
-VTDevice::VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface, bool enableValidationLayers)
-    : m_physicalDevice(vtPhysicalDevice)
-    , m_surface(vtSurface)
+Device::Device(const PhysicalDevice& physicalDevice, const Surface& surface, bool enableValidationLayers)
+    : m_physicalDevice(physicalDevice)
+    , m_surface(surface)
     , m_device(VK_NULL_HANDLE)
 {
-    VTQueueFamiliesManager vtQueueFamiliesManager(vtPhysicalDevice, vtSurface);
+    QueueFamiliesManager queueFamiliesManager(physicalDevice, surface);
 
-    if (!vtQueueFamiliesManager.HasGraphicsQueue())
+    if (!queueFamiliesManager.HasGraphicsQueue())
         throw std::runtime_error("PhysicalDevice doesn't have Graphics Queue");
-    if (!vtQueueFamiliesManager.HasPresentQueue())
+    if (!queueFamiliesManager.HasPresentQueue())
         throw std::runtime_error("PhysicalDevice doesn't have Present Queue");
 
     std::set<uint32_t> queueFamilyIndexes =
     {
-        vtQueueFamiliesManager.GetGraphicsQueueIndex(),
-        vtQueueFamiliesManager.GetPresentQueueIndex()
+        queueFamiliesManager.GetGraphicsQueueIndex(),
+        queueFamiliesManager.GetPresentQueueIndex()
     };
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -34,14 +34,14 @@ VTDevice::VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vt
         VkDeviceQueueCreateInfo queueCreateInfo = {};
         queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
         queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
-        queueCreateInfo.queueCount = vtQueueFamiliesManager.GetIndexQueueCount(queueFamilyIndex);
+        queueCreateInfo.queueCount = queueFamiliesManager.GetIndexQueueCount(queueFamilyIndex);
         queueCreateInfo.pQueuePriorities = &queuePriority;
 
         queueCreateInfos.push_back(queueCreateInfo);
     }
 
-    VTDeviceExtensionsManager extensionsManager(m_physicalDevice);
-    VTDeviceLayersManager layersManager(m_physicalDevice);
+    DeviceExtensionsManager extensionsManager(m_physicalDevice);
+    DeviceLayersManager layersManager(m_physicalDevice);
 
     auto extensionNames = extensionsManager.GetMinimalExtensionNames(enableValidationLayers);
     auto layerNames = layersManager.GetMinimalLayerNames(enableValidationLayers);
@@ -62,48 +62,48 @@ VTDevice::VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vt
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create device");
 
-    const uint32_t graphicsQueueFamilyIndex = vtQueueFamiliesManager.GetGraphicsQueueIndex();
-    m_graphicsQueues.resize(vtQueueFamiliesManager.GetIndexQueueCount(graphicsQueueFamilyIndex));
+    const uint32_t graphicsQueueFamilyIndex = queueFamiliesManager.GetGraphicsQueueIndex();
+    m_graphicsQueues.resize(queueFamiliesManager.GetIndexQueueCount(graphicsQueueFamilyIndex));
     for (uint32_t i = 0; i < m_graphicsQueues.size(); ++i)
         vkGetDeviceQueue(m_device, graphicsQueueFamilyIndex, i, &m_graphicsQueues[i]);
 
-    const uint32_t presentQueueFamilyIndex = vtQueueFamiliesManager.GetPresentQueueIndex();
-    m_presentQueues.resize(vtQueueFamiliesManager.GetIndexQueueCount(presentQueueFamilyIndex));
+    const uint32_t presentQueueFamilyIndex = queueFamiliesManager.GetPresentQueueIndex();
+    m_presentQueues.resize(queueFamiliesManager.GetIndexQueueCount(presentQueueFamilyIndex));
     for (uint32_t i = 0; i < m_presentQueues.size(); ++i)
         vkGetDeviceQueue(m_device, presentQueueFamilyIndex, i, &m_presentQueues[i]);
 }
 
-VTDevice::~VTDevice()
+Device::~Device()
 {
     vkDestroyDevice(m_device, nullptr);
 }
 
-VkDevice VTDevice::GetDevice()
+VkDevice Device::GetDevice()
 {
     return m_device;
 }
 
-VkDevice VTDevice::GetDevice() const
+VkDevice Device::GetDevice() const
 {
     return m_device;
 }
 
-const VTPhysicalDevice& VTDevice::GetRelatedPhysicalDevice() const
+const PhysicalDevice& Device::GetRelatedPhysicalDevice() const
 {
     return m_physicalDevice;
 }
 
-const VTSurface& VTDevice::GetRelatedSurface() const
+const Surface& Device::GetRelatedSurface() const
 {
     return m_surface;
 }
 
-const std::vector<VkQueue>& VTDevice::GetGraphicsQueues() const
+const std::vector<VkQueue>& Device::GetGraphicsQueues() const
 {
     return m_graphicsQueues;
 }
 
-const std::vector<VkQueue>& VTDevice::GetPresentQueues() const
+const std::vector<VkQueue>& Device::GetPresentQueues() const
 {
     return m_presentQueues;
 }

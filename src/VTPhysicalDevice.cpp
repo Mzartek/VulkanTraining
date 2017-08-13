@@ -37,15 +37,15 @@ void InitAvailablePhysicalDevices(VkInstance instance, std::vector<VkPhysicalDev
 
 namespace VT
 {
-std::vector<VkPhysicalDevice> VTPhysicalDevice::AvailablePhysicalDevices;
+std::vector<VkPhysicalDevice> PhysicalDevice::AvailablePhysicalDevices;
 
-VTPhysicalDevice::VTPhysicalDevice(const VTInstance& vtInstance)
+PhysicalDevice::PhysicalDevice(const Instance& instance)
     : m_physicalDevice(VK_NULL_HANDLE)
 {
     static bool first = true;
     if (first)
     {
-        InitAvailablePhysicalDevices(vtInstance.GetInstance(), AvailablePhysicalDevices);
+        InitAvailablePhysicalDevices(instance.GetInstance(), AvailablePhysicalDevices);
         first = false;
     }
 
@@ -55,17 +55,17 @@ VTPhysicalDevice::VTPhysicalDevice(const VTInstance& vtInstance)
     m_physicalDevice = AvailablePhysicalDevices.front();
 }
 
-VkPhysicalDevice VTPhysicalDevice::GetPhysicalDevice()
+VkPhysicalDevice PhysicalDevice::GetPhysicalDevice()
 {
     return m_physicalDevice;
 }
 
-VkPhysicalDevice VTPhysicalDevice::GetPhysicalDevice() const
+VkPhysicalDevice PhysicalDevice::GetPhysicalDevice() const
 {
     return m_physicalDevice;
 }
 
-const VkPhysicalDeviceProperties VTPhysicalDevice::GetPhysicalDeviceProperties() const
+const VkPhysicalDeviceProperties PhysicalDevice::GetPhysicalDeviceProperties() const
 {
     VkPhysicalDeviceProperties physicalDeviceProperties;
     vkGetPhysicalDeviceProperties(m_physicalDevice, &physicalDeviceProperties);
@@ -73,7 +73,7 @@ const VkPhysicalDeviceProperties VTPhysicalDevice::GetPhysicalDeviceProperties()
     return physicalDeviceProperties;
 }
 
-const VkPhysicalDeviceFeatures VTPhysicalDevice::GetPhysicalDeviceFeatures() const
+const VkPhysicalDeviceFeatures PhysicalDevice::GetPhysicalDeviceFeatures() const
 {
     VkPhysicalDeviceFeatures physicalDeviceFeatures;
     vkGetPhysicalDeviceFeatures(m_physicalDevice, &physicalDeviceFeatures);

@@ -22,12 +22,12 @@ public:
     virtual void CleanUp() = 0;
 
 private:
-    VTInstance* m_vtInstance;
-    VTWindow* m_vtWindow;
-    VTSurface* m_vtSurface;
-    VTPhysicalDevice* m_vtPhysicalDevice;
-    VTDevice* m_vtDevice;
-    VTSwapchain* m_vtSwapchain;
+    Instance* m_instance;
+    Window* m_window;
+    Surface* m_surface;
+    PhysicalDevice* m_physicalDevice;
+    Device* m_device;
+    Swapchain* m_swapchain;
 
 };
 }

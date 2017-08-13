@@ -7,15 +7,15 @@
 
 namespace VT
 {
-class VTInstance
+class Instance
 {
 public:
-    VTInstance(const std::string& applicationName, bool enableValidationLayers);
-    virtual ~VTInstance();
-    VTInstance(const VTInstance& other) = delete;
-    VTInstance(VTInstance&& other) = delete;
-    VTInstance& operator=(const VTInstance& other) = delete;
-    VTInstance& operator=(VTInstance&& other) = delete;
+    Instance(const std::string& applicationName, bool enableValidationLayers);
+    virtual ~Instance();
+    Instance(const Instance& other) = delete;
+    Instance(Instance&& other) = delete;
+    Instance& operator=(const Instance& other) = delete;
+    Instance& operator=(Instance&& other) = delete;
 
     VkInstance GetInstance();
     VkInstance GetInstance() const;

@@ -5,15 +5,15 @@
 
 namespace VT
 {
-class VTInstanceExtensionsManager final : public VTExtensionsManager
+class InstanceExtensionsManager final : public ExtensionsManager
 {
 public:
-    VTInstanceExtensionsManager();
-    virtual ~VTInstanceExtensionsManager() = default;
-    VTInstanceExtensionsManager(const VTInstanceExtensionsManager& other) = delete;
-    VTInstanceExtensionsManager(VTInstanceExtensionsManager&& other) = delete;
-    VTInstanceExtensionsManager& operator=(const VTInstanceExtensionsManager& other) = delete;
-    VTInstanceExtensionsManager& operator=(VTInstanceExtensionsManager&& other) = delete;
+    InstanceExtensionsManager();
+    virtual ~InstanceExtensionsManager() = default;
+    InstanceExtensionsManager(const InstanceExtensionsManager& other) = delete;
+    InstanceExtensionsManager(InstanceExtensionsManager&& other) = delete;
+    InstanceExtensionsManager& operator=(const InstanceExtensionsManager& other) = delete;
+    InstanceExtensionsManager& operator=(InstanceExtensionsManager&& other) = delete;
 
     std::vector<const char*> GetMinimalExtensionNames(bool enableValidationLayers) override;
 };

@@ -7,15 +7,15 @@
 
 namespace VT
 {
-class VTExtensionsManager
+class ExtensionsManager
 {
 public:
-    VTExtensionsManager() = default;
-    virtual ~VTExtensionsManager() = default;
-    VTExtensionsManager(const VTExtensionsManager& other) = delete;
-    VTExtensionsManager(VTExtensionsManager&& other) = delete;
-    VTExtensionsManager& operator=(const VTExtensionsManager& other) = delete;
-    VTExtensionsManager& operator=(VTExtensionsManager&& other) = delete;
+    ExtensionsManager() = default;
+    virtual ~ExtensionsManager() = default;
+    ExtensionsManager(const ExtensionsManager& other) = delete;
+    ExtensionsManager(ExtensionsManager&& other) = delete;
+    ExtensionsManager& operator=(const ExtensionsManager& other) = delete;
+    ExtensionsManager& operator=(ExtensionsManager&& other) = delete;
 
     bool CheckExtensionSupport(const char* extensionName);
 

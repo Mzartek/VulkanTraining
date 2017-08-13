@@ -4,7 +4,7 @@
 
 namespace VT
 {
-bool VTExtensionsManager::CheckExtensionSupport(const char* extensionName)
+bool ExtensionsManager::CheckExtensionSupport(const char* extensionName)
 {
     for (const auto& extension : m_availableExtensions)
         if (strcmp(extensionName, extension.extensionName) == 0)
@@ -13,7 +13,7 @@ bool VTExtensionsManager::CheckExtensionSupport(const char* extensionName)
     return false;
 }
 
-void VTExtensionsManager::SetAvailableExtensions(const std::vector<VkExtensionProperties>& availableExtensions)
+void ExtensionsManager::SetAvailableExtensions(const std::vector<VkExtensionProperties>& availableExtensions)
 {
     m_availableExtensions = availableExtensions;
 }

@@ -6,25 +6,25 @@
 
 namespace VT
 {
-VTSwapchainManager::VTSwapchainManager(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface)
-    : m_surface(vtSurface)
+SwapchainManager::SwapchainManager(const PhysicalDevice& physicalDevice, const Surface& surface)
+    : m_surface(surface)
 {
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vtPhysicalDevice.GetPhysicalDevice(), vtSurface.GetSurface(), &m_surfaceCapabilities);
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice.GetPhysicalDevice(), surface.GetSurface(), &m_surfaceCapabilities);
 
     uint32_t availableSurfaceFormatCount = 0;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(vtPhysicalDevice.GetPhysicalDevice(), vtSurface.GetSurface(), &availableSurfaceFormatCount, nullptr);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice.GetPhysicalDevice(), surface.GetSurface(), &availableSurfaceFormatCount, nullptr);
 
     m_availableSurfaceFormats.resize(availableSurfaceFormatCount);
-    vkGetPhysicalDeviceSurfaceFormatsKHR(vtPhysicalDevice.GetPhysicalDevice(), vtSurface.GetSurface(), &availableSurfaceFormatCount, m_availableSurfaceFormats.data());
+    vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice.GetPhysicalDevice(), surface.GetSurface(), &availableSurfaceFormatCount, m_availableSurfaceFormats.data());
 
     uint32_t availablePresentModesCount = 0;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(vtPhysicalDevice.GetPhysicalDevice(), vtSurface.GetSurface(), &availablePresentModesCount, nullptr);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice.GetPhysicalDevice(), surface.GetSurface(), &availablePresentModesCount, nullptr);
 
     m_availablePresentModes.resize(availablePresentModesCount);
-    vkGetPhysicalDeviceSurfacePresentModesKHR(vtPhysicalDevice.GetPhysicalDevice(), vtSurface.GetSurface(), &availablePresentModesCount, m_availablePresentModes.data());
+    vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice.GetPhysicalDevice(), surface.GetSurface(), &availablePresentModesCount, m_availablePresentModes.data());
 }
 
-VkSurfaceFormatKHR VTSwapchainManager::GetSurfaceFormat() const
+VkSurfaceFormatKHR SwapchainManager::GetSurfaceFormat() const
 {
     if (m_availableSurfaceFormats.empty())
         throw std::runtime_error("No available surface formats");
@@ -44,12 +44,12 @@ VkSurfaceFormatKHR VTSwapchainManager::GetSurfaceFormat() const
     return surfaceFormat;
 }
 
-VkSurfaceCapabilitiesKHR VTSwapchainManager::GetSurfaceCapabilities() const
+VkSurfaceCapabilitiesKHR SwapchainManager::GetSurfaceCapabilities() const
 {
     return m_surfaceCapabilities;
 }
 
-VkPresentModeKHR VTSwapchainManager::GetPresentMode() const
+VkPresentModeKHR SwapchainManager::GetPresentMode() const
 {
     if (m_availablePresentModes.empty())
         throw std::runtime_error("No available present modes");
@@ -65,7 +65,7 @@ VkPresentModeKHR VTSwapchainManager::GetPresentMode() const
     return presentMode;
 }
 
-VkExtent2D VTSwapchainManager::GetExtent2D() const
+VkExtent2D SwapchainManager::GetExtent2D() const
 {
     if (m_surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         return m_surfaceCapabilities.currentExtent;
@@ -80,7 +80,7 @@ VkExtent2D VTSwapchainManager::GetExtent2D() const
     return extent2D;
 }
 
-uint32_t VTSwapchainManager::GetImageCount() const
+uint32_t SwapchainManager::GetImageCount() const
 {
     uint32_t imageCount = m_surfaceCapabilities.minImageCount + 1;
 

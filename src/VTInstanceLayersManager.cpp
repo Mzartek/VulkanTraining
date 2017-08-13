@@ -4,7 +4,7 @@
 
 namespace VT
 {
-VTInstanceLayersManager::VTInstanceLayersManager()
+InstanceLayersManager::InstanceLayersManager()
 {
     uint32_t layerCount = 0;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -15,7 +15,7 @@ VTInstanceLayersManager::VTInstanceLayersManager()
     this->SetAvailableLayers(availableLayers);
 }
 
-std::vector<const char*> VTInstanceLayersManager::GetMinimalLayerNames(bool enableValidationLayers)
+std::vector<const char*> InstanceLayersManager::GetMinimalLayerNames(bool enableValidationLayers)
 {
     if (!enableValidationLayers) return {};
 

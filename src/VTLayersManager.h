@@ -7,15 +7,15 @@
 
 namespace VT
 {
-class VTLayersManager
+class LayersManager
 {
 public:
-    VTLayersManager() = default;
-    virtual ~VTLayersManager() = default;
-    VTLayersManager(const VTLayersManager& other) = delete;
-    VTLayersManager(VTLayersManager&& other) = delete;
-    VTLayersManager& operator=(const VTLayersManager& other) = delete;
-    VTLayersManager& operator=(VTLayersManager&& other) = delete;
+    LayersManager() = default;
+    virtual ~LayersManager() = default;
+    LayersManager(const LayersManager& other) = delete;
+    LayersManager(LayersManager&& other) = delete;
+    LayersManager& operator=(const LayersManager& other) = delete;
+    LayersManager& operator=(LayersManager&& other) = delete;
 
     bool CheckLayerSupport(const char* layerName);
 

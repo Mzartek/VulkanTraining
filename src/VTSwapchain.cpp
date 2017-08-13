@@ -7,12 +7,12 @@
 
 namespace VT
 {
-VTSwapchain::VTSwapchain(const VTDevice& vtDevice)
-    : m_device(vtDevice)
+Swapchain::Swapchain(const Device& device)
+    : m_device(device)
     , m_swapchain(VK_NULL_HANDLE)
 {
-    VTSwapchainManager swapchainManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
-    VTQueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
+    SwapchainManager swapchainManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
+    QueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
 
     VkSwapchainCreateInfoKHR createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -60,22 +60,22 @@ VTSwapchain::VTSwapchain(const VTDevice& vtDevice)
     vkGetSwapchainImagesKHR(m_device.GetDevice(), m_swapchain, &imageCount, m_images.data());
 }
 
-VTSwapchain::~VTSwapchain()
+Swapchain::~Swapchain()
 {
     vkDestroySwapchainKHR(m_device.GetDevice(), m_swapchain, nullptr);
 }
 
-VkSwapchainKHR VTSwapchain::GetSwapchain()
+VkSwapchainKHR Swapchain::GetSwapchain()
 {
     return m_swapchain;
 }
 
-VkSwapchainKHR VTSwapchain::GetSwapchain() const
+VkSwapchainKHR Swapchain::GetSwapchain() const
 {
     return m_swapchain;
 }
 
-const std::vector<VkImage>& VTSwapchain::GetImages() const
+const std::vector<VkImage>& Swapchain::GetImages() const
 {
     return m_images;
 }

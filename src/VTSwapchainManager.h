@@ -6,15 +6,15 @@
 
 namespace VT
 {
-class VTSwapchainManager
+class SwapchainManager
 {
 public:
-    VTSwapchainManager(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface);
-    virtual ~VTSwapchainManager() = default;
-    VTSwapchainManager(const VTSwapchainManager& other) = delete;
-    VTSwapchainManager(VTSwapchainManager&& other) = delete;
-    VTSwapchainManager& operator=(const VTSwapchainManager& other) = delete;
-    VTSwapchainManager& operator=(VTSwapchainManager&& other) = delete;
+    SwapchainManager(const PhysicalDevice& physicalDevice, const Surface& surface);
+    virtual ~SwapchainManager() = default;
+    SwapchainManager(const SwapchainManager& other) = delete;
+    SwapchainManager(SwapchainManager&& other) = delete;
+    SwapchainManager& operator=(const SwapchainManager& other) = delete;
+    SwapchainManager& operator=(SwapchainManager&& other) = delete;
 
     VkSurfaceCapabilitiesKHR GetSurfaceCapabilities() const;
     VkSurfaceFormatKHR GetSurfaceFormat() const;
@@ -23,7 +23,7 @@ public:
     uint32_t GetImageCount() const;
 
 private:
-    const VTSurface& m_surface;
+    const Surface& m_surface;
 
     VkSurfaceCapabilitiesKHR m_surfaceCapabilities;
     std::vector<VkSurfaceFormatKHR> m_availableSurfaceFormats;

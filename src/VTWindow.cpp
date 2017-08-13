@@ -4,7 +4,7 @@
 
 namespace VT
 {
-VTWindow::VTWindow(int width, int height, const std::string& title)
+Window::Window(int width, int height, const std::string& title)
     : m_window(nullptr)
     , m_width(width)
     , m_height(height)
@@ -18,32 +18,32 @@ VTWindow::VTWindow(int width, int height, const std::string& title)
         throw std::runtime_error("Failed to create window");
 }
 
-VTWindow::~VTWindow()
+Window::~Window()
 {
     glfwDestroyWindow(m_window);
 }
 
-GLFWwindow* VTWindow::GetWindow()
+GLFWwindow* Window::GetWindow()
 {
     return m_window;
 }
 
-const GLFWwindow* VTWindow::GetWindow() const
+const GLFWwindow* Window::GetWindow() const
 {
     return m_window;
 }
 
-int VTWindow::GetWidth() const
+int Window::GetWidth() const
 {
     return m_width;
 }
 
-int VTWindow::GetHeight() const
+int Window::GetHeight() const
 {
     return m_height;
 }
 
-const std::string& VTWindow::GetTitle() const
+const std::string& Window::GetTitle() const
 {
     return m_title;
 }

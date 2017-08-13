@@ -6,24 +6,24 @@
 
 namespace VT
 {
-class VTSurface
+class Surface
 {
 public:
-    VTSurface(const VTInstance& vtInstance, VTWindow& vtWindow);
-    virtual ~VTSurface();
-    VTSurface(const VTSurface& other) = delete;
-    VTSurface(VTSurface&& other) = delete;
-    VTSurface& operator=(const VTSurface& other) = delete;
-    VTSurface& operator=(VTSurface&& other) = delete;
+    Surface(const Instance& instance, Window& window);
+    virtual ~Surface();
+    Surface(const Surface& other) = delete;
+    Surface(Surface&& other) = delete;
+    Surface& operator=(const Surface& other) = delete;
+    Surface& operator=(Surface&& other) = delete;
 
     VkSurfaceKHR GetSurface();
     VkSurfaceKHR GetSurface() const;
 
-    const VTWindow& GetRelatedWindow() const;
+    const Window& GetRelatedWindow() const;
 
 private:
-    const VTInstance& m_instance;
-    const VTWindow& m_window;
+    const Instance& m_instance;
+    const Window& m_window;
     VkSurfaceKHR m_surface;
 };
 }

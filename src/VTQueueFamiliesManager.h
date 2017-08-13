@@ -6,15 +6,15 @@
 
 namespace VT
 {
-class VTQueueFamiliesManager
+class QueueFamiliesManager
 {
 public:
-    VTQueueFamiliesManager(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface);
-    virtual ~VTQueueFamiliesManager() = default;
-    VTQueueFamiliesManager(const VTQueueFamiliesManager& other) = delete;
-    VTQueueFamiliesManager(VTQueueFamiliesManager&& other) = delete;
-    VTQueueFamiliesManager& operator=(const VTQueueFamiliesManager& other) = delete;
-    VTQueueFamiliesManager& operator=(VTQueueFamiliesManager&& other) = delete;
+    QueueFamiliesManager(const PhysicalDevice& physicalDevice, const Surface& surface);
+    virtual ~QueueFamiliesManager() = default;
+    QueueFamiliesManager(const QueueFamiliesManager& other) = delete;
+    QueueFamiliesManager(QueueFamiliesManager&& other) = delete;
+    QueueFamiliesManager& operator=(const QueueFamiliesManager& other) = delete;
+    QueueFamiliesManager& operator=(QueueFamiliesManager&& other) = delete;
 
     bool HasGraphicsQueue() const;
     bool HasPresentQueue() const;

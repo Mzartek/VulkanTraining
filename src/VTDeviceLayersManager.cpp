@@ -2,18 +2,18 @@
 
 namespace VT
 {
-VTDeviceLayersManager::VTDeviceLayersManager(const VTPhysicalDevice& vtPhysicalDevice)
+DeviceLayersManager::DeviceLayersManager(const PhysicalDevice& physicalDevice)
 {
     uint32_t layerCount = 0;
-    vkEnumerateDeviceLayerProperties(vtPhysicalDevice.GetPhysicalDevice(), &layerCount, nullptr);
+    vkEnumerateDeviceLayerProperties(physicalDevice.GetPhysicalDevice(), &layerCount, nullptr);
 
     std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateDeviceLayerProperties(vtPhysicalDevice.GetPhysicalDevice(), &layerCount, availableLayers.data());
+    vkEnumerateDeviceLayerProperties(physicalDevice.GetPhysicalDevice(), &layerCount, availableLayers.data());
 
     this->SetAvailableLayers(availableLayers);
 }
 
-std::vector<const char*> VTDeviceLayersManager::GetMinimalLayerNames(bool /*enableValidationLayers*/)
+std::vector<const char*> DeviceLayersManager::GetMinimalLayerNames(bool /*enableValidationLayers*/)
 {
     return {};
 }

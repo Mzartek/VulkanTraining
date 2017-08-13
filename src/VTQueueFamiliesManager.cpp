@@ -2,17 +2,17 @@
 
 namespace VT
 {
-VTQueueFamiliesManager::VTQueueFamiliesManager(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface)
+QueueFamiliesManager::QueueFamiliesManager(const PhysicalDevice& physicalDevice, const Surface& surface)
     : m_hasGraphicsQueue(false)
     , m_hasPresentQueue(false)
     , m_graphicsQueueIndex(0)
     , m_presentQueueIndex(0)
 {
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(vtPhysicalDevice.GetPhysicalDevice(), &queueFamilyCount, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice.GetPhysicalDevice(), &queueFamilyCount, nullptr);
 
     m_queueFamilyProperties.resize(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(vtPhysicalDevice.GetPhysicalDevice(), &queueFamilyCount, m_queueFamilyProperties.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice.GetPhysicalDevice(), &queueFamilyCount, m_queueFamilyProperties.data());
 
     for (uint32_t i = 0; i < m_queueFamilyProperties.size(); ++i)
     {
@@ -26,7 +26,7 @@ VTQueueFamiliesManager::VTQueueFamiliesManager(const VTPhysicalDevice& vtPhysica
             }
 
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(vtPhysicalDevice.GetPhysicalDevice(), i, vtSurface.GetSurface(), &presentSupport);
+            vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.GetPhysicalDevice(), i, surface.GetSurface(), &presentSupport);
             if (presentSupport)
             {
                 m_hasPresentQueue = true;
@@ -37,27 +37,27 @@ VTQueueFamiliesManager::VTQueueFamiliesManager(const VTPhysicalDevice& vtPhysica
     }
 }
 
-bool VTQueueFamiliesManager::HasGraphicsQueue() const
+bool QueueFamiliesManager::HasGraphicsQueue() const
 {
     return m_hasGraphicsQueue;
 }
 
-bool VTQueueFamiliesManager::HasPresentQueue() const
+bool QueueFamiliesManager::HasPresentQueue() const
 {
     return m_hasPresentQueue;
 }
 
-uint32_t VTQueueFamiliesManager::GetGraphicsQueueIndex() const
+uint32_t QueueFamiliesManager::GetGraphicsQueueIndex() const
 {
     return m_graphicsQueueIndex;
 }
 
-uint32_t VTQueueFamiliesManager::GetPresentQueueIndex() const
+uint32_t QueueFamiliesManager::GetPresentQueueIndex() const
 {
     return m_presentQueueIndex;
 }
 
-uint32_t VTQueueFamiliesManager::GetIndexQueueCount(uint32_t index) const
+uint32_t QueueFamiliesManager::GetIndexQueueCount(uint32_t index) const
 {
     return m_queueFamilyProperties[index].queueCount;
 }

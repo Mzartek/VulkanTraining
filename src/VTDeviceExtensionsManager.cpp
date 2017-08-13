@@ -4,18 +4,18 @@
 
 namespace VT
 {
-VTDeviceExtensionsManager::VTDeviceExtensionsManager(const VTPhysicalDevice& vtPhysicalDevice)
+DeviceExtensionsManager::DeviceExtensionsManager(const PhysicalDevice& physicalDevice)
 {
     uint32_t extensionCount = 0;
-    vkEnumerateDeviceExtensionProperties(vtPhysicalDevice.GetPhysicalDevice(), nullptr, &extensionCount, nullptr);
+    vkEnumerateDeviceExtensionProperties(physicalDevice.GetPhysicalDevice(), nullptr, &extensionCount, nullptr);
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(vtPhysicalDevice.GetPhysicalDevice(), nullptr, &extensionCount, availableExtensions.data());
+    vkEnumerateDeviceExtensionProperties(physicalDevice.GetPhysicalDevice(), nullptr, &extensionCount, availableExtensions.data());
 
     this->SetAvailableExtensions(availableExtensions);
 }
 
-std::vector<const char*> VTDeviceExtensionsManager::GetMinimalExtensionNames(bool /*enableValidationLayers*/)
+std::vector<const char*> DeviceExtensionsManager::GetMinimalExtensionNames(bool /*enableValidationLayers*/)
 {
     std::vector<const char*> extensions;
     if (this->CheckExtensionSupport(VK_KHR_SWAPCHAIN_EXTENSION_NAME))

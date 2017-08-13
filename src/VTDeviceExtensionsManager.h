@@ -6,15 +6,15 @@
 
 namespace VT
 {
-class VTDeviceExtensionsManager final : public VTExtensionsManager
+class DeviceExtensionsManager final : public ExtensionsManager
 {
 public:
-    VTDeviceExtensionsManager(const VTPhysicalDevice& vtPhysicalDevice);
-    virtual ~VTDeviceExtensionsManager() = default;
-    VTDeviceExtensionsManager(const VTDeviceExtensionsManager& other) = delete;
-    VTDeviceExtensionsManager(VTDeviceExtensionsManager&& other) = delete;
-    VTDeviceExtensionsManager& operator=(const VTDeviceExtensionsManager& other) = delete;
-    VTDeviceExtensionsManager& operator=(VTDeviceExtensionsManager&& other) = delete;
+    DeviceExtensionsManager(const PhysicalDevice& physicalDevice);
+    virtual ~DeviceExtensionsManager() = default;
+    DeviceExtensionsManager(const DeviceExtensionsManager& other) = delete;
+    DeviceExtensionsManager(DeviceExtensionsManager&& other) = delete;
+    DeviceExtensionsManager& operator=(const DeviceExtensionsManager& other) = delete;
+    DeviceExtensionsManager& operator=(DeviceExtensionsManager&& other) = delete;
 
     std::vector<const char*> GetMinimalExtensionNames(bool enableValidationLayers) override;
 };

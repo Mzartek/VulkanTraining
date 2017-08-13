@@ -6,28 +6,28 @@
 
 namespace VT
 {
-class VTDevice
+class Device
 {
 public:
-    VTDevice(const VTPhysicalDevice& vtPhysicalDevice, const VTSurface& vtSurface, bool enableValidationLayers);
-    virtual ~VTDevice();
-    VTDevice(const VTDevice& other) = delete;
-    VTDevice(VTDevice&& other) = delete;
-    VTDevice& operator=(const VTDevice& other) = delete;
-    VTDevice& operator=(VTDevice&& other) = delete;
+    Device(const PhysicalDevice& physicalDevice, const Surface& surface, bool enableValidationLayers);
+    virtual ~Device();
+    Device(const Device& other) = delete;
+    Device(Device&& other) = delete;
+    Device& operator=(const Device& other) = delete;
+    Device& operator=(Device&& other) = delete;
 
     VkDevice GetDevice();
     VkDevice GetDevice() const;
 
-    const VTPhysicalDevice& GetRelatedPhysicalDevice() const;
-    const VTSurface& GetRelatedSurface() const;
+    const PhysicalDevice& GetRelatedPhysicalDevice() const;
+    const Surface& GetRelatedSurface() const;
 
     const std::vector<VkQueue>& GetGraphicsQueues() const;
     const std::vector<VkQueue>& GetPresentQueues() const;
 
 private:
-    const VTPhysicalDevice& m_physicalDevice;
-    const VTSurface& m_surface;
+    const PhysicalDevice& m_physicalDevice;
+    const Surface& m_surface;
     VkDevice m_device;
 
     std::vector<VkQueue> m_graphicsQueues;

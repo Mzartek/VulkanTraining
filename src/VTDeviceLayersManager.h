@@ -6,15 +6,15 @@
 
 namespace VT
 {
-class VTDeviceLayersManager final : public VTLayersManager
+class DeviceLayersManager final : public LayersManager
 {
 public:
-    VTDeviceLayersManager(const VTPhysicalDevice& vtPhysicalDevice);
-    virtual ~VTDeviceLayersManager() = default;
-    VTDeviceLayersManager(const VTDeviceLayersManager& other) = delete;
-    VTDeviceLayersManager(VTDeviceLayersManager&& other) = delete;
-    VTDeviceLayersManager& operator=(const VTDeviceLayersManager& other) = delete;
-    VTDeviceLayersManager& operator=(VTDeviceLayersManager&& other) = delete;
+    DeviceLayersManager(const PhysicalDevice& physicalDevice);
+    virtual ~DeviceLayersManager() = default;
+    DeviceLayersManager(const DeviceLayersManager& other) = delete;
+    DeviceLayersManager(DeviceLayersManager&& other) = delete;
+    DeviceLayersManager& operator=(const DeviceLayersManager& other) = delete;
+    DeviceLayersManager& operator=(DeviceLayersManager&& other) = delete;
 
     std::vector<const char*> GetMinimalLayerNames(bool enableValidationLayers) override;
 };
