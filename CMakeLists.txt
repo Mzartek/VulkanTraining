@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 
+project(VulkanTraining)
+
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -20,10 +22,5 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -std=c++17 -pedantic")
 endif()
 
-file(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
-file(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-
-include_directories(${Vulkan_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
-
-add_executable(VulkanTest ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(VulkanTest ${Vulkan_LIBRARIES} ${GLFW_LIBRARIES})
+add_subdirectory(lib)
+add_subdirectory(app)

@@ -1,0 +1,31 @@
+#ifndef VT_PHYSICAL_DEVICE_INCLUDE_H
+#define VT_PHYSICAL_DEVICE_INCLUDE_H
+
+#include "VTInstance.h"
+
+namespace VT
+{
+class LIB_INTERFACE PhysicalDevice
+{
+    static std::vector<VkPhysicalDevice> AvailablePhysicalDevices;
+
+public:
+    PhysicalDevice(const Instance& instance);
+    virtual ~PhysicalDevice() = default;
+    PhysicalDevice(const PhysicalDevice& other) = delete;
+    PhysicalDevice(PhysicalDevice&& other) = delete;
+    PhysicalDevice& operator=(const PhysicalDevice& other) = delete;
+    PhysicalDevice& operator=(PhysicalDevice&& other) = delete;
+
+    VkPhysicalDevice GetPhysicalDevice();
+    VkPhysicalDevice GetPhysicalDevice() const;
+
+    const VkPhysicalDeviceProperties GetPhysicalDeviceProperties() const;
+    const VkPhysicalDeviceFeatures GetPhysicalDeviceFeatures() const;
+
+private:
+    VkPhysicalDevice m_physicalDevice;
+};
+}
+
+#endif
