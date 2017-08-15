@@ -24,12 +24,18 @@ SwapchainManager::SwapchainManager(const PhysicalDevice& physicalDevice, const S
     vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice.GetPhysicalDevice(), surface.GetSurface(), &availablePresentModesCount, m_availablePresentModes.data());
 }
 
+VkSurfaceCapabilitiesKHR SwapchainManager::GetSurfaceCapabilities() const
+{
+    return m_surfaceCapabilities;
+}
+
 VkSurfaceFormatKHR SwapchainManager::GetSurfaceFormat() const
 {
     if (m_availableSurfaceFormats.empty())
         throw std::runtime_error("No available surface formats");
 
     VkSurfaceFormatKHR surfaceFormat = m_availableSurfaceFormats.front();
+
     if (m_availableSurfaceFormats.size() == 1 && m_availableSurfaceFormats.front().format == VK_FORMAT_UNDEFINED)
     {
         surfaceFormat.format = VK_FORMAT_B8G8R8A8_UNORM;
@@ -42,11 +48,6 @@ VkSurfaceFormatKHR SwapchainManager::GetSurfaceFormat() const
             return availableSurfaceFormat;
 
     return surfaceFormat;
-}
-
-VkSurfaceCapabilitiesKHR SwapchainManager::GetSurfaceCapabilities() const
-{
-    return m_surfaceCapabilities;
 }
 
 VkPresentModeKHR SwapchainManager::GetPresentMode() const
