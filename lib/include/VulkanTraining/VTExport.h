@@ -1,13 +1,9 @@
-#ifdef LIB_EXPORT
-#	ifdef WIN32
-#		define LIB_INTERFACE __declspec(dllexport)
-#	else
-#		define LIB_INTERFACE
-#	endif
+#if defined(WIN32) && !defined(__MINGW32__)
+#   ifdef ENGINE_EXPORT
+#       define LIB_INTERFACE __declspec(dllexport)
+#   else
+#       define LIB_INTERFACE __declspec(dllimport)
+#   endif
 #else
-#	ifdef WIN32
-#		define LIB_INTERFACE __declspec(dllimport)
-#	else
-#		define LIB_INTERFACE
-#	endif
+#   define LIB_INTERFACE
 #endif
