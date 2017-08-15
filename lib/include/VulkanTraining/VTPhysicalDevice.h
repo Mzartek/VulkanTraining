@@ -3,6 +3,8 @@
 
 #include "VTInstance.h"
 
+#include <vector>
+
 namespace VT
 {
 class LIB_INTERFACE PhysicalDevice
