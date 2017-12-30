@@ -1,9 +1,12 @@
-#if defined(WIN32) && !defined(__MINGW32__)
-#   ifdef ENGINE_EXPORT
-#       define LIB_INTERFACE __declspec(dllexport)
-#   else
-#       define LIB_INTERFACE __declspec(dllimport)
-#   endif
+#ifndef VT_EXPORT_INCLUDE_H
+#define VT_EXPORT_INCLUDE_H
+
+#include <boost/config.hpp>
+
+#ifdef ENGINE_EXPORT
+#   define LIB_INTERFACE BOOST_SYMBOL_EXPORT
 #else
-#   define LIB_INTERFACE
+#   define LIB_INTERFACE BOOST_SYMBOL_IMPORT
+#endif
+
 #endif
