@@ -14,10 +14,6 @@ class LIB_INTERFACE ExtensionsManager
 public:
     ExtensionsManager() = default;
     virtual ~ExtensionsManager() = default;
-    ExtensionsManager(const ExtensionsManager& other) = delete;
-    ExtensionsManager(ExtensionsManager&& other) = delete;
-    ExtensionsManager& operator=(const ExtensionsManager& other) = delete;
-    ExtensionsManager& operator=(ExtensionsManager&& other) = delete;
 
     bool CheckExtensionSupport(const char* extensionName);
 

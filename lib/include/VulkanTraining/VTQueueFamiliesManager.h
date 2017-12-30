@@ -11,10 +11,6 @@ class LIB_INTERFACE QueueFamiliesManager
 public:
     QueueFamiliesManager(const PhysicalDevice& physicalDevice, const Surface& surface);
     virtual ~QueueFamiliesManager() = default;
-    QueueFamiliesManager(const QueueFamiliesManager& other) = delete;
-    QueueFamiliesManager(QueueFamiliesManager&& other) = delete;
-    QueueFamiliesManager& operator=(const QueueFamiliesManager& other) = delete;
-    QueueFamiliesManager& operator=(QueueFamiliesManager&& other) = delete;
 
     bool HasGraphicsQueue() const;
     bool HasPresentQueue() const;

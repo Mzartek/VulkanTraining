@@ -11,10 +11,6 @@ class LIB_INTERFACE SwapchainManager
 public:
     SwapchainManager(const PhysicalDevice& physicalDevice, const Surface& surface);
     virtual ~SwapchainManager() = default;
-    SwapchainManager(const SwapchainManager& other) = delete;
-    SwapchainManager(SwapchainManager&& other) = delete;
-    SwapchainManager& operator=(const SwapchainManager& other) = delete;
-    SwapchainManager& operator=(SwapchainManager&& other) = delete;
 
     VkSurfaceCapabilitiesKHR GetSurfaceCapabilities() const;
     VkSurfaceFormatKHR GetSurfaceFormat() const;

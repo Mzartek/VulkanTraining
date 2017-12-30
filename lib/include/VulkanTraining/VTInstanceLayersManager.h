@@ -10,10 +10,6 @@ class LIB_INTERFACE InstanceLayersManager final : public LayersManager
 public:
     InstanceLayersManager();
     virtual ~InstanceLayersManager() = default;
-    InstanceLayersManager(const InstanceLayersManager& other) = delete;
-    InstanceLayersManager(InstanceLayersManager&& other) = delete;
-    InstanceLayersManager& operator=(const InstanceLayersManager& other) = delete;
-    InstanceLayersManager& operator=(InstanceLayersManager&& other) = delete;
 
     std::vector<const char*> GetMinimalLayerNames(bool enableValidationLayers) override;
 };

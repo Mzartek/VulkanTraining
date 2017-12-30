@@ -14,10 +14,6 @@ class LIB_INTERFACE LayersManager
 public:
     LayersManager() = default;
     virtual ~LayersManager() = default;
-    LayersManager(const LayersManager& other) = delete;
-    LayersManager(LayersManager&& other) = delete;
-    LayersManager& operator=(const LayersManager& other) = delete;
-    LayersManager& operator=(LayersManager&& other) = delete;
 
     bool CheckLayerSupport(const char* layerName);
 
