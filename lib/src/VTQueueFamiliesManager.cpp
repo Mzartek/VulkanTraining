@@ -33,7 +33,6 @@ QueueFamiliesManager::QueueFamiliesManager(const PhysicalDevice& physicalDevice,
                 m_presentQueueIndex = i;
             }
         }
-
     }
 }
 

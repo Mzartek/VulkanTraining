@@ -56,12 +56,40 @@ Swapchain::Swapchain(const Device& device)
     uint32_t imageCount = 0;
     vkGetSwapchainImagesKHR(m_device.GetDevice(), m_swapchain, &imageCount, nullptr);
 
-    m_images.resize(imageCount);
-    vkGetSwapchainImagesKHR(m_device.GetDevice(), m_swapchain, &imageCount, m_images.data());
+    std::vector<VkImage> images(imageCount);
+    vkGetSwapchainImagesKHR(m_device.GetDevice(), m_swapchain, &imageCount, images.data());
+
+    m_imageViews.resize(imageCount);
+
+    VkImageViewCreateInfo imageViewCreateInfo = {};
+    imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    imageViewCreateInfo.format = swapchainManager.GetSurfaceFormat().format;
+    imageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+    imageViewCreateInfo.subresourceRange.levelCount = 1;
+    imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+    imageViewCreateInfo.subresourceRange.layerCount = 1;
+
+    for (uint32_t i = 0; i < imageCount; ++i)
+    {
+        imageViewCreateInfo.image = images[i];
+
+        VkResult result = vkCreateImageView(m_device.GetDevice(), &imageViewCreateInfo, nullptr, &m_imageViews[i]);
+        if (result != VK_SUCCESS)
+            throw std::runtime_error("Failed to create image");
+    }
 }
 
 Swapchain::~Swapchain()
 {
+    for (VkImageView imageView : m_imageViews)
+        vkDestroyImageView(m_device.GetDevice(), imageView, nullptr);
+
     vkDestroySwapchainKHR(m_device.GetDevice(), m_swapchain, nullptr);
 }
 
@@ -75,8 +103,8 @@ VkSwapchainKHR Swapchain::GetSwapchain() const
     return m_swapchain;
 }
 
-const std::vector<VkImage>& Swapchain::GetImages() const
+const std::vector<VkImageView>& Swapchain::GetImageViews() const
 {
-    return m_images;
+    return m_imageViews;
 }
 }

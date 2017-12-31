@@ -14,7 +14,7 @@ Device::Device(const PhysicalDevice& physicalDevice, const Surface& surface, boo
     , m_surface(surface)
     , m_device(VK_NULL_HANDLE)
 {
-    QueueFamiliesManager queueFamiliesManager(physicalDevice, surface);
+    QueueFamiliesManager queueFamiliesManager(m_physicalDevice, surface);
 
     if (!queueFamiliesManager.HasGraphicsQueue())
         throw std::runtime_error("PhysicalDevice doesn't have Graphics Queue");
