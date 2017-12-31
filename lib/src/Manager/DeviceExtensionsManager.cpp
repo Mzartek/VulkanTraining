@@ -1,4 +1,4 @@
-#include <VulkanTraining/VTDeviceExtensionsManager.h>
+#include <VulkanTraining/Manager/DeviceExtensionsManager.h>
 
 #include <stdexcept>
 

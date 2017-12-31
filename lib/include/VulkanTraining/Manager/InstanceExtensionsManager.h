@@ -1,7 +1,7 @@
 #ifndef VT_INSTANCE_EXTENSIONS_MANAGER_INCLUDE_H
 #define VT_INSTANCE_EXTENSIONS_MANAGER_INCLUDE_H
 
-#include "VTExtensionsManager.h"
+#include "ExtensionsManager.h"
 
 namespace VT
 {

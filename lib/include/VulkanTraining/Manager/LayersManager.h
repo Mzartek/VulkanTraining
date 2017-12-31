@@ -1,7 +1,7 @@
 #ifndef VT_LAYERS_MANAGER_INCLUDE_H
 #define VT_LAYERS_MANAGER_INCLUDE_H
 
-#include "VTExport.h"
+#include "../Export.h"
 
 #include <vulkan/vulkan.h>
 

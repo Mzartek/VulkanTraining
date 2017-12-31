@@ -1,4 +1,4 @@
-#include <VulkanTraining/VTPhysicalDevice.h>
+#include <VulkanTraining/PhysicalDevice.h>
 
 #include <algorithm>
 #include <stdexcept>

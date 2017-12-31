@@ -1,4 +1,4 @@
-#include <VulkanTraining/VTGameMode.h>
+#include <VulkanTraining/GameMode.h>
 
 #include <iostream>
 

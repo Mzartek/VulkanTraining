@@ -1,8 +1,8 @@
 #ifndef VT_SURFACE_INCLUDE_H
 #define VT_SURFACE_INCLUDE_H
 
-#include "VTInstance.h"
-#include "VTWindow.h"
+#include "Instance.h"
+#include "Window.h"
 
 namespace VT
 {

@@ -1,7 +1,7 @@
 #ifndef VT_SWAPCHAIN_INCLUDE_H
 #define VT_SWAPCHAIN_INCLUDE_H
 
-#include "VTDevice.h"
+#include "Device.h"
 
 namespace VT
 {

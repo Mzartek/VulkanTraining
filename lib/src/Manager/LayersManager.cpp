@@ -1,4 +1,4 @@
-#include <VulkanTraining/VTLayersManager.h>
+#include <VulkanTraining/Manager/LayersManager.h>
 
 #include <cstring>
 

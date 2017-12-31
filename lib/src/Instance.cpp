@@ -1,7 +1,7 @@
-#include <VulkanTraining/VTInstance.h>
+#include <VulkanTraining/Instance.h>
 
-#include <VulkanTraining/VTInstanceExtensionsManager.h>
-#include <VulkanTraining/VTInstanceLayersManager.h>
+#include <VulkanTraining/Manager/InstanceExtensionsManager.h>
+#include <VulkanTraining/Manager/InstanceLayersManager.h>
 
 #include <iostream>
 #include <cstring>

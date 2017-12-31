@@ -1,8 +1,8 @@
 #ifndef VT_QUEUE_FAMILIES_MANAGER_INCLUDE_H
 #define VT_QUEUE_FAMILIES_MANAGER_INCLUDE_H
 
-#include "VTPhysicalDevice.h"
-#include "VTSurface.h"
+#include "../PhysicalDevice.h"
+#include "../Surface.h"
 
 namespace VT
 {

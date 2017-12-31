@@ -1,8 +1,8 @@
-#include <VulkanTraining/VTDevice.h>
+#include <VulkanTraining/Device.h>
 
-#include <VulkanTraining/VTQueueFamiliesManager.h>
-#include <VulkanTraining/VTDeviceExtensionsManager.h>
-#include <VulkanTraining/VTDeviceLayersManager.h>
+#include <VulkanTraining/Manager/QueueFamiliesManager.h>
+#include <VulkanTraining/Manager/DeviceExtensionsManager.h>
+#include <VulkanTraining/Manager/DeviceLayersManager.h>
 
 #include <set>
 #include <stdexcept>

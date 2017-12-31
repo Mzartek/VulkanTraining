@@ -1,7 +1,7 @@
 #ifndef VT_INSTANCE_INCLUDE_H
 #define VT_INSTANCE_INCLUDE_H
 
-#include "VTExport.h"
+#include "Export.h"
 
 #include <vulkan/vulkan.h>
 

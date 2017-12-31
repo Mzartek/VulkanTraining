@@ -1,7 +1,7 @@
 #ifndef VT_GAME_MODE_INCLUDE_H
 #define VT_GAME_MODE_INCLUDE_H
 
-#include "VTSwapchain.h"
+#include "Swapchain.h"
 
 namespace VT
 {

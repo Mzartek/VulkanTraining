@@ -1,8 +1,8 @@
 #ifndef VT_DEVICE_LAYERS_MANAGER_INCLUDE_H
 #define VT_DEVICE_LAYERS_MANAGER_INCLUDE_H
 
-#include "VTLayersManager.h"
-#include "VTPhysicalDevice.h"
+#include "LayersManager.h"
+#include "../PhysicalDevice.h"
 
 namespace VT
 {

@@ -1,7 +1,7 @@
 #ifndef VT_PHYSICAL_DEVICE_INCLUDE_H
 #define VT_PHYSICAL_DEVICE_INCLUDE_H
 
-#include "VTInstance.h"
+#include "Instance.h"
 
 #include <vector>
 

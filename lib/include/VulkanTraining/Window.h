@@ -1,7 +1,7 @@
 #ifndef VT_WINDOW_INCLUDE_H
 #define VT_WINDOW_INCLUDE_H
 
-#include "VTExport.h"
+#include "Export.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

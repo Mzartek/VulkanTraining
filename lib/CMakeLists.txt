@@ -1,7 +1,11 @@
 set(LIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-file(GLOB LIB_HEADER_FILES "${LIB_INCLUDE_DIR}/VulkanTraining/*.h")
-file(GLOB LIB_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+file(GLOB LIB_HEADER_FILES
+     "${LIB_INCLUDE_DIR}/VulkanTraining/*.h"
+     "${LIB_INCLUDE_DIR}/VulkanTraining/Manager/*.h")
+file(GLOB LIB_SOURCE_FILES
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/Manager/*.cpp")
 
 add_library(VulkanTrainingEngine SHARED ${LIB_HEADER_FILES} ${LIB_SOURCE_FILES})
 target_link_libraries(VulkanTrainingEngine PRIVATE ${Boost_LIBRARIES} ${Vulkan_LIBRARIES} ${GLFW_LIBRARIES})

@@ -1,8 +1,8 @@
 #ifndef VT_DEVICE_EXTENSIONS_MANAGER_INCLUDE_H
 #define VT_DEVICE_EXTENSIONS_MANAGER_INCLUDE_H
 
-#include "VTExtensionsManager.h"
-#include "VTPhysicalDevice.h"
+#include "ExtensionsManager.h"
+#include "../PhysicalDevice.h"
 
 namespace VT
 {
