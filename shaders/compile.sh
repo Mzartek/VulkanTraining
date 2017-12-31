@@ -2,7 +2,7 @@
 
 BASEDIR="$(dirname "$(realpath "$0")")"
 SRCDIR="$BASEDIR/src"
-COMPILER="$BASEDIR/glslangValidator.app"
+COMPILER="$BASEDIR/glslangValidator.out"
 
 if [ -z "$1" ]
 then
