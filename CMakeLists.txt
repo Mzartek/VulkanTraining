@@ -12,6 +12,8 @@ find_package(Boost REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(GLFW REQUIRED)
 find_package(GLM REQUIRED)
+find_package(Assimp REQUIRED)
+find_package(FBX REQUIRED)
 
 if(MSVC)
   if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
