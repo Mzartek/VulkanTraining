@@ -4,19 +4,33 @@ BASEDIR="$(dirname "$(realpath "$0")")"
 SRCDIR="$BASEDIR/src"
 COMPILER="$BASEDIR/glslangValidator.out"
 
-if [ -z "$1" ]
-then
-    for f in $(find "$BASEDIR/src" -name "*.vert" -or -name "*.tesc" -or -name "*.tese" -or -name "*.geom" -or -name "*.frag" -or -name "*.comp")
+compile_shaders()
+{
+    for f in $(find "$SRCDIR" -name "$1")
     do
 	pushd "$(dirname "$f")" &> /dev/null
 	"$COMPILER" -V "$f"
 	popd &> /dev/null
     done
-elif [ "$1" == "clean" ]
-then
-    for f in $(find "$BASEDIR/src" -name "*.spv")
+}
+
+clean_shaders()
+{
+    for f in $(find "$SRCDIR" -name "*.spv")
     do
 	rm "$f"
     done
-fi
+}
 
+if [ -z $1 ]
+then
+    compile_shaders "*.vert"
+    compile_shaders "*.tesc"
+    compile_shaders "*.tese"
+    compile_shaders "*.geom"
+    compile_shaders "*.frag"
+    compile_shaders "*.comp"
+elif [ $1 == "clean" ]
+then
+    clean_shaders
+fi
