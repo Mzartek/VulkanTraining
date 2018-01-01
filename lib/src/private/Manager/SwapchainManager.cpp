@@ -1,4 +1,4 @@
-#include <VulkanTraining/Manager/SwapchainManager.h>
+#include <private/Manager/SwapchainManager.h>
 
 #include <stdexcept>
 #include <limits>

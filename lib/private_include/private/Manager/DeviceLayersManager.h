@@ -6,7 +6,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE DeviceLayersManager final : public LayersManager
+class DeviceLayersManager final : public LayersManager
 {
 public:
     DeviceLayersManager(const PhysicalDevice& physicalDevice);

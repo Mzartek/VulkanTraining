@@ -1,4 +1,4 @@
-#include <VulkanTraining/PhysicalDevice.h>
+#include <private/PhysicalDevice.h>
 
 #include <algorithm>
 #include <stdexcept>

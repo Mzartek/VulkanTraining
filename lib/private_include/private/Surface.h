@@ -6,7 +6,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE Surface
+class Surface
 {
 public:
     Surface(const Instance& instance, Window& window);

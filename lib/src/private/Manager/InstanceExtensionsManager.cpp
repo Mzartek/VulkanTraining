@@ -1,4 +1,4 @@
-#include <VulkanTraining/Manager/InstanceExtensionsManager.h>
+#include <private/Manager/InstanceExtensionsManager.h>
 
 #include <GLFW/glfw3.h>
 

@@ -6,7 +6,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE DeviceExtensionsManager final : public ExtensionsManager
+class DeviceExtensionsManager final : public ExtensionsManager
 {
 public:
     DeviceExtensionsManager(const PhysicalDevice& physicalDevice);

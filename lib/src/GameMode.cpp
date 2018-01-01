@@ -1,5 +1,7 @@
 #include <VulkanTraining/GameMode.h>
 
+#include <private/Swapchain.h>
+
 #include <cassert>
 
 namespace

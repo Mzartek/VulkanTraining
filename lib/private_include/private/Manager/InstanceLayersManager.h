@@ -5,7 +5,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE InstanceLayersManager final : public LayersManager
+class InstanceLayersManager final : public LayersManager
 {
 public:
     InstanceLayersManager();

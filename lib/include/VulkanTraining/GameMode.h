@@ -1,10 +1,19 @@
 #ifndef VT_GAME_MODE_INCLUDE_H
 #define VT_GAME_MODE_INCLUDE_H
 
-#include "Swapchain.h"
+#include "Export.h"
+
+#include <string>
 
 namespace VT
 {
+class Instance;
+class Window;
+class Surface;
+class PhysicalDevice;
+class Device;
+class Swapchain;
+
 class LIB_INTERFACE GameMode
 {
 public:

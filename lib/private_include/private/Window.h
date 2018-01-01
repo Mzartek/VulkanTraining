@@ -1,8 +1,6 @@
 #ifndef VT_WINDOW_INCLUDE_H
 #define VT_WINDOW_INCLUDE_H
 
-#include "Export.h"
-
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -10,7 +8,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE Window
+class Window
 {
 public:
     Window(int width, int height, const std::string& title);

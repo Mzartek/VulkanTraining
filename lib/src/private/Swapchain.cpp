@@ -1,7 +1,7 @@
-#include <VulkanTraining/Swapchain.h>
+#include <private/Swapchain.h>
 
-#include <VulkanTraining/Manager/SwapchainManager.h>
-#include <VulkanTraining/Manager/QueueFamiliesManager.h>
+#include <private/Manager/SwapchainManager.h>
+#include <private/Manager/QueueFamiliesManager.h>
 
 #include <array>
 

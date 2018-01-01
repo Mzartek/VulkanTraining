@@ -6,7 +6,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE Device
+class Device
 {
 public:
     Device(const PhysicalDevice& physicalDevice, const Surface& surface, bool enableValidationLayers);

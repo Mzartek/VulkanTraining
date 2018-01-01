@@ -1,4 +1,4 @@
-#include <VulkanTraining/Manager/ExtensionsManager.h>
+#include <private/Manager/ExtensionsManager.h>
 
 #include <cstring>
 

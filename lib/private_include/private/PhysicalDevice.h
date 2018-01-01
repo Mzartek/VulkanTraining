@@ -7,7 +7,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE PhysicalDevice
+class PhysicalDevice
 {
     static std::vector<VkPhysicalDevice> AvailablePhysicalDevices;
 

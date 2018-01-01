@@ -6,7 +6,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE SwapchainManager
+class SwapchainManager
 {
 public:
     SwapchainManager(const PhysicalDevice& physicalDevice, const Surface& surface);

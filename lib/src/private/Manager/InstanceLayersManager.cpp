@@ -1,4 +1,4 @@
-#include <VulkanTraining/Manager/InstanceLayersManager.h>
+#include <private/Manager/InstanceLayersManager.h>
 
 #include <stdexcept>
 

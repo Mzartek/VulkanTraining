@@ -1,4 +1,4 @@
-#include <VulkanTraining/Window.h>
+#include <private/Window.h>
 
 #include <stdexcept>
 

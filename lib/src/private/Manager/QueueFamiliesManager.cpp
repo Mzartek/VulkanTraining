@@ -1,4 +1,4 @@
-#include <VulkanTraining/Manager/QueueFamiliesManager.h>
+#include <private/Manager/QueueFamiliesManager.h>
 
 namespace VT
 {

@@ -1,15 +1,13 @@
 #ifndef VT_INSTANCE_INCLUDE_H
 #define VT_INSTANCE_INCLUDE_H
 
-#include "Export.h"
-
 #include <vulkan/vulkan.h>
 
 #include <string>
 
 namespace VT
 {
-class LIB_INTERFACE Instance
+class Instance
 {
 public:
     Instance(const std::string& applicationName, bool enableValidationLayers);

@@ -5,7 +5,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE InstanceExtensionsManager final : public ExtensionsManager
+class InstanceExtensionsManager final : public ExtensionsManager
 {
 public:
     InstanceExtensionsManager();

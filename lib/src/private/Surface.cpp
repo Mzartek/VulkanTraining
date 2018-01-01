@@ -1,4 +1,4 @@
-#include <VulkanTraining/Surface.h>
+#include <private/Surface.h>
 
 #include <stdexcept>
 

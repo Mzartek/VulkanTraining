@@ -5,7 +5,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE Swapchain
+class Swapchain
 {
 public:
     Swapchain(const Device& device);

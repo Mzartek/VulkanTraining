@@ -1,15 +1,13 @@
 #ifndef VT_EXTENSIONS_MANAGER_INCLUDE_H
 #define VT_EXTENSIONS_MANAGER_INCLUDE_H
 
-#include "../Export.h"
-
 #include <vulkan/vulkan.h>
 
 #include <vector>
 
 namespace VT
 {
-class LIB_INTERFACE ExtensionsManager
+class ExtensionsManager
 {
 public:
     ExtensionsManager() = default;

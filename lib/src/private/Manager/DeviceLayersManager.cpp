@@ -1,4 +1,4 @@
-#include <VulkanTraining/Manager/DeviceLayersManager.h>
+#include <private/Manager/DeviceLayersManager.h>
 
 namespace VT
 {

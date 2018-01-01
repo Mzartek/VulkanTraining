@@ -6,7 +6,7 @@
 
 namespace VT
 {
-class LIB_INTERFACE QueueFamiliesManager
+class QueueFamiliesManager
 {
 public:
     QueueFamiliesManager(const PhysicalDevice& physicalDevice, const Surface& surface);
