@@ -13,5 +13,3 @@ target_link_libraries(VulkanTrainingEngine PRIVATE ${Vulkan_LIBRARIES} ${GLFW_LI
 
 target_include_directories(VulkanTrainingEngine PUBLIC ${LIB_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
 target_include_directories(VulkanTrainingEngine PRIVATE ${LIB_PRIVATE_INCLUDE_DIR} ${Vulkan_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${Assimp_INCLUDE_DIRS} ${FBX_INCLUDE_DIRS})
-
-target_compile_definitions(VulkanTrainingEngine PRIVATE ENGINE_EXPORT)
