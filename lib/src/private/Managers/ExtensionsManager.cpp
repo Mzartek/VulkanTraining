@@ -1,4 +1,4 @@
-#include <private/Manager/ExtensionsManager.h>
+#include <private/Managers/ExtensionsManager.h>
 
 #include <cstring>
 

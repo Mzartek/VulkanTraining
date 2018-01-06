@@ -9,7 +9,7 @@ class InstanceExtensionsManager final : public ExtensionsManager
 {
 public:
     InstanceExtensionsManager();
-    virtual ~InstanceExtensionsManager() = default;
+    ~InstanceExtensionsManager() override = default;
 
     std::vector<const char*> GetMinimalExtensionNames(bool enableValidationLayers) override;
 };

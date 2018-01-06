@@ -1,4 +1,4 @@
-#include <private/Manager/QueueFamiliesManager.h>
+#include <private/Managers/QueueFamiliesManager.h>
 
 namespace VT
 {

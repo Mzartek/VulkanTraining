@@ -1,7 +1,7 @@
 #include <private/Instance.h>
 
-#include <private/Manager/InstanceExtensionsManager.h>
-#include <private/Manager/InstanceLayersManager.h>
+#include <private/Managers/InstanceExtensionsManager.h>
+#include <private/Managers/InstanceLayersManager.h>
 
 #include <iostream>
 #include <cstring>

@@ -10,7 +10,7 @@ class DeviceExtensionsManager final : public ExtensionsManager
 {
 public:
     DeviceExtensionsManager(const PhysicalDevice& physicalDevice);
-    virtual ~DeviceExtensionsManager() = default;
+    ~DeviceExtensionsManager() override = default;
 
     std::vector<const char*> GetMinimalExtensionNames(bool enableValidationLayers) override;
 };

@@ -10,7 +10,7 @@ class DeviceLayersManager final : public LayersManager
 {
 public:
     DeviceLayersManager(const PhysicalDevice& physicalDevice);
-    virtual ~DeviceLayersManager() = default;
+    ~DeviceLayersManager() override = default;
 
     std::vector<const char*> GetMinimalLayerNames(bool enableValidationLayers) override;
 };

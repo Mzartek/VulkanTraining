@@ -1,4 +1,4 @@
-#include <private/Manager/LayersManager.h>
+#include <private/Managers/LayersManager.h>
 
 #include <cstring>
 

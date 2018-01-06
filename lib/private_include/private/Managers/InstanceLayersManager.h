@@ -9,7 +9,7 @@ class InstanceLayersManager final : public LayersManager
 {
 public:
     InstanceLayersManager();
-    virtual ~InstanceLayersManager() = default;
+    ~InstanceLayersManager() override = default;
 
     std::vector<const char*> GetMinimalLayerNames(bool enableValidationLayers) override;
 };

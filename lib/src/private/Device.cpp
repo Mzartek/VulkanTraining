@@ -1,8 +1,8 @@
 #include <private/Device.h>
 
-#include <private/Manager/QueueFamiliesManager.h>
-#include <private/Manager/DeviceExtensionsManager.h>
-#include <private/Manager/DeviceLayersManager.h>
+#include <private/Managers/QueueFamiliesManager.h>
+#include <private/Managers/DeviceExtensionsManager.h>
+#include <private/Managers/DeviceLayersManager.h>
 
 #include <set>
 #include <stdexcept>

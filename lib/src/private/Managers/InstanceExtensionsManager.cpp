@@ -1,4 +1,4 @@
-#include <private/Manager/InstanceExtensionsManager.h>
+#include <private/Managers/InstanceExtensionsManager.h>
 
 #include <GLFW/glfw3.h>
 

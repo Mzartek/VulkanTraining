@@ -1,4 +1,4 @@
-#include <private/Manager/DeviceLayersManager.h>
+#include <private/Managers/DeviceLayersManager.h>
 
 namespace VT
 {

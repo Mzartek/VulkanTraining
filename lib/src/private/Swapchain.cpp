@@ -1,7 +1,7 @@
 #include <private/Swapchain.h>
 
-#include <private/Manager/SwapchainManager.h>
-#include <private/Manager/QueueFamiliesManager.h>
+#include <private/Managers/SwapchainManager.h>
+#include <private/Managers/QueueFamiliesManager.h>
 
 #include <array>
 
@@ -101,6 +101,11 @@ VkSwapchainKHR Swapchain::GetSwapchain()
 VkSwapchainKHR Swapchain::GetSwapchain() const
 {
     return m_swapchain;
+}
+
+const Device& Swapchain::GetRelatedDevice() const
+{
+    return m_device;
 }
 
 const std::vector<VkImageView>& Swapchain::GetImageViews() const

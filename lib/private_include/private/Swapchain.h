@@ -18,6 +18,8 @@ public:
     VkSwapchainKHR GetSwapchain();
     VkSwapchainKHR GetSwapchain() const;
 
+    const Device& GetRelatedDevice() const;
+
     const std::vector<VkImageView>& GetImageViews() const;
 
 private:

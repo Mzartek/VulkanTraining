@@ -1,4 +1,4 @@
-#include <private/Manager/SwapchainManager.h>
+#include <private/Managers/SwapchainManager.h>
 
 #include <stdexcept>
 #include <limits>

@@ -1,4 +1,4 @@
-#include <private/Manager/DeviceExtensionsManager.h>
+#include <private/Managers/DeviceExtensionsManager.h>
 
 #include <stdexcept>
 
