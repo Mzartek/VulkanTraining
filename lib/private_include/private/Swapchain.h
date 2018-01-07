@@ -20,12 +20,14 @@ public:
 
     const Device& GetRelatedDevice() const;
 
+    const VkExtent2D& GetExtent() const;
     const std::vector<VkImageView>& GetImageViews() const;
 
 private:
     const Device& m_device;
     VkSwapchainKHR m_swapchain;
 
+    VkExtent2D m_extent;
     std::vector<VkImageView> m_imageViews;
 };
 }
