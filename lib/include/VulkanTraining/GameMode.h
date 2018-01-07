@@ -13,11 +13,12 @@ class Surface;
 class PhysicalDevice;
 class Device;
 class Swapchain;
+class SimplePipeline;
 
 class LIB_INTERFACE GameMode
 {
 public:
-    GameMode(int width, int height, const std::string& title);
+    GameMode(int width, int height, const std::string& title, const std::string& shadersPath);
     virtual ~GameMode();
     GameMode(const GameMode& other) = delete;
     GameMode(GameMode&& other) = delete;
@@ -37,7 +38,7 @@ private:
     PhysicalDevice* m_physicalDevice;
     Device* m_device;
     Swapchain* m_swapchain;
-
+    SimplePipeline* m_simplePipeline;
 };
 }
 

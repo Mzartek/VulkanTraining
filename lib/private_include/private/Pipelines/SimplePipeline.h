@@ -9,7 +9,7 @@ namespace VT
 class SimplePipeline
 {
 public:
-    SimplePipeline(const Swapchain& swapchain);
+    SimplePipeline(const Swapchain& swapchain, const std::string& shadersPath);
     virtual ~SimplePipeline();
     SimplePipeline(const SimplePipeline& other) = delete;
     SimplePipeline(SimplePipeline&& other) = delete;

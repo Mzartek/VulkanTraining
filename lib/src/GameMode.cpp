@@ -1,6 +1,6 @@
 #include <VulkanTraining/GameMode.h>
 
-#include <private/Swapchain.h>
+#include <private/Pipelines/SimplePipeline.h>
 
 #include <cassert>
 
@@ -15,13 +15,14 @@ constexpr bool enableValidationLayers = true;
 
 namespace VT
 {
-GameMode::GameMode(int width, int height, const std::string& title)
+GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
     : m_instance(nullptr)
     , m_window(nullptr)
     , m_surface(nullptr)
     , m_physicalDevice(nullptr)
     , m_device(nullptr)
     , m_swapchain(nullptr)
+    , m_simplePipeline(nullptr)
 {
     glfwInit();
 
@@ -42,10 +43,14 @@ GameMode::GameMode(int width, int height, const std::string& title)
 
     m_swapchain = new Swapchain(*m_device);
     assert(m_swapchain);
+
+    m_simplePipeline = new SimplePipeline(*m_swapchain, shadersPath);
+    assert(m_simplePipeline);
 }
 
 GameMode::~GameMode()
 {
+    delete m_simplePipeline;
     delete m_swapchain;
     delete m_device;
     delete m_physicalDevice;
