@@ -11,6 +11,7 @@ Swapchain::Swapchain(const Device& device)
     : m_device(device)
     , m_swapchain(VK_NULL_HANDLE)
     , m_extent({})
+    , m_format(VK_FORMAT_UNDEFINED)
 {
     SwapchainManager swapchainManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
     QueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
@@ -75,6 +76,7 @@ Swapchain::Swapchain(const Device& device)
     imageViewCreateInfo.subresourceRange.layerCount = 1;
 
     m_extent = swapchainManager.GetExtent2D();
+    m_format = swapchainManager.GetSurfaceFormat().format;
 
     m_imageViews.resize(imageCount);
     for (uint32_t i = 0; i < imageCount; ++i)
@@ -113,6 +115,11 @@ const Device& Swapchain::GetRelatedDevice() const
 const VkExtent2D& Swapchain::GetExtent() const
 {
     return m_extent;
+}
+
+VkFormat Swapchain::GetFormat() const
+{
+    return m_format;
 }
 
 const std::vector<VkImageView>& Swapchain::GetImageViews() const

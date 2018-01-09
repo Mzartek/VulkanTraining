@@ -21,6 +21,7 @@ public:
     const Device& GetRelatedDevice() const;
 
     const VkExtent2D& GetExtent() const;
+    VkFormat GetFormat() const;
     const std::vector<VkImageView>& GetImageViews() const;
 
 private:
@@ -28,6 +29,7 @@ private:
     VkSwapchainKHR m_swapchain;
 
     VkExtent2D m_extent;
+    VkFormat m_format;
     std::vector<VkImageView> m_imageViews;
 };
 }

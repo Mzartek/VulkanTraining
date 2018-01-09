@@ -21,6 +21,10 @@ private:
 
     Shader m_vertexShader;
     Shader m_fragmentShader;
+
+    VkPipelineLayout m_pipelineLayout;
+    VkRenderPass m_renderPass;
+    VkPipeline m_graphicsPipeline;
 };
 }
 
