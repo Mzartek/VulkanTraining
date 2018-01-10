@@ -1,20 +1,31 @@
 #ifndef VT_SIMPLE_PIPELINE_INCLUDE_H
 #define VT_SIMPLE_PIPELINE_INCLUDE_H
 
+#include "IGraphicsPipeline.h"
+
 #include "../Swapchain.h"
 #include "../Shader.h"
 
 namespace VT
 {
-class SimplePipeline
+class SimplePipeline : public IGraphicsPipeline
 {
 public:
     SimplePipeline(const Swapchain& swapchain, const std::string& shadersPath);
-    virtual ~SimplePipeline();
+    ~SimplePipeline() override;
     SimplePipeline(const SimplePipeline& other) = delete;
     SimplePipeline(SimplePipeline&& other) = delete;
     SimplePipeline& operator=(const SimplePipeline& other) = delete;
     SimplePipeline& operator=(SimplePipeline&& other) = delete;
+
+    VkPipelineLayout GetPipelineLayout() override;
+    VkPipelineLayout GetPipelineLayout() const override;
+
+    VkRenderPass GetRenderPass() override;
+    VkRenderPass GetRenderPass() const override;
+
+    VkPipeline GetGraphicsPipeline() override;
+    VkPipeline GetGraphicsPipeline() const override;
 
 private:
     const Swapchain& m_swapchain;

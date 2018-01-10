@@ -201,4 +201,34 @@ SimplePipeline::~SimplePipeline()
     vkDestroyRenderPass(m_swapchain.GetRelatedDevice().GetDevice(), m_renderPass, nullptr);
     vkDestroyPipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout, nullptr);
 }
+
+VkPipelineLayout SimplePipeline::GetPipelineLayout()
+{
+    return m_pipelineLayout;
+}
+
+VkPipelineLayout SimplePipeline::GetPipelineLayout() const
+{
+    return m_pipelineLayout;
+}
+
+VkRenderPass SimplePipeline::GetRenderPass()
+{
+    return m_renderPass;
+}
+
+VkRenderPass SimplePipeline::GetRenderPass() const
+{
+    return m_renderPass;
+}
+
+VkPipeline SimplePipeline::GetGraphicsPipeline()
+{
+    return m_graphicsPipeline;
+}
+
+VkPipeline SimplePipeline::GetGraphicsPipeline() const
+{
+    return m_graphicsPipeline;
+}
 }
