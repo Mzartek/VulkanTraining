@@ -193,10 +193,31 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
     result = vkCreateGraphicsPipelines(m_swapchain.GetRelatedDevice().GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create graphics pipeline");
+
+    const std::vector<VkImageView> swapchainImageViews = swapchain.GetImageViews();
+
+    m_framebuffers.resize(swapchainImageViews.size());
+    for (size_t i = 0; i < m_framebuffers.size(); ++i)
+    {
+        VkFramebufferCreateInfo framebufferInfo = {};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = m_renderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = &swapchainImageViews[i];
+        framebufferInfo.width = m_swapchain.GetExtent().width;
+        framebufferInfo.height = m_swapchain.GetExtent().height;
+        framebufferInfo.layers = 1;
+
+        result = vkCreateFramebuffer(m_swapchain.GetRelatedDevice().GetDevice(), &framebufferInfo, nullptr, &m_framebuffers[i]);
+        if (result != VK_SUCCESS)
+            throw std::runtime_error("Failed to create framebuffer!");
+    }
 }
 
 SimplePipeline::~SimplePipeline()
 {
+    for (auto framebuffer : m_framebuffers)
+        vkDestroyFramebuffer(m_swapchain.GetRelatedDevice().GetDevice(), framebuffer, nullptr);
     vkDestroyPipeline(m_swapchain.GetRelatedDevice().GetDevice(), m_graphicsPipeline, nullptr);
     vkDestroyRenderPass(m_swapchain.GetRelatedDevice().GetDevice(), m_renderPass, nullptr);
     vkDestroyPipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout, nullptr);
@@ -230,5 +251,15 @@ VkPipeline SimplePipeline::GetGraphicsPipeline()
 VkPipeline SimplePipeline::GetGraphicsPipeline() const
 {
     return m_graphicsPipeline;
+}
+
+std::vector<VkFramebuffer> SimplePipeline::GetFramebuffers()
+{
+    return m_framebuffers;
+}
+
+std::vector<VkFramebuffer> SimplePipeline::GetFramebuffers() const
+{
+    return m_framebuffers;
 }
 }

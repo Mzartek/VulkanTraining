@@ -3,6 +3,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include <vector>
+
 namespace VT
 {
 struct IGraphicsPipeline
@@ -17,6 +19,9 @@ struct IGraphicsPipeline
 
     virtual VkPipeline GetGraphicsPipeline() = 0;
     virtual VkPipeline GetGraphicsPipeline() const = 0;
+
+    virtual std::vector<VkFramebuffer> GetFramebuffers() = 0;
+    virtual std::vector<VkFramebuffer> GetFramebuffers() const = 0;
 };
 }
 

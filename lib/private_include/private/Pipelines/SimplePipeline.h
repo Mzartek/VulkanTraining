@@ -27,6 +27,9 @@ public:
     VkPipeline GetGraphicsPipeline() override;
     VkPipeline GetGraphicsPipeline() const override;
 
+    std::vector<VkFramebuffer> GetFramebuffers() override;
+    std::vector<VkFramebuffer> GetFramebuffers() const override;
+
 private:
     const Swapchain& m_swapchain;
 
@@ -36,6 +39,7 @@ private:
     VkPipelineLayout m_pipelineLayout;
     VkRenderPass m_renderPass;
     VkPipeline m_graphicsPipeline;
+    std::vector<VkFramebuffer> m_framebuffers;
 };
 }
 
