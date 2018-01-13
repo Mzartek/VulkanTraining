@@ -14,6 +14,7 @@ class PhysicalDevice;
 class Device;
 class Swapchain;
 class SimplePipeline;
+class CommandPool;
 
 class LIB_INTERFACE GameMode
 {
@@ -39,6 +40,7 @@ private:
     Device* m_device;
     Swapchain* m_swapchain;
     SimplePipeline* m_simplePipeline;
+    CommandPool* m_commandPool;
 };
 }
 

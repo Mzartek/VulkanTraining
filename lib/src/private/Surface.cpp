@@ -19,18 +19,18 @@ Surface::~Surface()
     vkDestroySurfaceKHR(m_instance.GetInstance(), m_surface, nullptr);
 }
 
-VkSurfaceKHR Surface::GetSurface()
+const Instance& Surface::GetRelatedInstance() const
 {
-    return m_surface;
-}
-
-VkSurfaceKHR Surface::GetSurface() const
-{
-    return m_surface;
+    return m_instance;
 }
 
 const Window& Surface::GetRelatedWindow() const
 {
     return m_window;
+}
+
+VkSurfaceKHR Surface::GetSurface() const
+{
+    return m_surface;
 }
 }

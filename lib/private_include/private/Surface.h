@@ -16,14 +16,15 @@ public:
     Surface& operator=(const Surface& other) = delete;
     Surface& operator=(Surface&& other) = delete;
 
-    VkSurfaceKHR GetSurface();
-    VkSurfaceKHR GetSurface() const;
-
+    const Instance& GetRelatedInstance() const;
     const Window& GetRelatedWindow() const;
+
+    VkSurfaceKHR GetSurface() const;
 
 private:
     const Instance& m_instance;
     const Window& m_window;
+
     VkSurfaceKHR m_surface;
 };
 }

@@ -18,8 +18,7 @@ public:
     Window& operator=(const Window& other) = delete;
     Window& operator=(Window&& other) = delete;
 
-    GLFWwindow* GetWindow();
-    const GLFWwindow* GetWindow() const;
+    GLFWwindow* GetWindow() const;
 
     int GetWidth() const;
     int GetHeight() const;

@@ -15,21 +15,15 @@ public:
     Swapchain& operator=(const Swapchain& other) = delete;
     Swapchain& operator=(Swapchain&& other) = delete;
 
-    VkSwapchainKHR GetSwapchain();
-    VkSwapchainKHR GetSwapchain() const;
-
     const Device& GetRelatedDevice() const;
 
-    const VkExtent2D& GetExtent() const;
-    VkFormat GetFormat() const;
+    VkSwapchainKHR GetSwapchain() const;
     const std::vector<VkImageView>& GetImageViews() const;
 
 private:
     const Device& m_device;
-    VkSwapchainKHR m_swapchain;
 
-    VkExtent2D m_extent;
-    VkFormat m_format;
+    VkSwapchainKHR m_swapchain;
     std::vector<VkImageView> m_imageViews;
 };
 }

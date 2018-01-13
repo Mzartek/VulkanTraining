@@ -49,9 +49,9 @@ Shader::~Shader()
     vkDestroyShaderModule(m_device.GetDevice(), m_shaderModule, nullptr);
 }
 
-VkShaderModule Shader::GetShaderModule()
+const Device& Shader::GetRelatedDevice() const
 {
-    return m_shaderModule;
+    return m_device;
 }
 
 VkShaderModule Shader::GetShaderModule() const

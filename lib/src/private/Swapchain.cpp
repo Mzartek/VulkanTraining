@@ -10,8 +10,6 @@ namespace VT
 Swapchain::Swapchain(const Device& device)
     : m_device(device)
     , m_swapchain(VK_NULL_HANDLE)
-    , m_extent({})
-    , m_format(VK_FORMAT_UNDEFINED)
 {
     SwapchainManager swapchainManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
     QueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
@@ -75,9 +73,6 @@ Swapchain::Swapchain(const Device& device)
     imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
     imageViewCreateInfo.subresourceRange.layerCount = 1;
 
-    m_extent = swapchainManager.GetExtent2D();
-    m_format = swapchainManager.GetSurfaceFormat().format;
-
     m_imageViews.resize(imageCount);
     for (uint32_t i = 0; i < imageCount; ++i)
     {
@@ -97,29 +92,14 @@ Swapchain::~Swapchain()
     vkDestroySwapchainKHR(m_device.GetDevice(), m_swapchain, nullptr);
 }
 
-VkSwapchainKHR Swapchain::GetSwapchain()
-{
-    return m_swapchain;
-}
-
-VkSwapchainKHR Swapchain::GetSwapchain() const
-{
-    return m_swapchain;
-}
-
 const Device& Swapchain::GetRelatedDevice() const
 {
     return m_device;
 }
 
-const VkExtent2D& Swapchain::GetExtent() const
+VkSwapchainKHR Swapchain::GetSwapchain() const
 {
-    return m_extent;
-}
-
-VkFormat Swapchain::GetFormat() const
-{
-    return m_format;
+    return m_swapchain;
 }
 
 const std::vector<VkImageView>& Swapchain::GetImageViews() const

@@ -18,17 +18,10 @@ public:
     SimplePipeline& operator=(const SimplePipeline& other) = delete;
     SimplePipeline& operator=(SimplePipeline&& other) = delete;
 
-    VkPipelineLayout GetPipelineLayout() override;
     VkPipelineLayout GetPipelineLayout() const override;
-
-    VkRenderPass GetRenderPass() override;
     VkRenderPass GetRenderPass() const override;
-
-    VkPipeline GetGraphicsPipeline() override;
     VkPipeline GetGraphicsPipeline() const override;
-
-    std::vector<VkFramebuffer> GetFramebuffers() override;
-    std::vector<VkFramebuffer> GetFramebuffers() const override;
+    const std::vector<VkFramebuffer>& GetFramebuffers() const override;
 
 private:
     const Swapchain& m_swapchain;

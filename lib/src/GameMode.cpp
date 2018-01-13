@@ -1,6 +1,7 @@
 #include <VulkanTraining/GameMode.h>
 
 #include <private/Pipelines/SimplePipeline.h>
+#include <private/CommandPool.h>
 
 #include <cassert>
 
@@ -23,6 +24,7 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     , m_device(nullptr)
     , m_swapchain(nullptr)
     , m_simplePipeline(nullptr)
+    , m_commandPool(nullptr)
 {
     glfwInit();
 
@@ -46,10 +48,14 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
 
     m_simplePipeline = new SimplePipeline(*m_swapchain, shadersPath);
     assert(m_simplePipeline);
+
+    m_commandPool = new CommandPool(*m_device, *m_simplePipeline);
+    assert(m_commandPool);
 }
 
 GameMode::~GameMode()
 {
+    delete m_commandPool;
     delete m_simplePipeline;
     delete m_swapchain;
     delete m_device;

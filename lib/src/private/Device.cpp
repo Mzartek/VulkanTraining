@@ -78,16 +78,6 @@ Device::~Device()
     vkDestroyDevice(m_device, nullptr);
 }
 
-VkDevice Device::GetDevice()
-{
-    return m_device;
-}
-
-VkDevice Device::GetDevice() const
-{
-    return m_device;
-}
-
 const PhysicalDevice& Device::GetRelatedPhysicalDevice() const
 {
     return m_physicalDevice;
@@ -96,6 +86,11 @@ const PhysicalDevice& Device::GetRelatedPhysicalDevice() const
 const Surface& Device::GetRelatedSurface() const
 {
     return m_surface;
+}
+
+VkDevice Device::GetDevice() const
+{
+    return m_device;
 }
 
 const std::vector<VkQueue>& Device::GetGraphicsQueues() const

@@ -23,12 +23,7 @@ Window::~Window()
     glfwDestroyWindow(m_window);
 }
 
-GLFWwindow* Window::GetWindow()
-{
-    return m_window;
-}
-
-const GLFWwindow* Window::GetWindow() const
+GLFWwindow* Window::GetWindow() const
 {
     return m_window;
 }

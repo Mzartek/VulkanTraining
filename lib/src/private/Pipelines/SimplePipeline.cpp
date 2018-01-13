@@ -1,5 +1,7 @@
 #include <private/Pipelines/SimplePipeline.h>
 
+#include <private/Managers/SwapchainManager.h>
+
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
@@ -29,6 +31,8 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
     , m_renderPass(VK_NULL_HANDLE)
     , m_graphicsPipeline(VK_NULL_HANDLE)
 {
+    SwapchainManager swapchainManager(m_swapchain.GetRelatedDevice().GetRelatedPhysicalDevice(), m_swapchain.GetRelatedDevice().GetRelatedSurface());
+
     VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
@@ -58,14 +62,14 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
     VkViewport viewport = {};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = static_cast<float>(m_swapchain.GetExtent().width);
-    viewport.height = static_cast<float>(m_swapchain.GetExtent().height);
+    viewport.width = swapchainManager.GetExtent2D().width;
+    viewport.height = swapchainManager.GetExtent2D().height;
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
 
     VkRect2D scissor = {};
     scissor.offset = { 0, 0 };
-    scissor.extent = m_swapchain.GetExtent();
+    scissor.extent = swapchainManager.GetExtent2D();
 
     VkPipelineViewportStateCreateInfo viewportState = {};
     viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -143,7 +147,7 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
         throw std::runtime_error("Failed to create pipeline layout");
 
     VkAttachmentDescription colorAttachment = {};
-    colorAttachment.format = m_swapchain.GetFormat();
+    colorAttachment.format = swapchainManager.GetSurfaceFormat().format;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -204,8 +208,8 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
         framebufferInfo.renderPass = m_renderPass;
         framebufferInfo.attachmentCount = 1;
         framebufferInfo.pAttachments = &swapchainImageViews[i];
-        framebufferInfo.width = m_swapchain.GetExtent().width;
-        framebufferInfo.height = m_swapchain.GetExtent().height;
+        framebufferInfo.width = swapchainManager.GetExtent2D().width;
+        framebufferInfo.height = swapchainManager.GetExtent2D().height;
         framebufferInfo.layers = 1;
 
         result = vkCreateFramebuffer(m_swapchain.GetRelatedDevice().GetDevice(), &framebufferInfo, nullptr, &m_framebuffers[i]);
@@ -223,19 +227,9 @@ SimplePipeline::~SimplePipeline()
     vkDestroyPipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout, nullptr);
 }
 
-VkPipelineLayout SimplePipeline::GetPipelineLayout()
-{
-    return m_pipelineLayout;
-}
-
 VkPipelineLayout SimplePipeline::GetPipelineLayout() const
 {
     return m_pipelineLayout;
-}
-
-VkRenderPass SimplePipeline::GetRenderPass()
-{
-    return m_renderPass;
 }
 
 VkRenderPass SimplePipeline::GetRenderPass() const
@@ -243,22 +237,12 @@ VkRenderPass SimplePipeline::GetRenderPass() const
     return m_renderPass;
 }
 
-VkPipeline SimplePipeline::GetGraphicsPipeline()
-{
-    return m_graphicsPipeline;
-}
-
 VkPipeline SimplePipeline::GetGraphicsPipeline() const
 {
     return m_graphicsPipeline;
 }
 
-std::vector<VkFramebuffer> SimplePipeline::GetFramebuffers()
-{
-    return m_framebuffers;
-}
-
-std::vector<VkFramebuffer> SimplePipeline::GetFramebuffers() const
+const std::vector<VkFramebuffer>& SimplePipeline::GetFramebuffers() const
 {
     return m_framebuffers;
 }

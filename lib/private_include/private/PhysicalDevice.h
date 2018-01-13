@@ -19,7 +19,6 @@ public:
     PhysicalDevice& operator=(const PhysicalDevice& other) = delete;
     PhysicalDevice& operator=(PhysicalDevice&& other) = delete;
 
-    VkPhysicalDevice GetPhysicalDevice();
     VkPhysicalDevice GetPhysicalDevice() const;
 
     const VkPhysicalDeviceProperties GetPhysicalDeviceProperties() const;

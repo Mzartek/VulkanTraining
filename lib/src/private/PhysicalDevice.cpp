@@ -55,11 +55,6 @@ PhysicalDevice::PhysicalDevice(const Instance& instance)
     m_physicalDevice = AvailablePhysicalDevices.front();
 }
 
-VkPhysicalDevice PhysicalDevice::GetPhysicalDevice()
-{
-    return m_physicalDevice;
-}
-
 VkPhysicalDevice PhysicalDevice::GetPhysicalDevice() const
 {
     return m_physicalDevice;

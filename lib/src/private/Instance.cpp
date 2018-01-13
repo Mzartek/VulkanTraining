@@ -76,11 +76,6 @@ Instance::~Instance()
     vkDestroyInstance(m_instance, nullptr);
 }
 
-VkInstance Instance::GetInstance()
-{
-    return m_instance;
-}
-
 VkInstance Instance::GetInstance() const
 {
     return m_instance;

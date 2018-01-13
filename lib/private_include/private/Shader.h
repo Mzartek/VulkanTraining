@@ -15,7 +15,8 @@ public:
     Shader& operator=(const Shader& other) = delete;
     Shader& operator=(Shader&& other) = delete;
 
-    VkShaderModule GetShaderModule();
+    const Device& GetRelatedDevice() const;
+
     VkShaderModule GetShaderModule() const;
 
 private:
