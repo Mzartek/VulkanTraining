@@ -40,6 +40,11 @@ CommandPool::~CommandPool()
     vkDestroyCommandPool(m_device.GetDevice(), m_commandPool, nullptr);
 }
 
+const Device& CommandPool::GetRelatedDevice() const
+{
+    return m_device;
+}
+
 VkCommandPool CommandPool::GetCommandPool() const
 {
     return m_commandPool;

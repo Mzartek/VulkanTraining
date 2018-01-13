@@ -16,6 +16,8 @@ public:
     CommandPool& operator=(const CommandPool& other) = delete;
     CommandPool& operator=(CommandPool&& other) = delete;
 
+    const Device& GetRelatedDevice() const;
+
     VkCommandPool GetCommandPool() const;
     const std::vector<VkCommandBuffer>& GetCommandBuffers() const;
 
