@@ -18,6 +18,10 @@ public:
     SimplePipeline& operator=(const SimplePipeline& other) = delete;
     SimplePipeline& operator=(SimplePipeline&& other) = delete;
 
+    const Swapchain& GetRelatedSwapchain() const;
+
+    const VkViewport& GetViewport() const;
+
     VkPipelineLayout GetPipelineLayout() const override;
     VkRenderPass GetRenderPass() const override;
     VkPipeline GetGraphicsPipeline() const override;
@@ -28,6 +32,8 @@ private:
 
     Shader m_vertexShader;
     Shader m_fragmentShader;
+
+    VkViewport m_viewport;
 
     VkPipelineLayout m_pipelineLayout;
     VkRenderPass m_renderPass;

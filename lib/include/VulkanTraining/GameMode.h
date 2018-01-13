@@ -12,9 +12,10 @@ class Window;
 class Surface;
 class PhysicalDevice;
 class Device;
+class CommandPool;
 class Swapchain;
 class SimplePipeline;
-class CommandPool;
+class SimpleDrawable;
 
 class LIB_INTERFACE GameMode
 {
@@ -38,9 +39,10 @@ private:
     Surface* m_surface;
     PhysicalDevice* m_physicalDevice;
     Device* m_device;
+    CommandPool* m_commandPool;
     Swapchain* m_swapchain;
     SimplePipeline* m_simplePipeline;
-    CommandPool* m_commandPool;
+    SimpleDrawable* m_simpleDrawable;
 };
 }
 

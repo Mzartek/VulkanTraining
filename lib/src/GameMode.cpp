@@ -1,7 +1,6 @@
 #include <VulkanTraining/GameMode.h>
 
-#include <private/Pipelines/SimplePipeline.h>
-#include <private/CommandPool.h>
+#include <private/Drawable/SimpleDrawable.h>
 
 #include <cassert>
 
@@ -22,9 +21,9 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     , m_surface(nullptr)
     , m_physicalDevice(nullptr)
     , m_device(nullptr)
+    , m_commandPool(nullptr)
     , m_swapchain(nullptr)
     , m_simplePipeline(nullptr)
-    , m_commandPool(nullptr)
 {
     glfwInit();
 
@@ -43,21 +42,25 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     m_device = new Device(*m_physicalDevice, *m_surface, enableValidationLayers);
     assert(m_device);
 
+    m_commandPool = new CommandPool(*m_device);
+    assert(m_commandPool);
+
     m_swapchain = new Swapchain(*m_device);
     assert(m_swapchain);
 
     m_simplePipeline = new SimplePipeline(*m_swapchain, shadersPath);
     assert(m_simplePipeline);
 
-    m_commandPool = new CommandPool(*m_device, *m_simplePipeline);
-    assert(m_commandPool);
+    m_simpleDrawable = new SimpleDrawable(*m_commandPool, *m_simplePipeline);
+    assert(m_simpleDrawable);
 }
 
 GameMode::~GameMode()
 {
-    delete m_commandPool;
+    delete m_simpleDrawable;
     delete m_simplePipeline;
     delete m_swapchain;
+    delete m_commandPool;
     delete m_device;
     delete m_physicalDevice;
     delete m_surface;

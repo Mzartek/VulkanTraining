@@ -27,6 +27,7 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
     : m_swapchain(swapchain)
     , m_vertexShader(m_swapchain.GetRelatedDevice(), GetVertexShaderPath(shadersPath))
     , m_fragmentShader(m_swapchain.GetRelatedDevice(), GetFragmentShaderPath(shadersPath))
+    , m_viewport({})
     , m_pipelineLayout(VK_NULL_HANDLE)
     , m_renderPass(VK_NULL_HANDLE)
     , m_graphicsPipeline(VK_NULL_HANDLE)
@@ -59,13 +60,12 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
     inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-    VkViewport viewport = {};
-    viewport.x = 0.0f;
-    viewport.y = 0.0f;
-    viewport.width = swapchainManager.GetExtent2D().width;
-    viewport.height = swapchainManager.GetExtent2D().height;
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 1.0f;
+    m_viewport.x = 0.0f;
+    m_viewport.y = 0.0f;
+    m_viewport.width = swapchainManager.GetExtent2D().width;
+    m_viewport.height = swapchainManager.GetExtent2D().height;
+    m_viewport.minDepth = 0.0f;
+    m_viewport.maxDepth = 1.0f;
 
     VkRect2D scissor = {};
     scissor.offset = { 0, 0 };
@@ -74,7 +74,7 @@ SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& sh
     VkPipelineViewportStateCreateInfo viewportState = {};
     viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     viewportState.viewportCount = 1;
-    viewportState.pViewports = &viewport;
+    viewportState.pViewports = &m_viewport;
     viewportState.scissorCount = 1;
     viewportState.pScissors = &scissor;
 
@@ -225,6 +225,16 @@ SimplePipeline::~SimplePipeline()
     vkDestroyPipeline(m_swapchain.GetRelatedDevice().GetDevice(), m_graphicsPipeline, nullptr);
     vkDestroyRenderPass(m_swapchain.GetRelatedDevice().GetDevice(), m_renderPass, nullptr);
     vkDestroyPipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout, nullptr);
+}
+
+const Swapchain& SimplePipeline::GetRelatedSwapchain() const
+{
+    return m_swapchain;
+}
+
+const VkViewport& SimplePipeline::GetViewport() const
+{
+    return m_viewport;
 }
 
 VkPipelineLayout SimplePipeline::GetPipelineLayout() const
