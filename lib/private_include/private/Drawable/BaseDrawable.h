@@ -20,6 +20,8 @@ public:
 
     const std::vector<VkCommandBuffer>& GetCommandBuffers() const;
 
+    virtual void Draw() = 0;
+
 private:
     const CommandPool& m_commandPool;
 

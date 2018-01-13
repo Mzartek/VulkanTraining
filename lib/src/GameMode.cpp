@@ -78,7 +78,11 @@ void GameMode::Launch()
     {
         glfwPollEvents();
         MainLoop();
+
+        m_simpleDrawable->Draw();
     }
+
+    vkDeviceWaitIdle(m_device->GetDevice());
 
     CleanUp();
 }
