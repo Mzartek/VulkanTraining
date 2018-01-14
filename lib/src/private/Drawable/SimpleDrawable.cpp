@@ -3,15 +3,12 @@
 #include <private/Managers/SwapchainManager.h>
 
 #include <stdexcept>
-#include <iostream>
 
 namespace VT
 {
-SimpleDrawable::SimpleDrawable(const CommandPool& commandPool, const SimplePipeline& simplePipeline)
+SimpleDrawable::SimpleDrawable(CommandPool& commandPool, SimplePipeline& simplePipeline)
     : BaseDrawable(commandPool, simplePipeline)
     , m_simplePipeline(simplePipeline)
-    , m_imageAvailableSemaphore(m_simplePipeline.GetRelatedSwapchain().GetRelatedDevice())
-    , m_renderFinishedSemaphore(m_simplePipeline.GetRelatedSwapchain().GetRelatedDevice())
 {
     const PhysicalDevice& physicalDevice = m_simplePipeline.GetRelatedSwapchain().GetRelatedDevice().GetRelatedPhysicalDevice();
     const Surface& surface = m_simplePipeline.GetRelatedSwapchain().GetRelatedDevice().GetRelatedSurface();
@@ -60,23 +57,16 @@ SimpleDrawable::SimpleDrawable(const CommandPool& commandPool, const SimplePipel
 void SimpleDrawable::Draw()
 {
     const Device& device = m_simplePipeline.GetRelatedSwapchain().GetRelatedDevice();
-    const Swapchain& swapchain = m_simplePipeline.GetRelatedSwapchain();
+    Swapchain& swapchain = m_simplePipeline.GetRelatedSwapchain();
 
     VkQueue graphicsQueue = device.GetGraphicsQueues()[0];
-    VkQueue presentQueue = device.GetPresentQueues()[0];
 
+    const uint32_t imageIndex = swapchain.GetCurrentImageViewIndex();
     const std::vector<VkCommandBuffer> commandBuffers = this->GetCommandBuffers();
 
-    uint32_t imageIndex;
-    VkResult result = vkAcquireNextImageKHR(device.GetDevice(), swapchain.GetSwapchain(), std::numeric_limits<uint64_t>::max(), m_imageAvailableSemaphore.GetSemaphore(), VK_NULL_HANDLE, &imageIndex);
-    if (result == VK_ERROR_OUT_OF_DATE_KHR)
-        return;
-    else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-        throw std::runtime_error("Failed to acquire next image");
-
-    VkSemaphore waitSemaphores[] = { m_imageAvailableSemaphore.GetSemaphore() };
+    VkSemaphore waitSemaphores[] = { swapchain.GetSemaphores()[swapchain.GetCurrentSemaphoreIndex()] };
     VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-    VkSemaphore signalSemaphores[] = { m_renderFinishedSemaphore.GetSemaphore() };
+    VkSemaphore signalSemaphores[] = { this->GetDrawSemaphore() };
 
     VkSubmitInfo submitInfo = {};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -88,18 +78,10 @@ void SimpleDrawable::Draw()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    result = vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    VkResult result = vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to submit info for graphics queue");
 
-    VkSwapchainKHR swapChains[] = { swapchain.GetSwapchain() };
-
-    VkPresentInfoKHR presentInfo = {};
-    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-    presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = signalSemaphores;
-    presentInfo.swapchainCount = 1;
-    presentInfo.pSwapchains = swapChains;
-    presentInfo.pImageIndices = &imageIndex;
-
-    vkQueuePresentKHR(presentQueue, &presentInfo);
+    swapchain.RegisterSemaphoreToWait(this->GetDrawSemaphore());
 }
 }

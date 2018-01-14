@@ -28,7 +28,7 @@ namespace
 
 namespace VT
 {
-Shader::Shader(const Device& device, const std::string& path)
+Shader::Shader(Device& device, const std::string& path)
     : m_device(device)
     , m_shaderModule(VK_NULL_HANDLE)
 {
@@ -49,7 +49,7 @@ Shader::~Shader()
     vkDestroyShaderModule(m_device.GetDevice(), m_shaderModule, nullptr);
 }
 
-const Device& Shader::GetRelatedDevice() const
+Device& Shader::GetRelatedDevice() const
 {
     return m_device;
 }

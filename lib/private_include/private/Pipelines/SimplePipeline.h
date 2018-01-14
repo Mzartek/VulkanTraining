@@ -11,14 +11,14 @@ namespace VT
 class SimplePipeline : public IGraphicsPipeline
 {
 public:
-    SimplePipeline(const Swapchain& swapchain, const std::string& shadersPath);
+    SimplePipeline(Swapchain& swapchain, const std::string& shadersPath);
     ~SimplePipeline() override;
     SimplePipeline(const SimplePipeline& other) = delete;
     SimplePipeline(SimplePipeline&& other) = delete;
     SimplePipeline& operator=(const SimplePipeline& other) = delete;
     SimplePipeline& operator=(SimplePipeline&& other) = delete;
 
-    const Swapchain& GetRelatedSwapchain() const;
+    Swapchain& GetRelatedSwapchain() const;
 
     const VkViewport& GetViewport() const;
 
@@ -28,7 +28,7 @@ public:
     const std::vector<VkFramebuffer>& GetFramebuffers() const override;
 
 private:
-    const Swapchain& m_swapchain;
+    Swapchain& m_swapchain;
 
     Shader m_vertexShader;
     Shader m_fragmentShader;

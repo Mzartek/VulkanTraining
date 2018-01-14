@@ -5,26 +5,47 @@
 
 namespace VT
 {
+class SwapchainOutOfDateException : public std::exception
+{};
+
 class Swapchain
 {
 public:
-    Swapchain(const Device& device);
+    Swapchain(Device& device);
     virtual ~Swapchain();
     Swapchain(const Swapchain& other) = delete;
     Swapchain(Swapchain&& other) = delete;
     Swapchain& operator=(const Swapchain& other) = delete;
     Swapchain& operator=(Swapchain&& other) = delete;
 
-    const Device& GetRelatedDevice() const;
+    Device& GetRelatedDevice() const;
 
     VkSwapchainKHR GetSwapchain() const;
+
     const std::vector<VkImageView>& GetImageViews() const;
+    const std::vector<VkSemaphore>& GetSemaphores() const;
+
+    void LoadNextImage();
+    void RegisterSemaphoreToWait(VkSemaphore semaphoreToWait);
+    void PresentImage();
+
+    uint32_t GetCurrentImageViewIndex() const;
+    uint32_t GetCurrentSemaphoreIndex() const;
 
 private:
-    const Device& m_device;
+    Device& m_device;
 
     VkSwapchainKHR m_swapchain;
+
     std::vector<VkImageView> m_imageViews;
+    std::vector<VkSemaphore> m_semaphores;
+
+    uint32_t m_currentImageViewIndex;
+    uint32_t m_currentSemaphoreIndex;
+
+    uint32_t m_nextSemaphoreIndex;
+
+    std::vector<VkSemaphore> m_registeredSemaphoresToWait;
 };
 }
 

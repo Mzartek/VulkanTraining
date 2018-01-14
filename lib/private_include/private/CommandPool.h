@@ -8,19 +8,19 @@ namespace VT
 class CommandPool
 {
 public:
-    CommandPool(const Device& device);
+    CommandPool(Device& device);
     virtual ~CommandPool();
     CommandPool(const CommandPool& other) = delete;
     CommandPool(CommandPool&& other) = delete;
     CommandPool& operator=(const CommandPool& other) = delete;
     CommandPool& operator=(CommandPool&& other) = delete;
 
-    const Device& GetRelatedDevice() const;
+    Device& GetRelatedDevice() const;
 
     VkCommandPool GetCommandPool() const;
 
 private:
-    const Device& m_device;
+    Device& m_device;
 
     VkCommandPool m_commandPool;
 };

@@ -7,9 +7,12 @@
 
 namespace VT
 {
-Swapchain::Swapchain(const Device& device)
+Swapchain::Swapchain(Device& device)
     : m_device(device)
     , m_swapchain(VK_NULL_HANDLE)
+    , m_currentImageViewIndex(0)
+    , m_currentSemaphoreIndex(0)
+    , m_nextSemaphoreIndex(0)
 {
     SwapchainManager swapchainManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
     QueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
@@ -73,26 +76,36 @@ Swapchain::Swapchain(const Device& device)
     imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
     imageViewCreateInfo.subresourceRange.layerCount = 1;
 
+    VkSemaphoreCreateInfo semaphoreCreateInfo = {};
+    semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
     m_imageViews.resize(imageCount);
+    m_semaphores.resize(imageCount);
     for (uint32_t i = 0; i < imageCount; ++i)
     {
         imageViewCreateInfo.image = images[i];
 
-        VkResult result = vkCreateImageView(m_device.GetDevice(), &imageViewCreateInfo, nullptr, &m_imageViews[i]);
+        result = vkCreateImageView(m_device.GetDevice(), &imageViewCreateInfo, nullptr, &m_imageViews[i]);
         if (result != VK_SUCCESS)
             throw std::runtime_error("Failed to create image");
+
+        result = vkCreateSemaphore(m_device.GetDevice(), &semaphoreCreateInfo, nullptr, &m_semaphores[i]);
+        if (result != VK_SUCCESS)
+            throw std::runtime_error("Failed to create semaphore");
     }
 }
 
 Swapchain::~Swapchain()
 {
+    for (VkSemaphore semaphore : m_semaphores)
+        vkDestroySemaphore(m_device.GetDevice(), semaphore, nullptr);
     for (VkImageView imageView : m_imageViews)
         vkDestroyImageView(m_device.GetDevice(), imageView, nullptr);
 
     vkDestroySwapchainKHR(m_device.GetDevice(), m_swapchain, nullptr);
 }
 
-const Device& Swapchain::GetRelatedDevice() const
+Device& Swapchain::GetRelatedDevice() const
 {
     return m_device;
 }
@@ -105,5 +118,66 @@ VkSwapchainKHR Swapchain::GetSwapchain() const
 const std::vector<VkImageView>& Swapchain::GetImageViews() const
 {
     return m_imageViews;
+}
+
+const std::vector<VkSemaphore>& Swapchain::GetSemaphores() const
+{
+    return m_semaphores;
+}
+
+void Swapchain::LoadNextImage()
+{
+    m_currentSemaphoreIndex = m_nextSemaphoreIndex;
+
+    VkResult result = vkAcquireNextImageKHR(
+        m_device.GetDevice(),
+        m_swapchain,
+        std::numeric_limits<uint64_t>::max(),
+        m_semaphores[m_currentSemaphoreIndex],
+        VK_NULL_HANDLE,
+        &m_currentImageViewIndex);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+        throw SwapchainOutOfDateException();
+
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to acquire next swapchain's image");
+
+    m_nextSemaphoreIndex++;
+    m_nextSemaphoreIndex %= m_imageViews.size();
+}
+
+void Swapchain::RegisterSemaphoreToWait(VkSemaphore semaphoreToWait)
+{
+    m_registeredSemaphoresToWait.push_back(semaphoreToWait);
+}
+
+void Swapchain::PresentImage()
+{
+    VkQueue presentQueue = m_device.GetPresentQueues()[0];
+
+    VkPresentInfoKHR presentInfo = {};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    presentInfo.waitSemaphoreCount = static_cast<uint32_t>(m_registeredSemaphoresToWait.size());
+    presentInfo.pWaitSemaphores = m_registeredSemaphoresToWait.data();
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = &m_swapchain;
+    presentInfo.pImageIndices = &m_currentImageViewIndex;
+
+    VkResult result = vkQueuePresentKHR(presentQueue, &presentInfo);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to submit info for present queue");
+
+    m_registeredSemaphoresToWait.clear();
+}
+
+uint32_t Swapchain::GetCurrentImageViewIndex() const
+{
+    return m_currentImageViewIndex;
+}
+
+uint32_t Swapchain::GetCurrentSemaphoreIndex() const
+{
+    return m_currentSemaphoreIndex;
 }
 }

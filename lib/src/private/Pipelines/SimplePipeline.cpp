@@ -23,7 +23,7 @@ namespace
 
 namespace VT
 {
-SimplePipeline::SimplePipeline(const Swapchain& swapchain, const std::string& shadersPath)
+SimplePipeline::SimplePipeline(Swapchain& swapchain, const std::string& shadersPath)
     : m_swapchain(swapchain)
     , m_vertexShader(m_swapchain.GetRelatedDevice(), GetVertexShaderPath(shadersPath))
     , m_fragmentShader(m_swapchain.GetRelatedDevice(), GetFragmentShaderPath(shadersPath))
@@ -237,7 +237,7 @@ SimplePipeline::~SimplePipeline()
     vkDestroyPipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout, nullptr);
 }
 
-const Swapchain& SimplePipeline::GetRelatedSwapchain() const
+Swapchain& SimplePipeline::GetRelatedSwapchain() const
 {
     return m_swapchain;
 }

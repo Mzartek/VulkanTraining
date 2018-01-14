@@ -8,19 +8,19 @@ namespace VT
 class Shader
 {
 public:
-    Shader(const Device& device, const std::string& path);
+    Shader(Device& device, const std::string& path);
     virtual ~Shader();
     Shader(const Shader& other) = delete;
     Shader(Shader&& other) = delete;
     Shader& operator=(const Shader& other) = delete;
     Shader& operator=(Shader&& other) = delete;
 
-    const Device& GetRelatedDevice() const;
+    Device& GetRelatedDevice() const;
 
     VkShaderModule GetShaderModule() const;
 
 private:
-    const Device& m_device;
+    Device& m_device;
 
     VkShaderModule m_shaderModule;
 };

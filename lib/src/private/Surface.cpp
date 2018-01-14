@@ -4,7 +4,7 @@
 
 namespace VT
 {
-Surface::Surface(const Instance& instance, Window& window)
+Surface::Surface(Instance& instance, Window& window)
     : m_instance(instance)
     , m_window(window)
     , m_surface(VK_NULL_HANDLE)
@@ -19,12 +19,12 @@ Surface::~Surface()
     vkDestroySurfaceKHR(m_instance.GetInstance(), m_surface, nullptr);
 }
 
-const Instance& Surface::GetRelatedInstance() const
+Instance& Surface::GetRelatedInstance() const
 {
     return m_instance;
 }
 
-const Window& Surface::GetRelatedWindow() const
+Window& Surface::GetRelatedWindow() const
 {
     return m_window;
 }

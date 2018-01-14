@@ -2,7 +2,6 @@
 #define VT_SIMPLE_DRAWABLE_INCLUDE_H
 
 #include "BaseDrawable.h"
-#include "../Semaphore.h"
 #include "../Pipelines/SimplePipeline.h"
 
 namespace VT
@@ -10,7 +9,7 @@ namespace VT
 class SimpleDrawable : public BaseDrawable
 {
 public:
-    SimpleDrawable(const CommandPool& commandPool, const SimplePipeline& simplePipeline);
+    SimpleDrawable(CommandPool& commandPool, SimplePipeline& simplePipeline);
     ~SimpleDrawable() override = default;
     SimpleDrawable(const SimpleDrawable& other) = delete;
     SimpleDrawable(SimpleDrawable&& other) = delete;
@@ -20,10 +19,7 @@ public:
     void Draw() override;
 
 private:
-    const SimplePipeline& m_simplePipeline;
-
-    Semaphore m_imageAvailableSemaphore;
-    Semaphore m_renderFinishedSemaphore;
+    SimplePipeline& m_simplePipeline;
 };
 }
 

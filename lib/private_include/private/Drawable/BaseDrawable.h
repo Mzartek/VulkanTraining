@@ -9,22 +9,24 @@ namespace VT
 class BaseDrawable
 {
 public:
-    BaseDrawable(const CommandPool& commandPool, const IGraphicsPipeline& graphicsPipeline);
+    BaseDrawable(CommandPool& commandPool, IGraphicsPipeline& graphicsPipeline);
     virtual ~BaseDrawable();
     BaseDrawable(const BaseDrawable& other) = delete;
     BaseDrawable(BaseDrawable&& other) = delete;
     BaseDrawable& operator=(const BaseDrawable& other) = delete;
     BaseDrawable& operator=(BaseDrawable&& other) = delete;
 
-    const CommandPool& GetRelatedCommandPool() const;
+    CommandPool& GetRelatedCommandPool() const;
 
+    VkSemaphore GetDrawSemaphore() const;
     const std::vector<VkCommandBuffer>& GetCommandBuffers() const;
 
     virtual void Draw() = 0;
 
 private:
-    const CommandPool& m_commandPool;
+    CommandPool& m_commandPool;
 
+    VkSemaphore m_drawSemaphore;
     std::vector<VkCommandBuffer> m_commandBuffers;
 };
 }

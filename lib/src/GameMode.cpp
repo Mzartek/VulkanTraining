@@ -85,7 +85,18 @@ void GameMode::Launch()
     {
         glfwPollEvents();
 
+        try
+        {
+            m_swapchain->LoadNextImage();
+        }
+        catch (SwapchainOutOfDateException& ex)
+        {
+            continue;
+        }
+
         m_simpleDrawable->Draw();
+
+        m_swapchain->PresentImage();
     }
 
     vkDeviceWaitIdle(m_device->GetDevice());

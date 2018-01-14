@@ -6,7 +6,7 @@
 
 namespace VT
 {
-CommandPool::CommandPool(const Device& device)
+CommandPool::CommandPool(Device& device)
     : m_device(device)
     , m_commandPool(VK_NULL_HANDLE)
 {
@@ -27,7 +27,7 @@ CommandPool::~CommandPool()
     vkDestroyCommandPool(m_device.GetDevice(), m_commandPool, nullptr);
 }
 
-const Device& CommandPool::GetRelatedDevice() const
+Device& CommandPool::GetRelatedDevice() const
 {
     return m_device;
 }

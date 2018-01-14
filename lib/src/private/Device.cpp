@@ -9,7 +9,7 @@
 
 namespace VT
 {
-Device::Device(const PhysicalDevice& physicalDevice, const Surface& surface, bool enableValidationLayers)
+Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableValidationLayers)
     : m_physicalDevice(physicalDevice)
     , m_surface(surface)
     , m_device(VK_NULL_HANDLE)
@@ -78,12 +78,12 @@ Device::~Device()
     vkDestroyDevice(m_device, nullptr);
 }
 
-const PhysicalDevice& Device::GetRelatedPhysicalDevice() const
+PhysicalDevice& Device::GetRelatedPhysicalDevice() const
 {
     return m_physicalDevice;
 }
 
-const Surface& Device::GetRelatedSurface() const
+Surface& Device::GetRelatedSurface() const
 {
     return m_surface;
 }
