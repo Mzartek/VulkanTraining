@@ -5,13 +5,14 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <functional>
 
 namespace VT
 {
 class Window
 {
 public:
-    Window(int width, int height, const std::string& title);
+    Window(int width, int height, const std::string& title, void* userPointer, GLFWwindowsizefun resizeFunction);
     virtual ~Window();
     Window(const Window& other) = delete;
     Window(Window&& other) = delete;

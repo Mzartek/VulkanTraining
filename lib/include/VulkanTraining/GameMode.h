@@ -29,11 +29,15 @@ public:
 
     void Launch();
 
-    virtual void Init() = 0;
-    virtual void MainLoop() = 0;
-    virtual void CleanUp() = 0;
+    void OnWindowResized(int width, int height);
+
+    void MainLoop();
 
 private:
+    void RecreateSwapchain();
+
+    std::string m_shadersPath;
+
     Instance* m_instance;
     Window* m_window;
     Surface* m_surface;

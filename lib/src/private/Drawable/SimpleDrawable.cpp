@@ -3,6 +3,7 @@
 #include <private/Managers/SwapchainManager.h>
 
 #include <stdexcept>
+#include <iostream>
 
 namespace VT
 {
@@ -67,7 +68,11 @@ void SimpleDrawable::Draw()
     const std::vector<VkCommandBuffer> commandBuffers = this->GetCommandBuffers();
 
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(device.GetDevice(), swapchain.GetSwapchain(), std::numeric_limits<uint64_t>::max(), m_imageAvailableSemaphore.GetSemaphore(), VK_NULL_HANDLE, &imageIndex);
+    VkResult result = vkAcquireNextImageKHR(device.GetDevice(), swapchain.GetSwapchain(), std::numeric_limits<uint64_t>::max(), m_imageAvailableSemaphore.GetSemaphore(), VK_NULL_HANDLE, &imageIndex);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+        return;
+    else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+        throw std::runtime_error("Failed to acquire next image");
 
     VkSemaphore waitSemaphores[] = { m_imageAvailableSemaphore.GetSemaphore() };
     VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -83,9 +88,7 @@ void SimpleDrawable::Draw()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    VkResult result = vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    if (result != VK_SUCCESS)
-        throw std::runtime_error("Failed to submit draw command buffer");
+    result = vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
 
     VkSwapchainKHR swapChains[] = { swapchain.GetSwapchain() };
 
@@ -98,7 +101,5 @@ void SimpleDrawable::Draw()
     presentInfo.pImageIndices = &imageIndex;
 
     vkQueuePresentKHR(presentQueue, &presentInfo);
-
-    vkQueueWaitIdle(presentQueue);
 }
 }

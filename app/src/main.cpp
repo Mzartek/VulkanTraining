@@ -5,34 +5,8 @@
 
 #include <iostream>
 
-constexpr int WIDTH = 800;
-constexpr int HEIGHT = 600;
-
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
-
-class HelloTriangleApplication : public VT::GameMode
-{
-public:
-    HelloTriangleApplication(const std::string& shadersPath)
-        : GameMode(WIDTH, HEIGHT, "HelloTriangleApplication", shadersPath)
-    {
-    }
-
-    void Init() override
-    {
-        std::cout << "Init" << std::endl;
-    }
-
-    void MainLoop() override
-    {
-    }
-
-    void CleanUp() override
-    {
-        std::cout << "CleanUp" << std::endl;
-    }
-};
 
 int main(int ac, char** av)
 {
@@ -59,7 +33,7 @@ int main(int ac, char** av)
     }
 
     const fs::path shadersPath = fs::path(vm["shaders"].as<std::string>());
-    HelloTriangleApplication* app = new HelloTriangleApplication(shadersPath.string());
+    VT::GameMode* app = new VT::GameMode(800, 600, "HelloTriangle", shadersPath.string());
 
     try
     {

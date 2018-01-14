@@ -11,12 +11,21 @@ constexpr bool enableValidationLayers = false;
 #else
 constexpr bool enableValidationLayers = true;
 #endif
+
+void InternalOnWindowResized(GLFWwindow* window, int width, int height)
+{
+    if (width == 0 || height == 0) return;
+
+    VT::GameMode* gameMode = static_cast<VT::GameMode*>(glfwGetWindowUserPointer(window));
+    gameMode->OnWindowResized(width, height);
+}
 }
 
 namespace VT
 {
 GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
-    : m_instance(nullptr)
+    : m_shadersPath(shadersPath)
+    , m_instance(nullptr)
     , m_window(nullptr)
     , m_surface(nullptr)
     , m_physicalDevice(nullptr)
@@ -30,7 +39,7 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     m_instance = new Instance(title, enableValidationLayers);
     assert(m_instance);
 
-    m_window = new Window(width, height, title);
+    m_window = new Window(width, height, title, this, InternalOnWindowResized);
     assert(m_window);
 
     m_surface = new Surface(*m_instance, *m_window);
@@ -48,7 +57,7 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     m_swapchain = new Swapchain(*m_device);
     assert(m_swapchain);
 
-    m_simplePipeline = new SimplePipeline(*m_swapchain, shadersPath);
+    m_simplePipeline = new SimplePipeline(*m_swapchain, m_shadersPath);
     assert(m_simplePipeline);
 
     m_simpleDrawable = new SimpleDrawable(*m_commandPool, *m_simplePipeline);
@@ -72,18 +81,39 @@ GameMode::~GameMode()
 
 void GameMode::Launch()
 {
-    Init();
-
     while (!glfwWindowShouldClose(m_window->GetWindow()))
     {
         glfwPollEvents();
-        MainLoop();
 
         m_simpleDrawable->Draw();
     }
 
     vkDeviceWaitIdle(m_device->GetDevice());
+}
 
-    CleanUp();
+void GameMode::OnWindowResized(int /*width*/, int /*height*/)
+{
+    RecreateSwapchain();
+}
+
+void GameMode::RecreateSwapchain()
+{
+    for (VkQueue graphicsQueue : m_device->GetGraphicsQueues())
+        vkQueueWaitIdle(graphicsQueue);
+    for (VkQueue presentQueue : m_device->GetPresentQueues())
+        vkQueueWaitIdle(presentQueue);
+
+    delete m_simpleDrawable;
+    delete m_simplePipeline;
+    delete m_swapchain;
+
+    m_swapchain = new Swapchain(*m_device);
+    assert(m_swapchain);
+
+    m_simplePipeline = new SimplePipeline(*m_swapchain, m_shadersPath);
+    assert(m_simplePipeline);
+
+    m_simpleDrawable = new SimpleDrawable(*m_commandPool, *m_simplePipeline);
+    assert(m_simpleDrawable);
 }
 }
