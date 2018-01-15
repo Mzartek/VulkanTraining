@@ -2,15 +2,19 @@
 
 #include <fstream>
 
+#include <boost/filesystem.hpp>
+
+#include <SPIRV/GlslangToSpv.h>
+
 namespace
 {
-    std::vector<char> ReadFile(const std::string& path)
+    std::vector<char> ReadFile(const std::string& filename)
     {
-        std::ifstream file(path, std::ios::ate | std::ios::binary);
+        std::ifstream file(filename, std::ios::ate);
 
         if (!file.is_open())
         {
-            const std::string message = "File not found (" + path + ")";
+            const std::string message = "File not found (" + filename + ")";
             throw std::runtime_error(message);
         }
 
@@ -24,20 +28,70 @@ namespace
 
         return buffer;
     }
+
+    EShLanguage GetShaderType(const std::string& filename)
+    {
+        std::string filenameExtension = boost::filesystem::extension(filename);
+
+        if (filenameExtension == ".vert")
+            return EShLangVertex;
+        if (filenameExtension == ".tesc")
+            return EShLangTessControl;
+        if (filenameExtension == ".tese")
+            return EShLangTessEvaluation;
+        if (filenameExtension == ".geom")
+            return EShLangGeometry;
+        if (filenameExtension == ".frag")
+            return EShLangFragment;
+        if (filenameExtension != ".comp")
+            throw std::runtime_error("Can't find shader type");
+
+        return EShLangCompute;
+    }
+
+    std::vector<unsigned int> GLSLtoSPV(const std::string& filename)
+    {
+        std::vector<char> textBuffer = ReadFile(filename);
+        std::vector<unsigned int> spirv;
+
+        glslang::InitializeProcess();
+
+        glslang::TProgram program;
+        TBuiltInResource Resources = {};
+        const char* shaderStrings[] = { textBuffer.data() };
+
+        EShLanguage stage = GetShaderType(filename);
+        glslang::TShader shader(stage);
+        shader.setStrings(shaderStrings, 1);
+
+        EShMessages msgs = static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
+        if (!shader.parse(&Resources, 100, false, msgs))
+        {
+            puts(shader.getInfoLog());
+            puts(shader.getInfoDebugLog());
+            throw std::runtime_error("Failed to build shader " + filename);
+        }
+
+        glslang::GlslangToSpv(*program.getIntermediate(stage), spirv);
+
+        glslang::FinalizeProcess();
+
+        return spirv;
+    }
 }
 
 namespace VT
 {
-Shader::Shader(Device& device, const std::string& path)
+Shader::Shader(Device& device, const std::string& filename)
     : m_device(device)
     , m_shaderModule(VK_NULL_HANDLE)
 {
-    std::vector<char> buffer = ReadFile(path);
+    std::vector<unsigned int> spirv = GLSLtoSPV(filename);
 
     VkShaderModuleCreateInfo shaderModuleCreateInfo = {};
     shaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    shaderModuleCreateInfo.codeSize = buffer.size();
-    shaderModuleCreateInfo.pCode = reinterpret_cast<uint32_t*>(buffer.data());
+    shaderModuleCreateInfo.codeSize = spirv.size() * sizeof(unsigned int);
+    shaderModuleCreateInfo.pCode = spirv.data();
 
     VkResult result = vkCreateShaderModule(m_device.GetDevice(), &shaderModuleCreateInfo, nullptr, &m_shaderModule);
     if (result != VK_SUCCESS)

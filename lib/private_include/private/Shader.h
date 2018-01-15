@@ -8,7 +8,7 @@ namespace VT
 class Shader
 {
 public:
-    Shader(Device& device, const std::string& path);
+    Shader(Device& device, const std::string& filename);
     virtual ~Shader();
     Shader(const Shader& other) = delete;
     Shader(Shader&& other) = delete;
