@@ -1,7 +1,6 @@
 #include <private/Shader.h>
 
 #include <fstream>
-#include <iostream>
 
 #include <boost/filesystem.hpp>
 
