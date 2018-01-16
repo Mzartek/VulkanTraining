@@ -1,6 +1,7 @@
 #include <private/Shader.h>
 
 #include <fstream>
+#include <iostream>
 
 #include <boost/filesystem.hpp>
 
@@ -27,6 +28,105 @@ namespace
         file.close();
 
         return buffer;
+    }
+
+    TBuiltInResource GetRessources()
+    {
+        TBuiltInResource ressources = {};
+        ressources.maxLights = 32;
+        ressources.maxClipPlanes = 6;
+        ressources.maxTextureUnits = 32;
+        ressources.maxTextureCoords = 32;
+        ressources.maxVertexAttribs = 64;
+        ressources.maxVertexUniformComponents = 4096;
+        ressources.maxVaryingFloats = 64;
+        ressources.maxVertexTextureImageUnits = 32;
+        ressources.maxCombinedTextureImageUnits = 80;
+        ressources.maxTextureImageUnits = 32;
+        ressources.maxFragmentUniformComponents = 4096;
+        ressources.maxDrawBuffers = 32;
+        ressources.maxVertexUniformVectors = 128;
+        ressources.maxVaryingVectors = 8;
+        ressources.maxFragmentUniformVectors = 16;
+        ressources.maxVertexOutputVectors = 16;
+        ressources.maxFragmentInputVectors = 15;
+        ressources.minProgramTexelOffset = -8;
+        ressources.maxProgramTexelOffset = 7;
+        ressources.maxClipDistances = 8;
+        ressources.maxComputeWorkGroupCountX = 65535;
+        ressources.maxComputeWorkGroupCountY = 65535;
+        ressources.maxComputeWorkGroupCountZ = 65535;
+        ressources.maxComputeWorkGroupSizeX = 1024;
+        ressources.maxComputeWorkGroupSizeY = 1024;
+        ressources.maxComputeWorkGroupSizeZ = 64;
+        ressources.maxComputeUniformComponents = 1024;
+        ressources.maxComputeTextureImageUnits = 16;
+        ressources.maxComputeImageUniforms = 8;
+        ressources.maxComputeAtomicCounters = 8;
+        ressources.maxComputeAtomicCounterBuffers = 1;
+        ressources.maxVaryingComponents = 60;
+        ressources.maxVertexOutputComponents = 64;
+        ressources.maxGeometryInputComponents = 64;
+        ressources.maxGeometryOutputComponents = 128;
+        ressources.maxFragmentInputComponents = 128;
+        ressources.maxImageUnits = 8;
+        ressources.maxCombinedImageUnitsAndFragmentOutputs = 8;
+        ressources.maxCombinedShaderOutputResources = 8;
+        ressources.maxImageSamples = 0;
+        ressources.maxVertexImageUniforms = 0;
+        ressources.maxTessControlImageUniforms = 0;
+        ressources.maxTessEvaluationImageUniforms = 0;
+        ressources.maxGeometryImageUniforms = 0;
+        ressources.maxFragmentImageUniforms = 8;
+        ressources.maxCombinedImageUniforms = 8;
+        ressources.maxGeometryTextureImageUnits = 16;
+        ressources.maxGeometryOutputVertices = 256;
+        ressources.maxGeometryTotalOutputComponents = 1024;
+        ressources.maxGeometryUniformComponents = 1024;
+        ressources.maxGeometryVaryingComponents = 64;
+        ressources.maxTessControlInputComponents = 128;
+        ressources.maxTessControlOutputComponents = 128;
+        ressources.maxTessControlTextureImageUnits = 16;
+        ressources.maxTessControlUniformComponents = 1024;
+        ressources.maxTessControlTotalOutputComponents = 4096;
+        ressources.maxTessEvaluationInputComponents = 128;
+        ressources.maxTessEvaluationOutputComponents = 128;
+        ressources.maxTessEvaluationTextureImageUnits = 16;
+        ressources.maxTessEvaluationUniformComponents = 1024;
+        ressources.maxTessPatchComponents = 120;
+        ressources.maxPatchVertices = 32;
+        ressources.maxTessGenLevel = 64;
+        ressources.maxViewports = 16;
+        ressources.maxVertexAtomicCounters = 0;
+        ressources.maxTessControlAtomicCounters = 0;
+        ressources.maxTessEvaluationAtomicCounters = 0;
+        ressources.maxGeometryAtomicCounters = 0;
+        ressources.maxFragmentAtomicCounters = 8;
+        ressources.maxCombinedAtomicCounters = 8;
+        ressources.maxAtomicCounterBindings = 1;
+        ressources.maxVertexAtomicCounterBuffers = 0;
+        ressources.maxTessControlAtomicCounterBuffers = 0;
+        ressources.maxTessEvaluationAtomicCounterBuffers = 0;
+        ressources.maxGeometryAtomicCounterBuffers = 0;
+        ressources.maxFragmentAtomicCounterBuffers = 1;
+        ressources.maxCombinedAtomicCounterBuffers = 1;
+        ressources.maxAtomicCounterBufferSize = 16384;
+        ressources.maxTransformFeedbackBuffers = 4;
+        ressources.maxTransformFeedbackInterleavedComponents = 64;
+        ressources.maxCullDistances = 8;
+        ressources.maxCombinedClipAndCullDistances = 8;
+        ressources.maxSamples = 4;
+        ressources.limits.nonInductiveForLoops = 1;
+        ressources.limits.whileLoops = 1;
+        ressources.limits.doWhileLoops = 1;
+        ressources.limits.generalUniformIndexing = 1;
+        ressources.limits.generalAttributeMatrixVectorIndexing = 1;
+        ressources.limits.generalVaryingIndexing = 1;
+        ressources.limits.generalSamplerIndexing = 1;
+        ressources.limits.generalVariableIndexing = 1;
+        ressources.limits.generalConstantMatrixVectorIndexing = 1;
+
+        return ressources;
     }
 
     EShLanguage GetShaderType(const std::string& filename)
@@ -57,15 +157,14 @@ namespace
         glslang::InitializeProcess();
 
         glslang::TProgram program;
-        TBuiltInResource Resources = {};
-        const char* shaderStrings[] = { textBuffer.data() };
+        TBuiltInResource resources = GetRessources();
 
         EShLanguage stage = GetShaderType(filename);
         glslang::TShader shader(stage);
         shader.setStrings(shaderStrings, 1);
 
         EShMessages msgs = static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
-        if (!shader.parse(&Resources, 100, false, msgs))
+        if (!shader.parse(&resources, 100, false, msgs))
         {
             puts(shader.getInfoLog());
             puts(shader.getInfoDebugLog());
