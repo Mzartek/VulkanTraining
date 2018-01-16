@@ -158,6 +158,7 @@ namespace
 
         glslang::TProgram program;
         TBuiltInResource resources = GetRessources();
+        const char* shaderStrings[] = { textBuffer.data() };
 
         EShLanguage stage = GetShaderType(filename);
         glslang::TShader shader(stage);
