@@ -158,14 +158,24 @@ namespace
 
         glslang::TProgram program;
         TBuiltInResource resources = GetRessources();
+        EShLanguage stage = GetShaderType(filename);
         const char* shaderStrings[] = { textBuffer.data() };
 
-        EShLanguage stage = GetShaderType(filename);
+        EShMessages msgs = static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
+
         glslang::TShader shader(stage);
         shader.setStrings(shaderStrings, 1);
 
-        EShMessages msgs = static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
         if (!shader.parse(&resources, 100, false, msgs))
+        {
+            puts(shader.getInfoLog());
+            puts(shader.getInfoDebugLog());
+            throw std::runtime_error("Failed to build shader " + filename);
+        }
+
+        program.addShader(&shader);
+
+        if (!program.link(msgs))
         {
             puts(shader.getInfoLog());
             puts(shader.getInfoDebugLog());
