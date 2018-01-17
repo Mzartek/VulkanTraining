@@ -1,7 +1,5 @@
 #include <private/CommandPool.h>
 
-#include <private/Managers/QueueFamiliesManager.h>
-
 #include <stdexcept>
 
 namespace VT
@@ -10,11 +8,9 @@ CommandPool::CommandPool(Device& device)
     : m_device(device)
     , m_commandPool(VK_NULL_HANDLE)
 {
-    QueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
-
     VkCommandPoolCreateInfo poolInfo = {};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.queueFamilyIndex = queueFamiliesManager.GetGraphicsQueueIndex();
+    poolInfo.queueFamilyIndex = m_device.GetGraphicsQueueIndex();
     poolInfo.flags = 0;
 
     VkResult result = vkCreateCommandPool(m_device.GetDevice(), &poolInfo, nullptr, &m_commandPool);

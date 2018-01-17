@@ -12,9 +12,14 @@ namespace VT
 Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableValidationLayers)
     : m_physicalDevice(physicalDevice)
     , m_surface(surface)
+    , m_graphicsQueueIndex(0)
+    , m_presentQueueIndex(0)
     , m_device(VK_NULL_HANDLE)
 {
     QueueFamiliesManager queueFamiliesManager(m_physicalDevice, surface);
+
+    m_graphicsQueueIndex = queueFamiliesManager.GetGraphicsQueueIndex();
+    m_presentQueueIndex = queueFamiliesManager.GetPresentQueueIndex();
 
     if (!queueFamiliesManager.HasGraphicsQueue())
         throw std::runtime_error("PhysicalDevice doesn't have Graphics Queue");
@@ -23,8 +28,8 @@ Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableVali
 
     std::set<uint32_t> queueFamilyIndexes =
     {
-        queueFamiliesManager.GetGraphicsQueueIndex(),
-        queueFamiliesManager.GetPresentQueueIndex()
+        m_graphicsQueueIndex,
+        m_presentQueueIndex
     };
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -62,15 +67,13 @@ Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableVali
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create device");
 
-    const uint32_t graphicsQueueFamilyIndex = queueFamiliesManager.GetGraphicsQueueIndex();
-    m_graphicsQueues.resize(queueFamiliesManager.GetIndexQueueCount(graphicsQueueFamilyIndex));
+    m_graphicsQueues.resize(queueFamiliesManager.GetIndexQueueCount(m_graphicsQueueIndex));
     for (uint32_t i = 0; i < m_graphicsQueues.size(); ++i)
-        vkGetDeviceQueue(m_device, graphicsQueueFamilyIndex, i, &m_graphicsQueues[i]);
+        vkGetDeviceQueue(m_device, m_graphicsQueueIndex, i, &m_graphicsQueues[i]);
 
-    const uint32_t presentQueueFamilyIndex = queueFamiliesManager.GetPresentQueueIndex();
-    m_presentQueues.resize(queueFamiliesManager.GetIndexQueueCount(presentQueueFamilyIndex));
+    m_presentQueues.resize(queueFamiliesManager.GetIndexQueueCount(m_presentQueueIndex));
     for (uint32_t i = 0; i < m_presentQueues.size(); ++i)
-        vkGetDeviceQueue(m_device, presentQueueFamilyIndex, i, &m_presentQueues[i]);
+        vkGetDeviceQueue(m_device, m_presentQueueIndex, i, &m_presentQueues[i]);
 }
 
 Device::~Device()
@@ -86,6 +89,16 @@ PhysicalDevice& Device::GetRelatedPhysicalDevice() const
 Surface& Device::GetRelatedSurface() const
 {
     return m_surface;
+}
+
+uint32_t Device::GetGraphicsQueueIndex() const
+{
+    return m_graphicsQueueIndex;
+}
+
+uint32_t Device::GetPresentQueueIndex() const
+{
+    return m_presentQueueIndex;
 }
 
 VkDevice Device::GetDevice() const

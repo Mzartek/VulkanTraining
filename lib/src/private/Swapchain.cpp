@@ -1,7 +1,6 @@
 #include <private/Swapchain.h>
 
 #include <private/Managers/SwapchainManager.h>
-#include <private/Managers/QueueFamiliesManager.h>
 
 #include <array>
 
@@ -17,7 +16,6 @@ Swapchain::Swapchain(Device& device)
     , m_nextSemaphoreIndex(0)
 {
     SwapchainManager swapchainManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
-    QueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
 
     m_extend2D = swapchainManager.GetExtent2D();
     m_format = swapchainManager.GetSurfaceFormat().format;
@@ -34,8 +32,8 @@ Swapchain::Swapchain(Device& device)
 
     std::array<uint32_t, 2> queueFamilyIndices =
     {
-        queueFamiliesManager.GetGraphicsQueueIndex(),
-        queueFamiliesManager.GetPresentQueueIndex()
+        m_device.GetGraphicsQueueIndex(),
+        m_device.GetPresentQueueIndex()
     };
 
     if (queueFamilyIndices[0] != queueFamilyIndices[1])
