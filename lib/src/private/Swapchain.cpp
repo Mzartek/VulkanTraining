@@ -28,7 +28,7 @@ Swapchain::Swapchain(Device& device)
     createInfo.minImageCount = swapchainManager.GetImageCount();
     createInfo.imageFormat = m_format;
     createInfo.imageColorSpace = swapchainManager.GetSurfaceFormat().colorSpace;
-    createInfo.imageExtent = swapchainManager.GetExtent2D();
+    createInfo.imageExtent = m_extend2D;
     createInfo.imageArrayLayers = 1;
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
