@@ -9,6 +9,8 @@ namespace VT
 {
 Swapchain::Swapchain(Device& device)
     : m_device(device)
+    , m_extend2D({})
+    , m_format(VK_FORMAT_UNDEFINED)
     , m_swapchain(VK_NULL_HANDLE)
     , m_currentImageViewIndex(0)
     , m_currentSemaphoreIndex(0)
@@ -17,11 +19,14 @@ Swapchain::Swapchain(Device& device)
     SwapchainManager swapchainManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
     QueueFamiliesManager queueFamiliesManager(m_device.GetRelatedPhysicalDevice(), m_device.GetRelatedSurface());
 
+    m_extend2D = swapchainManager.GetExtent2D();
+    m_format = swapchainManager.GetSurfaceFormat().format;
+
     VkSwapchainCreateInfoKHR createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     createInfo.surface = m_device.GetRelatedSurface().GetSurface();
     createInfo.minImageCount = swapchainManager.GetImageCount();
-    createInfo.imageFormat = swapchainManager.GetSurfaceFormat().format;
+    createInfo.imageFormat = m_format;
     createInfo.imageColorSpace = swapchainManager.GetSurfaceFormat().colorSpace;
     createInfo.imageExtent = swapchainManager.GetExtent2D();
     createInfo.imageArrayLayers = 1;
@@ -65,7 +70,7 @@ Swapchain::Swapchain(Device& device)
     VkImageViewCreateInfo imageViewCreateInfo = {};
     imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    imageViewCreateInfo.format = swapchainManager.GetSurfaceFormat().format;
+    imageViewCreateInfo.format = m_format;
     imageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
     imageViewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
     imageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -108,6 +113,16 @@ Swapchain::~Swapchain()
 Device& Swapchain::GetRelatedDevice() const
 {
     return m_device;
+}
+
+const VkExtent2D& Swapchain::GetExtent2D() const
+{
+    return m_extend2D;
+}
+
+VkFormat Swapchain::GetFormat() const
+{
+    return m_format;
 }
 
 VkSwapchainKHR Swapchain::GetSwapchain() const

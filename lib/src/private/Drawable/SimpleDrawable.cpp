@@ -1,7 +1,5 @@
 #include <private/Drawable/SimpleDrawable.h>
 
-#include <private/Managers/SwapchainManager.h>
-
 #include <stdexcept>
 
 namespace VT
@@ -10,10 +8,6 @@ SimpleDrawable::SimpleDrawable(CommandPool& commandPool, SimplePipeline& simpleP
     : BaseDrawable(commandPool, simplePipeline)
     , m_simplePipeline(simplePipeline)
 {
-    const PhysicalDevice& physicalDevice = m_simplePipeline.GetRelatedSwapchain().GetRelatedDevice().GetRelatedPhysicalDevice();
-    const Surface& surface = m_simplePipeline.GetRelatedSwapchain().GetRelatedDevice().GetRelatedSurface();
-    SwapchainManager swapchainManager(physicalDevice, surface);
-
     const std::vector<VkCommandBuffer> commandBuffers = this->GetCommandBuffers();
     const std::vector<VkFramebuffer> framebuffers = m_simplePipeline.GetFramebuffers();
     for (size_t i = 0; i < commandBuffers.size(); ++i)
@@ -32,7 +26,7 @@ SimpleDrawable::SimpleDrawable(CommandPool& commandPool, SimplePipeline& simpleP
         renderPassInfo.renderPass = m_simplePipeline.GetRenderPass();
         renderPassInfo.framebuffer = framebuffers[i];
         renderPassInfo.renderArea.offset = {0, 0};
-        renderPassInfo.renderArea.extent = swapchainManager.GetExtent2D();
+        renderPassInfo.renderArea.extent = m_simplePipeline.GetRelatedSwapchain().GetExtent2D();
 
         VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
         renderPassInfo.clearValueCount = 1;
