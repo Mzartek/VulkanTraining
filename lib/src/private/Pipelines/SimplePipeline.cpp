@@ -58,14 +58,14 @@ SimplePipeline::SimplePipeline(Swapchain& swapchain, const std::string& shadersP
 
     m_viewport.x = 0.0f;
     m_viewport.y = 0.0f;
-    m_viewport.width = swapchain.GetExtent2D().width;
-    m_viewport.height = swapchain.GetExtent2D().height;
+    m_viewport.width = m_swapchain.GetExtent2D().width;
+    m_viewport.height = m_swapchain.GetExtent2D().height;
     m_viewport.minDepth = 0.0f;
     m_viewport.maxDepth = 1.0f;
 
     VkRect2D scissor = {};
     scissor.offset = { 0, 0 };
-    scissor.extent = swapchain.GetExtent2D();
+    scissor.extent = m_swapchain.GetExtent2D();
 
     VkPipelineViewportStateCreateInfo viewportState = {};
     viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -143,7 +143,7 @@ SimplePipeline::SimplePipeline(Swapchain& swapchain, const std::string& shadersP
         throw std::runtime_error("Failed to create pipeline layout");
 
     VkAttachmentDescription colorAttachment = {};
-    colorAttachment.format = swapchain.GetFormat();
+    colorAttachment.format = m_swapchain.GetFormat();
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -214,8 +214,8 @@ SimplePipeline::SimplePipeline(Swapchain& swapchain, const std::string& shadersP
         framebufferInfo.renderPass = m_renderPass;
         framebufferInfo.attachmentCount = 1;
         framebufferInfo.pAttachments = &swapchainImageViews[i];
-        framebufferInfo.width = swapchain.GetExtent2D().width;
-        framebufferInfo.height = swapchain.GetExtent2D().height;
+        framebufferInfo.width = m_swapchain.GetExtent2D().width;
+        framebufferInfo.height = m_swapchain.GetExtent2D().height;
         framebufferInfo.layers = 1;
 
         result = vkCreateFramebuffer(m_swapchain.GetRelatedDevice().GetDevice(), &framebufferInfo, nullptr, &m_framebuffers[i]);
