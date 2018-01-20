@@ -7,17 +7,12 @@
 
 namespace VT
 {
-class PhysicalDevice
+class PhysicalDevice : public NonCopyableObject
 {
     static std::vector<VkPhysicalDevice> AvailablePhysicalDevices;
 
 public:
     PhysicalDevice(const Instance& instance);
-    virtual ~PhysicalDevice() = default;
-    PhysicalDevice(const PhysicalDevice& other) = delete;
-    PhysicalDevice(PhysicalDevice&& other) = delete;
-    PhysicalDevice& operator=(const PhysicalDevice& other) = delete;
-    PhysicalDevice& operator=(PhysicalDevice&& other) = delete;
 
     VkPhysicalDevice GetPhysicalDevice() const;
 

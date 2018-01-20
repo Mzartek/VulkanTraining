@@ -8,15 +8,11 @@ namespace VT
 class SwapchainOutOfDateException : public std::exception
 {};
 
-class Swapchain
+class Swapchain : public NonCopyableObject
 {
 public:
     Swapchain(Device& device);
-    virtual ~Swapchain();
-    Swapchain(const Swapchain& other) = delete;
-    Swapchain(Swapchain&& other) = delete;
-    Swapchain& operator=(const Swapchain& other) = delete;
-    Swapchain& operator=(Swapchain&& other) = delete;
+    ~Swapchain() override;
 
     Device& GetRelatedDevice() const;
 

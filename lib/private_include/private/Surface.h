@@ -6,15 +6,11 @@
 
 namespace VT
 {
-class Surface
+class Surface : public NonCopyableObject
 {
 public:
     Surface(Instance& instance, Window& window);
-    virtual ~Surface();
-    Surface(const Surface& other) = delete;
-    Surface(Surface&& other) = delete;
-    Surface& operator=(const Surface& other) = delete;
-    Surface& operator=(Surface&& other) = delete;
+    ~Surface() override;
 
     Instance& GetRelatedInstance() const;
     Window& GetRelatedWindow() const;

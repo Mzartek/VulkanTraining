@@ -6,15 +6,11 @@
 
 namespace VT
 {
-class Device
+class Device : public NonCopyableObject
 {
 public:
     Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableValidationLayers);
-    virtual ~Device();
-    Device(const Device& other) = delete;
-    Device(Device&& other) = delete;
-    Device& operator=(const Device& other) = delete;
-    Device& operator=(Device&& other) = delete;
+    ~Device() override;
 
     PhysicalDevice& GetRelatedPhysicalDevice() const;
     Surface& GetRelatedSurface() const;

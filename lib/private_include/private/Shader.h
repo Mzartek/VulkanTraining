@@ -5,15 +5,11 @@
 
 namespace VT
 {
-class Shader
+class Shader : public NonCopyableObject
 {
 public:
     Shader(Device& device, const std::string& filename);
-    virtual ~Shader();
-    Shader(const Shader& other) = delete;
-    Shader(Shader&& other) = delete;
-    Shader& operator=(const Shader& other) = delete;
-    Shader& operator=(Shader&& other) = delete;
+    ~Shader() override;
 
     Device& GetRelatedDevice() const;
 

@@ -8,15 +8,11 @@
 
 namespace VT
 {
-class SimplePipeline : public IGraphicsPipeline
+class SimplePipeline : public NonCopyableObject, public IGraphicsPipeline
 {
 public:
     SimplePipeline(Swapchain& swapchain, const std::string& shadersPath);
     ~SimplePipeline() override;
-    SimplePipeline(const SimplePipeline& other) = delete;
-    SimplePipeline(SimplePipeline&& other) = delete;
-    SimplePipeline& operator=(const SimplePipeline& other) = delete;
-    SimplePipeline& operator=(SimplePipeline&& other) = delete;
 
     Swapchain& GetRelatedSwapchain() const;
 

@@ -10,7 +10,7 @@
 
 namespace VT
 {
-class StaticObjectPipeline : public IGraphicsPipeline
+class StaticObjectPipeline : public NonCopyableObject, public IGraphicsPipeline
 {
 public:
     struct Vertex
@@ -21,10 +21,6 @@ public:
 
     StaticObjectPipeline(Swapchain& swapchain, const std::string& shadersPath);
     ~StaticObjectPipeline() override;
-    StaticObjectPipeline(const StaticObjectPipeline& other) = delete;
-    StaticObjectPipeline(StaticObjectPipeline&& other) = delete;
-    StaticObjectPipeline& operator=(const StaticObjectPipeline& other) = delete;
-    StaticObjectPipeline& operator=(StaticObjectPipeline&& other) = delete;
 
     Swapchain& GetRelatedSwapchain() const;
 

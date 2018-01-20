@@ -10,11 +10,6 @@ class SimpleDrawable : public BaseDrawable
 {
 public:
     SimpleDrawable(CommandPool& commandPool, SimplePipeline& simplePipeline);
-    ~SimpleDrawable() override = default;
-    SimpleDrawable(const SimpleDrawable& other) = delete;
-    SimpleDrawable(SimpleDrawable&& other) = delete;
-    SimpleDrawable& operator=(const SimpleDrawable& other) = delete;
-    SimpleDrawable& operator=(SimpleDrawable&& other) = delete;
 
     void Draw() override;
 

@@ -10,11 +10,6 @@ class StaticObjectDrawable : public BaseDrawable
 {
 public:
     StaticObjectDrawable(CommandPool& commandPool, StaticObjectPipeline& staticObjectPipeline);
-    ~StaticObjectDrawable() override = default;
-    StaticObjectDrawable(const StaticObjectDrawable& other) = delete;
-    StaticObjectDrawable(StaticObjectDrawable&& other) = delete;
-    StaticObjectDrawable& operator=(const StaticObjectDrawable& other) = delete;
-    StaticObjectDrawable& operator=(StaticObjectDrawable&& other) = delete;
 
     void Draw() override;
 

@@ -1,6 +1,8 @@
 #ifndef VT_WINDOW_INCLUDE_H
 #define VT_WINDOW_INCLUDE_H
 
+#include "NonCopyableObject.h"
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -9,15 +11,11 @@
 
 namespace VT
 {
-class Window
+class Window : public NonCopyableObject
 {
 public:
     Window(int width, int height, const std::string& title, void* userPointer, GLFWwindowsizefun resizeFunction);
-    virtual ~Window();
-    Window(const Window& other) = delete;
-    Window(Window&& other) = delete;
-    Window& operator=(const Window& other) = delete;
-    Window& operator=(Window&& other) = delete;
+    ~Window() override;
 
     GLFWwindow* GetWindow() const;
 

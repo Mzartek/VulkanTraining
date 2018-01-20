@@ -5,15 +5,11 @@
 
 namespace VT
 {
-class CommandPool
+class CommandPool : public NonCopyableObject
 {
 public:
     CommandPool(Device& device);
-    virtual ~CommandPool();
-    CommandPool(const CommandPool& other) = delete;
-    CommandPool(CommandPool&& other) = delete;
-    CommandPool& operator=(const CommandPool& other) = delete;
-    CommandPool& operator=(CommandPool&& other) = delete;
+    ~CommandPool() override;
 
     Device& GetRelatedDevice() const;
 

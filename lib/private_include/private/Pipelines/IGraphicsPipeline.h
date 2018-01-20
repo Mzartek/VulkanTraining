@@ -9,7 +9,7 @@ namespace VT
 {
 struct IGraphicsPipeline
 {
-    virtual ~IGraphicsPipeline() {}
+    virtual ~IGraphicsPipeline() = default;
 
     virtual VkPipelineLayout GetPipelineLayout() const = 0;
     virtual VkRenderPass GetRenderPass() const = 0;

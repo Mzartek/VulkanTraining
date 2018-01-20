@@ -6,15 +6,11 @@
 
 namespace VT
 {
-class BaseDrawable
+class BaseDrawable : public NonCopyableObject
 {
 public:
     BaseDrawable(CommandPool& commandPool, IGraphicsPipeline& graphicsPipeline);
-    virtual ~BaseDrawable();
-    BaseDrawable(const BaseDrawable& other) = delete;
-    BaseDrawable(BaseDrawable&& other) = delete;
-    BaseDrawable& operator=(const BaseDrawable& other) = delete;
-    BaseDrawable& operator=(BaseDrawable&& other) = delete;
+    ~BaseDrawable() override;
 
     CommandPool& GetRelatedCommandPool() const;
 
