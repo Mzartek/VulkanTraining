@@ -8,7 +8,7 @@ namespace VT
 class Buffer : public NonCopyableObject
 {
 public:
-    Buffer(Device& device);
+    Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage);
     ~Buffer() override;
 
     Device& GetRelatedDevice() const;
