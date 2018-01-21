@@ -9,7 +9,7 @@ namespace VT
 class SimpleDrawable : public BaseDrawable
 {
 public:
-    SimpleDrawable(CommandPool& commandPool, SimplePipeline& simplePipeline);
+    SimpleDrawable(GraphicsCommandPool& graphicsCommandPool, SimplePipeline& simplePipeline);
 
     void Draw() override;
 

@@ -4,8 +4,8 @@
 
 namespace VT
 {
-SimpleDrawable::SimpleDrawable(CommandPool& commandPool, SimplePipeline& simplePipeline)
-    : BaseDrawable(commandPool, simplePipeline)
+SimpleDrawable::SimpleDrawable(GraphicsCommandPool& graphicsCommandPool, SimplePipeline& simplePipeline)
+    : BaseDrawable(graphicsCommandPool, simplePipeline)
     , m_simplePipeline(simplePipeline)
 {
     const std::vector<VkCommandBuffer> commandBuffers = this->GetCommandBuffers();

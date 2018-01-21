@@ -30,7 +30,7 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     , m_surface(nullptr)
     , m_physicalDevice(nullptr)
     , m_device(nullptr)
-    , m_commandPool(nullptr)
+    , m_graphicsCommandPool(nullptr)
     , m_swapchain(nullptr)
     , m_simplePipeline(nullptr)
 {
@@ -51,8 +51,8 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     m_device = new Device(*m_physicalDevice, *m_surface, enableValidationLayers);
     assert(m_device);
 
-    m_commandPool = new CommandPool(*m_device);
-    assert(m_commandPool);
+    m_graphicsCommandPool = new GraphicsCommandPool(*m_device);
+    assert(m_graphicsCommandPool);
 
     m_swapchain = new Swapchain(*m_device);
     assert(m_swapchain);
@@ -60,7 +60,7 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     m_simplePipeline = new SimplePipeline(*m_swapchain, m_shadersPath);
     assert(m_simplePipeline);
 
-    m_simpleDrawable = new SimpleDrawable(*m_commandPool, *m_simplePipeline);
+    m_simpleDrawable = new SimpleDrawable(*m_graphicsCommandPool, *m_simplePipeline);
     assert(m_simpleDrawable);
 }
 
@@ -69,7 +69,7 @@ GameMode::~GameMode()
     delete m_simpleDrawable;
     delete m_simplePipeline;
     delete m_swapchain;
-    delete m_commandPool;
+    delete m_graphicsCommandPool;
     delete m_device;
     delete m_physicalDevice;
     delete m_surface;
@@ -124,7 +124,7 @@ void GameMode::RecreateSwapchain()
     m_simplePipeline = new SimplePipeline(*m_swapchain, m_shadersPath);
     assert(m_simplePipeline);
 
-    m_simpleDrawable = new SimpleDrawable(*m_commandPool, *m_simplePipeline);
+    m_simpleDrawable = new SimpleDrawable(*m_graphicsCommandPool, *m_simplePipeline);
     assert(m_simpleDrawable);
 }
 }

@@ -9,7 +9,7 @@ namespace VT
 class StaticObjectDrawable : public BaseDrawable
 {
 public:
-    StaticObjectDrawable(CommandPool& commandPool, StaticObjectPipeline& staticObjectPipeline);
+    StaticObjectDrawable(GraphicsCommandPool& graphicsCommandPool, StaticObjectPipeline& staticObjectPipeline);
 
     void Draw() override;
 

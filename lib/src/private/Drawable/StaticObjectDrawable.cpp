@@ -4,8 +4,8 @@
 
 namespace VT
 {
-StaticObjectDrawable::StaticObjectDrawable(CommandPool& commandPool, StaticObjectPipeline& staticObjectPipeline)
-    : BaseDrawable(commandPool, staticObjectPipeline)
+StaticObjectDrawable::StaticObjectDrawable(GraphicsCommandPool& graphicsCommandPool, StaticObjectPipeline& staticObjectPipeline)
+    : BaseDrawable(graphicsCommandPool, staticObjectPipeline)
     , m_staticObjectPipeline(staticObjectPipeline)
 {
     const std::vector<VkCommandBuffer> commandBuffers = this->GetCommandBuffers();

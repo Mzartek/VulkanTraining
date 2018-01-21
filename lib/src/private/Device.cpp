@@ -18,17 +18,25 @@ Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableVali
 {
     QueueFamiliesManager queueFamiliesManager(m_physicalDevice, surface);
 
-    m_graphicsQueueIndex = queueFamiliesManager.GetGraphicsQueueIndex();
-    m_presentQueueIndex = queueFamiliesManager.GetPresentQueueIndex();
-
+    if (!queueFamiliesManager.HasTransferQueue())
+        throw std::runtime_error("PhysicalDevice doesn't have Transfer Queue");
     if (!queueFamiliesManager.HasGraphicsQueue())
         throw std::runtime_error("PhysicalDevice doesn't have Graphics Queue");
+    if (!queueFamiliesManager.HasComputeQueue())
+        throw std::runtime_error("PhysicalDevice doesn't have Compute Queue");
     if (!queueFamiliesManager.HasPresentQueue())
         throw std::runtime_error("PhysicalDevice doesn't have Present Queue");
 
+    m_transferQueueIndex = queueFamiliesManager.GetTransferQueueIndex();
+    m_graphicsQueueIndex = queueFamiliesManager.GetGraphicsQueueIndex();
+    m_computeQueueIndex = queueFamiliesManager.GetComputeQueueIndex();
+    m_presentQueueIndex = queueFamiliesManager.GetPresentQueueIndex();
+
     std::set<uint32_t> queueFamilyIndexes =
     {
+        m_transferQueueIndex,
         m_graphicsQueueIndex,
+        m_computeQueueIndex,
         m_presentQueueIndex
     };
 
@@ -67,9 +75,17 @@ Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableVali
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create device");
 
+    m_transferQueues.resize(queueFamiliesManager.GetIndexQueueCount(m_transferQueueIndex));
+    for (uint32_t i = 0; i < m_transferQueues.size(); ++i)
+        vkGetDeviceQueue(m_device, m_transferQueueIndex, i, &m_transferQueues[i]);
+
     m_graphicsQueues.resize(queueFamiliesManager.GetIndexQueueCount(m_graphicsQueueIndex));
     for (uint32_t i = 0; i < m_graphicsQueues.size(); ++i)
         vkGetDeviceQueue(m_device, m_graphicsQueueIndex, i, &m_graphicsQueues[i]);
+
+    m_computeQueues.resize(queueFamiliesManager.GetIndexQueueCount(m_computeQueueIndex));
+    for (uint32_t i = 0; i < m_computeQueues.size(); ++i)
+        vkGetDeviceQueue(m_device, m_computeQueueIndex, i, &m_computeQueues[i]);
 
     m_presentQueues.resize(queueFamiliesManager.GetIndexQueueCount(m_presentQueueIndex));
     for (uint32_t i = 0; i < m_presentQueues.size(); ++i)
