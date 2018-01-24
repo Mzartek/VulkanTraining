@@ -18,6 +18,8 @@ public:
 
     const VkViewport& GetViewport() const;
 
+    Device& GetRelatedDevice() const override;
+
     VkPipelineLayout GetPipelineLayout() const override;
     VkRenderPass GetRenderPass() const override;
     VkPipeline GetGraphicsPipeline() const override;

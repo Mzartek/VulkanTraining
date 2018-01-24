@@ -4,20 +4,20 @@
 
 namespace VT
 {
-SimpleDrawable::SimpleDrawable(GraphicsCommandPool& graphicsCommandPool, SimplePipeline& simplePipeline)
-    : BaseDrawable(graphicsCommandPool, simplePipeline)
+SimpleDrawable::SimpleDrawable(SimplePipeline& simplePipeline)
+    : BaseDrawable(simplePipeline)
     , m_simplePipeline(simplePipeline)
 {
-    const std::vector<VkCommandBuffer> commandBuffers = this->GetCommandBuffers();
+    const std::vector<VkCommandBuffer> graphicsCommandBuffers = this->GetGraphicsCommandBuffers();
     const std::vector<VkFramebuffer> framebuffers = m_simplePipeline.GetFramebuffers();
-    for (size_t i = 0; i < commandBuffers.size(); ++i)
+    for (size_t i = 0; i < graphicsCommandBuffers.size(); ++i)
     {
         VkCommandBufferBeginInfo beginInfo = {};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
         beginInfo.pInheritanceInfo = nullptr;
 
-        VkResult result = vkBeginCommandBuffer(commandBuffers[i], &beginInfo);
+        VkResult result = vkBeginCommandBuffer(graphicsCommandBuffers[i], &beginInfo);
         if (result != VK_SUCCESS)
             throw std::runtime_error("Failed to begin command buffer's recording");
 
@@ -32,17 +32,17 @@ SimpleDrawable::SimpleDrawable(GraphicsCommandPool& graphicsCommandPool, SimpleP
         renderPassInfo.clearValueCount = 1;
         renderPassInfo.pClearValues = &clearColor;
 
-        vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBeginRenderPass(graphicsCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_simplePipeline.GetGraphicsPipeline());
+        vkCmdBindPipeline(graphicsCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_simplePipeline.GetGraphicsPipeline());
 
-        vkCmdSetViewport(commandBuffers[i], 0, 1, &m_simplePipeline.GetViewport());
+        vkCmdSetViewport(graphicsCommandBuffers[i], 0, 1, &m_simplePipeline.GetViewport());
 
-        vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+        vkCmdDraw(graphicsCommandBuffers[i], 3, 1, 0, 0);
 
-        vkCmdEndRenderPass(commandBuffers[i]);
+        vkCmdEndRenderPass(graphicsCommandBuffers[i]);
 
-        result = vkEndCommandBuffer(commandBuffers[i]);
+        result = vkEndCommandBuffer(graphicsCommandBuffers[i]);
         if (result != VK_SUCCESS)
             throw std::runtime_error("Failed to stop comannd buffer's recording");
     }
@@ -56,7 +56,7 @@ void SimpleDrawable::Draw()
     VkQueue graphicsQueue = device.GetGraphicsQueues()[0];
 
     const uint32_t imageIndex = swapchain.GetCurrentImageViewIndex();
-    const std::vector<VkCommandBuffer> commandBuffers = this->GetCommandBuffers();
+    const std::vector<VkCommandBuffer> graphicsCommandBuffers = this->GetGraphicsCommandBuffers();
 
     VkSemaphore waitSemaphores[] = { swapchain.GetSemaphores()[swapchain.GetCurrentSemaphoreIndex()] };
     VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -68,7 +68,7 @@ void SimpleDrawable::Draw()
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
+    submitInfo.pCommandBuffers = &graphicsCommandBuffers[imageIndex];
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 

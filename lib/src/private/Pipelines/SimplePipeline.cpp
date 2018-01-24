@@ -243,6 +243,11 @@ const VkViewport& SimplePipeline::GetViewport() const
     return m_viewport;
 }
 
+Device& SimplePipeline::GetRelatedDevice() const
+{
+    return m_swapchain.GetRelatedDevice();
+}
+
 VkPipelineLayout SimplePipeline::GetPipelineLayout() const
 {
     return m_pipelineLayout;

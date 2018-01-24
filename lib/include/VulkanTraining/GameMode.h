@@ -12,7 +12,6 @@ class Window;
 class Surface;
 class PhysicalDevice;
 class Device;
-class GraphicsCommandPool;
 class Swapchain;
 class SimplePipeline;
 class SimpleDrawable;
@@ -43,7 +42,6 @@ private:
     Surface* m_surface;
     PhysicalDevice* m_physicalDevice;
     Device* m_device;
-    GraphicsCommandPool* m_graphicsCommandPool;
     Swapchain* m_swapchain;
     SimplePipeline* m_simplePipeline;
     SimpleDrawable* m_simpleDrawable;

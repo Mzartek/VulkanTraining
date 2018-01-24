@@ -4,38 +4,54 @@
 
 namespace VT
 {
-BaseDrawable::BaseDrawable(GraphicsCommandPool& graphicsCommandPool, IGraphicsPipeline& graphicsPipeline)
-    : m_graphicsCommandPool(graphicsCommandPool)
+BaseDrawable::BaseDrawable(IGraphicsPipeline& graphicsPipeline)
+    : m_graphicsPipeline(graphicsPipeline)
 {
-    m_commandBuffers.resize(graphicsPipeline.GetFramebuffers().size());
+    m_transferCommandBuffers.resize(m_graphicsPipeline.GetFramebuffers().size());
+    m_graphicsCommandBuffers.resize(m_graphicsPipeline.GetFramebuffers().size());
+    m_computeCommandBuffers.resize(m_graphicsPipeline.GetFramebuffers().size());
 
     VkSemaphoreCreateInfo semaphoreCreateInfo = {};
     semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-    VkResult result = vkCreateSemaphore(m_graphicsCommandPool.GetRelatedDevice().GetDevice(), &semaphoreCreateInfo, nullptr, &m_drawSemaphore);
+    VkResult result = vkCreateSemaphore(m_graphicsPipeline.GetRelatedDevice().GetDevice(), &semaphoreCreateInfo, nullptr, &m_drawSemaphore);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create draw semaphore");
 
     VkCommandBufferAllocateInfo allocInfo = {};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = m_graphicsCommandPool.GetGraphicsCommandPool();
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
+    allocInfo.commandBufferCount = static_cast<uint32_t>(m_transferCommandBuffers.size());
+    allocInfo.commandPool = m_graphicsPipeline.GetRelatedDevice().GetTransferCommandPool();
 
-    result = vkAllocateCommandBuffers(m_graphicsCommandPool.GetRelatedDevice().GetDevice(), &allocInfo, m_commandBuffers.data());
+    result = vkAllocateCommandBuffers(m_graphicsPipeline.GetRelatedDevice().GetDevice(), &allocInfo, m_transferCommandBuffers.data());
     if (result != VK_SUCCESS)
-        throw std::runtime_error("Failed to allocate command buffers");
+        throw std::runtime_error("Failed to allocate transfer command buffers");
+
+    allocInfo.commandBufferCount = static_cast<uint32_t>(m_graphicsCommandBuffers.size());
+    allocInfo.commandPool = m_graphicsPipeline.GetRelatedDevice().GetGraphicsCommandPool();
+
+    result = vkAllocateCommandBuffers(m_graphicsPipeline.GetRelatedDevice().GetDevice(), &allocInfo, m_graphicsCommandBuffers.data());
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to allocate graphics command buffers");
+
+    allocInfo.commandBufferCount = static_cast<uint32_t>(m_computeCommandBuffers.size());
+    allocInfo.commandPool = m_graphicsPipeline.GetRelatedDevice().GetComputeCommandPool();
+
+    result = vkAllocateCommandBuffers(m_graphicsPipeline.GetRelatedDevice().GetDevice(), &allocInfo, m_computeCommandBuffers.data());
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to allocate compute command buffers");
 }
 
 BaseDrawable::~BaseDrawable()
 {
-    vkFreeCommandBuffers(m_graphicsCommandPool.GetRelatedDevice().GetDevice(), m_graphicsCommandPool.GetGraphicsCommandPool(), static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
-    vkDestroySemaphore(m_graphicsCommandPool.GetRelatedDevice().GetDevice(), m_drawSemaphore, nullptr);
+    vkFreeCommandBuffers(m_graphicsPipeline.GetRelatedDevice().GetDevice(), m_graphicsPipeline.GetRelatedDevice().GetGraphicsCommandPool(), static_cast<uint32_t>(m_graphicsCommandBuffers.size()), m_graphicsCommandBuffers.data());
+    vkDestroySemaphore(m_graphicsPipeline.GetRelatedDevice().GetDevice(), m_drawSemaphore, nullptr);
 }
 
-GraphicsCommandPool& BaseDrawable::GetRelatedGraphicsCommandPool() const
+IGraphicsPipeline& BaseDrawable::GetRelatedGraphicsPipeline() const
 {
-    return m_graphicsCommandPool;
+    return m_graphicsPipeline;
 }
 
 VkSemaphore BaseDrawable::GetDrawSemaphore() const
@@ -43,8 +59,18 @@ VkSemaphore BaseDrawable::GetDrawSemaphore() const
     return m_drawSemaphore;
 }
 
-const std::vector<VkCommandBuffer>& BaseDrawable::GetCommandBuffers() const
+const std::vector<VkCommandBuffer>& BaseDrawable::GetTransferCommandBuffers() const
 {
-    return m_commandBuffers;
+    return m_transferCommandBuffers;
+}
+
+const std::vector<VkCommandBuffer>& BaseDrawable::GetGraphicsCommandBuffers() const
+{
+    return m_graphicsCommandBuffers;
+}
+
+const std::vector<VkCommandBuffer>& BaseDrawable::GetComputeCommandBuffers() const
+{
+    return m_computeCommandBuffers;
 }
 }

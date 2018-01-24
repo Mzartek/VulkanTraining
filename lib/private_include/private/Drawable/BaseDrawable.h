@@ -1,7 +1,6 @@
 #ifndef VT_BASE_DRAWABLE_INCLUDE_H
 #define VT_BASE_DRAWABLE_INCLUDE_H
 
-#include "../GraphicsCommandPool.h"
 #include "../Pipelines/IGraphicsPipeline.h"
 
 namespace VT
@@ -9,21 +8,27 @@ namespace VT
 class BaseDrawable : public NonCopyableObject
 {
 public:
-    BaseDrawable(GraphicsCommandPool& graphicsCommandPool, IGraphicsPipeline& graphicsPipeline);
+    BaseDrawable(IGraphicsPipeline& graphicsPipeline);
     ~BaseDrawable() override;
 
-    GraphicsCommandPool& GetRelatedGraphicsCommandPool() const;
+    IGraphicsPipeline& GetRelatedGraphicsPipeline() const;
 
     VkSemaphore GetDrawSemaphore() const;
-    const std::vector<VkCommandBuffer>& GetCommandBuffers() const;
+
+    const std::vector<VkCommandBuffer>& GetTransferCommandBuffers() const;
+    const std::vector<VkCommandBuffer>& GetGraphicsCommandBuffers() const;
+    const std::vector<VkCommandBuffer>& GetComputeCommandBuffers() const;
 
     virtual void Draw() = 0;
 
 private:
-    GraphicsCommandPool& m_graphicsCommandPool;
+    IGraphicsPipeline& m_graphicsPipeline;
 
     VkSemaphore m_drawSemaphore;
-    std::vector<VkCommandBuffer> m_commandBuffers;
+
+    std::vector<VkCommandBuffer> m_transferCommandBuffers;
+    std::vector<VkCommandBuffer> m_graphicsCommandBuffers;
+    std::vector<VkCommandBuffer> m_computeCommandBuffers;
 };
 }
 

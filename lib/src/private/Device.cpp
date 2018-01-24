@@ -15,6 +15,9 @@ Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableVali
     , m_graphicsQueueIndex(0)
     , m_presentQueueIndex(0)
     , m_device(VK_NULL_HANDLE)
+    , m_transferCommandPool(VK_NULL_HANDLE)
+    , m_graphicsCommandPool(VK_NULL_HANDLE)
+    , m_computeCommandPool(VK_NULL_HANDLE)
 {
     QueueFamiliesManager queueFamiliesManager(m_physicalDevice, surface);
 
@@ -90,10 +93,34 @@ Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableVali
     m_presentQueues.resize(queueFamiliesManager.GetIndexQueueCount(m_presentQueueIndex));
     for (uint32_t i = 0; i < m_presentQueues.size(); ++i)
         vkGetDeviceQueue(m_device, m_presentQueueIndex, i, &m_presentQueues[i]);
+
+    VkCommandPoolCreateInfo poolInfo = {};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = 0;
+    poolInfo.queueFamilyIndex = m_transferQueueIndex;
+
+    result = vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_transferCommandPool);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to create transfer command pool");
+
+    poolInfo.queueFamilyIndex = m_graphicsQueueIndex;
+
+    result = vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_graphicsCommandPool);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to create graphics command pool");
+
+    poolInfo.queueFamilyIndex = m_computeQueueIndex;
+
+    result = vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_computeCommandPool);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to create compute command pool");
 }
 
 Device::~Device()
 {
+    vkDestroyCommandPool(m_device, m_computeCommandPool, nullptr);
+    vkDestroyCommandPool(m_device, m_graphicsCommandPool, nullptr);
+    vkDestroyCommandPool(m_device, m_transferCommandPool, nullptr);
     vkDestroyDevice(m_device, nullptr);
 }
 
@@ -130,5 +157,20 @@ const std::vector<VkQueue>& Device::GetGraphicsQueues() const
 const std::vector<VkQueue>& Device::GetPresentQueues() const
 {
     return m_presentQueues;
+}
+
+VkCommandPool Device::GetTransferCommandPool() const
+{
+    return m_transferCommandPool;
+}
+
+VkCommandPool Device::GetGraphicsCommandPool() const
+{
+    return m_graphicsCommandPool;
+}
+
+VkCommandPool Device::GetComputeCommandPool() const
+{
+    return m_computeCommandPool;
 }
 }

@@ -260,6 +260,11 @@ const VkViewport& StaticObjectPipeline::GetViewport() const
     return m_viewport;
 }
 
+Device& StaticObjectPipeline::GetRelatedDevice() const
+{
+    return m_swapchain.GetRelatedDevice();
+}
+
 VkPipelineLayout StaticObjectPipeline::GetPipelineLayout() const
 {
     return m_pipelineLayout;

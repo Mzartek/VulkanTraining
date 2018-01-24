@@ -21,10 +21,15 @@ public:
     uint32_t GetPresentQueueIndex() const;
 
     VkDevice GetDevice() const;
+
     const std::vector<VkQueue>& GetTransferQueues() const;
     const std::vector<VkQueue>& GetGraphicsQueues() const;
     const std::vector<VkQueue>& GetComputeQueues() const;
     const std::vector<VkQueue>& GetPresentQueues() const;
+
+    VkCommandPool GetTransferCommandPool() const;
+    VkCommandPool GetGraphicsCommandPool() const;
+    VkCommandPool GetComputeCommandPool() const;
 
 private:
     PhysicalDevice& m_physicalDevice;
@@ -36,10 +41,15 @@ private:
     uint32_t m_presentQueueIndex;
 
     VkDevice m_device;
+
     std::vector<VkQueue> m_transferQueues;
     std::vector<VkQueue> m_graphicsQueues;
     std::vector<VkQueue> m_computeQueues;
     std::vector<VkQueue> m_presentQueues;
+
+    VkCommandPool m_transferCommandPool;
+    VkCommandPool m_graphicsCommandPool;
+    VkCommandPool m_computeCommandPool;
 };
 }
 
