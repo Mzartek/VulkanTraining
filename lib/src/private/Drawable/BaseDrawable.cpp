@@ -45,7 +45,9 @@ BaseDrawable::BaseDrawable(IGraphicsPipeline& graphicsPipeline)
 
 BaseDrawable::~BaseDrawable()
 {
+    vkFreeCommandBuffers(m_graphicsPipeline.GetRelatedDevice().GetDevice(), m_graphicsPipeline.GetRelatedDevice().GetComputeCommandPool(), static_cast<uint32_t>(m_computeCommandBuffers.size()), m_computeCommandBuffers.data());
     vkFreeCommandBuffers(m_graphicsPipeline.GetRelatedDevice().GetDevice(), m_graphicsPipeline.GetRelatedDevice().GetGraphicsCommandPool(), static_cast<uint32_t>(m_graphicsCommandBuffers.size()), m_graphicsCommandBuffers.data());
+    vkFreeCommandBuffers(m_graphicsPipeline.GetRelatedDevice().GetDevice(), m_graphicsPipeline.GetRelatedDevice().GetTransferCommandPool(), static_cast<uint32_t>(m_transferCommandBuffers.size()), m_transferCommandBuffers.data());
     vkDestroySemaphore(m_graphicsPipeline.GetRelatedDevice().GetDevice(), m_drawSemaphore, nullptr);
 }
 
