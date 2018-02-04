@@ -1,10 +1,37 @@
 #include <private/Buffer.h>
 
+namespace
+{
+uint32_t FindMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+{
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+
+    bool found = false;
+    uint32_t memoryType = 0;
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+    {
+        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
+        {
+            found = true;
+            memoryType = i;
+            break;
+        }
+    }
+
+    if (!found)
+        throw std::runtime_error("Failed to find suitable memory type");
+
+    return memoryType;
+}
+}
+
 namespace VT
 {
-Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage)
+Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage, VkMemoryPropertyFlags properties)
     : m_device(device)
     , m_buffer(VK_NULL_HANDLE)
+    , m_bufferMemory(VK_NULL_HANDLE)
 {
     VkBufferCreateInfo bufferInfo = {};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -18,6 +45,17 @@ Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags buffe
 
     VkMemoryRequirements memRequirements;
     vkGetBufferMemoryRequirements(m_device.GetDevice(), m_buffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = FindMemoryType(device.GetRelatedPhysicalDevice().GetPhysicalDevice(), memRequirements.memoryTypeBits, properties);
+
+    result = vkAllocateMemory(m_device.GetDevice(), &allocInfo, nullptr, &m_bufferMemory);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to allocate memory");
+
+    vkBindBufferMemory(m_device.GetDevice(), m_buffer, m_bufferMemory, 0);
 }
 
 Buffer::~Buffer()
@@ -33,5 +71,10 @@ Device& Buffer::GetRelatedDevice() const
 VkBuffer Buffer::GetBuffer() const
 {
     return m_buffer;
+}
+
+VkDeviceMemory Buffer::GetBufferMemory() const
+{
+    return m_bufferMemory;
 }
 }
