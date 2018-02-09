@@ -134,9 +134,19 @@ Surface& Device::GetRelatedSurface() const
     return m_surface;
 }
 
+uint32_t Device::GetTransferQueueIndex() const
+{
+    return m_transferQueueIndex;
+}
+
 uint32_t Device::GetGraphicsQueueIndex() const
 {
     return m_graphicsQueueIndex;
+}
+
+uint32_t Device::GetComputeQueueIndex() const
+{
+    return m_computeQueueIndex;
 }
 
 uint32_t Device::GetPresentQueueIndex() const
@@ -149,9 +159,19 @@ VkDevice Device::GetDevice() const
     return m_device;
 }
 
+const std::vector<VkQueue>& Device::GetTransferQueues() const
+{
+    return m_transferQueues;
+}
+
 const std::vector<VkQueue>& Device::GetGraphicsQueues() const
 {
     return m_graphicsQueues;
+}
+
+const std::vector<VkQueue>& Device::GetComputeQueues() const
+{
+    return m_computeQueues;
 }
 
 const std::vector<VkQueue>& Device::GetPresentQueues() const

@@ -37,7 +37,25 @@ Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags buffe
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = bufferSize;
     bufferInfo.usage = bufferUsage;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    std::array<uint32_t, 2> queueFamilyIndices =
+    {
+        m_device.GetGraphicsQueueIndex(),
+        m_device.GetTransferQueueIndex()
+    };
+
+    if (queueFamilyIndices[0] != queueFamilyIndices[1])
+    {
+        bufferInfo.sharingMode = VK_SHARING_MODE_CONCURRENT;
+        bufferInfo.queueFamilyIndexCount = static_cast<uint32_t>(queueFamilyIndices.size());
+        bufferInfo.pQueueFamilyIndices = queueFamilyIndices.data();
+    }
+    else
+    {
+        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        bufferInfo.queueFamilyIndexCount = 0;
+        bufferInfo.pQueueFamilyIndices = nullptr;
+    }
 
     VkResult result = vkCreateBuffer(m_device.GetDevice(), &bufferInfo, nullptr, &m_buffer);
     if (result != VK_SUCCESS)
