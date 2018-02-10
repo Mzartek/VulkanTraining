@@ -78,6 +78,7 @@ Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags buffe
 
 Buffer::~Buffer()
 {
+    vkFreeMemory(m_device.GetDevice(), m_bufferMemory, nullptr);
     vkDestroyBuffer(m_device.GetDevice(), m_buffer, nullptr);
 }
 
