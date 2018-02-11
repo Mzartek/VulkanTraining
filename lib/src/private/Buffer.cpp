@@ -1,5 +1,7 @@
 #include <private/Buffer.h>
 
+#include <cstring>
+
 namespace
 {
 uint32_t FindMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
@@ -24,14 +26,8 @@ uint32_t FindMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, Vk
 
     return memoryType;
 }
-}
 
-namespace VT
-{
-Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage, VkMemoryPropertyFlags properties)
-    : m_device(device)
-    , m_buffer(VK_NULL_HANDLE)
-    , m_bufferMemory(VK_NULL_HANDLE)
+void CreateBuffer(VT::Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 {
     VkBufferCreateInfo bufferInfo = {};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -40,8 +36,8 @@ Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags buffe
 
     std::array<uint32_t, 2> queueFamilyIndices =
     {
-        m_device.GetGraphicsQueueIndex(),
-        m_device.GetTransferQueueIndex()
+        device.GetGraphicsQueueIndex(),
+        device.GetTransferQueueIndex()
     };
 
     if (queueFamilyIndices[0] != queueFamilyIndices[1])
@@ -57,27 +53,121 @@ Buffer::Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags buffe
         bufferInfo.pQueueFamilyIndices = nullptr;
     }
 
-    VkResult result = vkCreateBuffer(m_device.GetDevice(), &bufferInfo, nullptr, &m_buffer);
+    VkResult result = vkCreateBuffer(device.GetDevice(), &bufferInfo, nullptr, &buffer);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create buffer");
 
     VkMemoryRequirements memRequirements;
-    vkGetBufferMemoryRequirements(m_device.GetDevice(), m_buffer, &memRequirements);
+    vkGetBufferMemoryRequirements(device.GetDevice(), buffer, &memRequirements);
 
     VkMemoryAllocateInfo allocInfo = {};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
     allocInfo.memoryTypeIndex = FindMemoryType(device.GetRelatedPhysicalDevice().GetPhysicalDevice(), memRequirements.memoryTypeBits, properties);
 
-    result = vkAllocateMemory(m_device.GetDevice(), &allocInfo, nullptr, &m_bufferMemory);
+    result = vkAllocateMemory(device.GetDevice(), &allocInfo, nullptr, &bufferMemory);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to allocate memory");
 
-    vkBindBufferMemory(m_device.GetDevice(), m_buffer, m_bufferMemory, 0);
+    result = vkBindBufferMemory(device.GetDevice(), buffer, bufferMemory, 0);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to bind buffer memory");
+}
+
+void CopyBuffer(VT::Device& device, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize bufferSize)
+{
+    VkCommandBufferAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = device.GetTransferCommandPool();
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    VkResult result = vkAllocateCommandBuffers(device.GetDevice(), &allocInfo, &commandBuffer);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to allocate transfer command buffers");
+
+    VkCommandBufferBeginInfo beginInfo = {};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    result = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to begin command buffer's recording");
+
+    VkBufferCopy copyRegion = {};
+    copyRegion.srcOffset = 0;
+    copyRegion.dstOffset = 0;
+    copyRegion.size = bufferSize;
+    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+    result = vkEndCommandBuffer(commandBuffer);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to stop comand buffer's recording");
+
+    VkSubmitInfo submitInfo = {};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(device.GetGraphicsQueues()[0], 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(device.GetGraphicsQueues()[0]);
+}
+}
+
+namespace VT
+{
+Buffer::Buffer(Device& device, BufferType bufferType, const void* bufferData, VkDeviceSize bufferSize)
+    : m_device(device)
+    , m_buffer(VK_NULL_HANDLE)
+    , m_bufferMemory(VK_NULL_HANDLE)
+{
+    VkBuffer stagingBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
+
+    CreateBuffer(m_device,
+        bufferSize,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        stagingBuffer,
+        stagingBufferMemory);
+
+    void* tmpBufferData = nullptr;
+    vkMapMemory(m_device.GetDevice(), stagingBufferMemory, 0, bufferSize, 0, &tmpBufferData);
+    std::memcpy(tmpBufferData, bufferData, static_cast<size_t>(bufferSize));
+    vkUnmapMemory(m_device.GetDevice(), stagingBufferMemory);
+
+    switch (bufferType)
+    {
+    case BufferType::Vertex:
+        CreateBuffer(m_device,
+            bufferSize,
+            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            m_buffer,
+            m_bufferMemory);
+        break;
+    case BufferType::Index:
+        CreateBuffer(m_device,
+            bufferSize,
+            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            m_buffer,
+            m_bufferMemory);
+        break;
+    default:
+        throw std::runtime_error("Buffer type not supported");
+    }
+
+    CopyBuffer(m_device, stagingBuffer, m_buffer, bufferSize);
+
+    vkFreeMemory(m_device.GetDevice(), stagingBufferMemory, nullptr);
+    vkDestroyBuffer(m_device.GetDevice(), stagingBuffer, nullptr);
 }
 
 Buffer::~Buffer()
 {
+
     vkFreeMemory(m_device.GetDevice(), m_bufferMemory, nullptr);
     vkDestroyBuffer(m_device.GetDevice(), m_buffer, nullptr);
 }

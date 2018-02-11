@@ -1,6 +1,6 @@
 #include <VulkanTraining/GameMode.h>
 
-#include <private/Drawable/SimpleDrawable.h>
+#include <private/Drawable/StaticObjectDrawable.h>
 
 #include <cassert>
 
@@ -11,6 +11,16 @@ constexpr bool enableValidationLayers = false;
 #else
 constexpr bool enableValidationLayers = true;
 #endif
+
+const std::vector<VT::StaticObjectPipeline::Vertex> vertices =
+{
+    {{ -0.25f, -0.25f, 0.25f }, { 0.0f, 0.0f }},
+    {{ 0.25f, -0.25f, 0.25f }, { 0.0f, 0.1f }},
+    {{ -0.25f, 0.25f, 0.25f }, { 0.1f, 0.0f }},
+    {{ 0.25f, 0.25f, 0.25f }, { 0.1f, 0.1f }}
+};
+
+const std::vector<VT::StaticObjectPipeline::Index> indices = { 0, 1, 2, 2, 1, 3 };
 
 void InternalOnWindowResized(GLFWwindow* window, int width, int height)
 {
@@ -31,7 +41,8 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     , m_physicalDevice(nullptr)
     , m_device(nullptr)
     , m_swapchain(nullptr)
-    , m_simplePipeline(nullptr)
+    , m_staticObjectPipeline(nullptr)
+    , m_staticObjectDrawable(nullptr)
 {
     glfwInit();
 
@@ -53,17 +64,17 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     m_swapchain = new Swapchain(*m_device);
     assert(m_swapchain);
 
-    m_simplePipeline = new SimplePipeline(*m_swapchain, m_shadersPath);
-    assert(m_simplePipeline);
+    m_staticObjectPipeline = new StaticObjectPipeline(*m_swapchain, m_shadersPath);
+    assert(m_staticObjectPipeline);
 
-    m_simpleDrawable = new SimpleDrawable(*m_simplePipeline);
-    assert(m_simpleDrawable);
+    m_staticObjectDrawable = new StaticObjectDrawable(*m_staticObjectPipeline, vertices, indices);
+    assert(m_staticObjectDrawable);
 }
 
 GameMode::~GameMode()
 {
-    delete m_simpleDrawable;
-    delete m_simplePipeline;
+    delete m_staticObjectDrawable;
+    delete m_staticObjectPipeline;
     delete m_swapchain;
     delete m_device;
     delete m_physicalDevice;
@@ -89,7 +100,7 @@ void GameMode::Launch()
             continue;
         }
 
-        m_simpleDrawable->Draw();
+        m_staticObjectDrawable->Draw();
 
         m_swapchain->PresentImage();
     }
@@ -109,17 +120,17 @@ void GameMode::RecreateSwapchain()
     for (VkQueue presentQueue : m_device->GetPresentQueues())
         vkQueueWaitIdle(presentQueue);
 
-    delete m_simpleDrawable;
-    delete m_simplePipeline;
+    delete m_staticObjectDrawable;
+    delete m_staticObjectPipeline;
     delete m_swapchain;
 
     m_swapchain = new Swapchain(*m_device);
     assert(m_swapchain);
 
-    m_simplePipeline = new SimplePipeline(*m_swapchain, m_shadersPath);
-    assert(m_simplePipeline);
+    m_staticObjectPipeline = new StaticObjectPipeline(*m_swapchain, m_shadersPath);
+    assert(m_staticObjectPipeline);
 
-    m_simpleDrawable = new SimpleDrawable(*m_simplePipeline);
-    assert(m_simpleDrawable);
+    m_staticObjectDrawable = new StaticObjectDrawable(*m_staticObjectPipeline, vertices, indices);
+    assert(m_staticObjectDrawable);
 }
 }

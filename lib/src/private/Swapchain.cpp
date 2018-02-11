@@ -3,6 +3,7 @@
 #include <private/Managers/SwapchainManager.h>
 
 #include <array>
+#include <limits>
 
 namespace VT
 {

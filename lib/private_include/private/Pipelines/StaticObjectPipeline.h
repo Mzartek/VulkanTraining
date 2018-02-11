@@ -19,6 +19,8 @@ public:
         glm::vec2 texCoord;
     };
 
+    using Index = uint32_t;
+
     StaticObjectPipeline(Swapchain& swapchain, const std::string& shadersPath);
     ~StaticObjectPipeline() override;
 

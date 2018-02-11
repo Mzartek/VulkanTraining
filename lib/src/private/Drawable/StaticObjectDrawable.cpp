@@ -4,9 +4,13 @@
 
 namespace VT
 {
-StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPipeline)
+StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPipeline,
+    const std::vector<StaticObjectPipeline::Vertex>& vertices,
+    const std::vector<StaticObjectPipeline::Index>& indices)
     : BaseDrawable(staticObjectPipeline)
     , m_staticObjectPipeline(staticObjectPipeline)
+    , m_vertexBuffer(m_staticObjectPipeline.GetRelatedDevice(), BufferType::Vertex, vertices.data(), sizeof(vertices[0]) * vertices.size())
+    , m_indexBuffer(m_staticObjectPipeline.GetRelatedDevice(), BufferType::Index, indices.data(), sizeof(indices[0]) * indices.size())
 {
     const std::vector<VkCommandBuffer> graphicsCommandBuffers = this->GetGraphicsCommandBuffers();
     const std::vector<VkFramebuffer> framebuffers = m_staticObjectPipeline.GetFramebuffers();
@@ -28,9 +32,12 @@ StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPip
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = m_staticObjectPipeline.GetRelatedSwapchain().GetExtent2D();
 
-        VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+        VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
         renderPassInfo.clearValueCount = 1;
         renderPassInfo.pClearValues = &clearColor;
+
+        VkBuffer vertexBuffers[] = { m_vertexBuffer.GetBuffer() };
+        VkDeviceSize offsets[] = { 0 };
 
         vkCmdBeginRenderPass(graphicsCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -38,13 +45,16 @@ StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPip
 
         vkCmdSetViewport(graphicsCommandBuffers[i], 0, 1, &m_staticObjectPipeline.GetViewport());
 
-        vkCmdDraw(graphicsCommandBuffers[i], 3, 1, 0, 0);
+        vkCmdBindVertexBuffers(graphicsCommandBuffers[i], 0, 1, vertexBuffers, offsets);
+        vkCmdBindIndexBuffer(graphicsCommandBuffers[i], m_indexBuffer.GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdDrawIndexed(graphicsCommandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(graphicsCommandBuffers[i]);
 
         result = vkEndCommandBuffer(graphicsCommandBuffers[i]);
         if (result != VK_SUCCESS)
-            throw std::runtime_error("Failed to stop comannd buffer's recording");
+            throw std::runtime_error("Failed to stop comand buffer's recording");
     }
 }
 

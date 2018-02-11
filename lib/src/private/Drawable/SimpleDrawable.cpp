@@ -44,7 +44,7 @@ SimpleDrawable::SimpleDrawable(SimplePipeline& simplePipeline)
 
         result = vkEndCommandBuffer(graphicsCommandBuffers[i]);
         if (result != VK_SUCCESS)
-            throw std::runtime_error("Failed to stop comannd buffer's recording");
+            throw std::runtime_error("Failed to stop comand buffer's recording");
     }
 }
 

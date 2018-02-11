@@ -3,18 +3,24 @@
 
 #include "BaseDrawable.h"
 #include "../Pipelines/StaticObjectPipeline.h"
+#include "../Buffer.h"
 
 namespace VT
 {
 class StaticObjectDrawable : public BaseDrawable
 {
 public:
-    StaticObjectDrawable(StaticObjectPipeline& staticObjectPipeline);
+    StaticObjectDrawable(StaticObjectPipeline& staticObjectPipeline,
+        const std::vector<StaticObjectPipeline::Vertex>& vertices,
+        const std::vector<StaticObjectPipeline::Index>& indices);
 
     void Draw() override;
 
 private:
     StaticObjectPipeline& m_staticObjectPipeline;
+
+    Buffer m_vertexBuffer;
+    Buffer m_indexBuffer;
 };
 }
 

@@ -10,13 +10,13 @@ namespace
 {
     std::string GetVertexShaderPath(const std::string& shadersPath)
     {
-        const fs::path fullPath = fs::path(shadersPath) / "Simple/Simple.vert";
+        const fs::path fullPath = fs::path(shadersPath) / "StaticObject/StaticObject.vert";
         return fullPath.string();
     }
 
     std::string GetFragmentShaderPath(const std::string& shadersPath)
     {
-        const fs::path fullPath = fs::path(shadersPath) / "Simple/Simple.frag";
+        const fs::path fullPath = fs::path(shadersPath) / "StaticObject/StaticObject.frag";
         return fullPath.string();
     }
 }

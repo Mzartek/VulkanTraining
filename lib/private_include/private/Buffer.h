@@ -5,10 +5,12 @@
 
 namespace VT
 {
+enum class BufferType { Vertex, Index, Uniform };
+
 class Buffer : public NonCopyableObject
 {
 public:
-    Buffer(Device& device, VkDeviceSize bufferSize, VkBufferUsageFlags bufferUsage, VkMemoryPropertyFlags properties);
+    Buffer(Device& device, BufferType bufferType, const void* bufferData, VkDeviceSize bufferSize);
     ~Buffer() override;
 
     Device& GetRelatedDevice() const;
@@ -17,7 +19,7 @@ public:
     VkDeviceMemory GetBufferMemory() const;
 
 private:
-    Device &m_device;
+    Device& m_device;
 
     VkBuffer m_buffer;
     VkDeviceMemory m_bufferMemory;

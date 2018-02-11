@@ -13,8 +13,8 @@ class Surface;
 class PhysicalDevice;
 class Device;
 class Swapchain;
-class SimplePipeline;
-class SimpleDrawable;
+class StaticObjectPipeline;
+class StaticObjectDrawable;
 
 class LIB_INTERFACE GameMode
 {
@@ -43,8 +43,8 @@ private:
     PhysicalDevice* m_physicalDevice;
     Device* m_device;
     Swapchain* m_swapchain;
-    SimplePipeline* m_simplePipeline;
-    SimpleDrawable* m_simpleDrawable;
+    StaticObjectPipeline* m_staticObjectPipeline;
+    StaticObjectDrawable* m_staticObjectDrawable;
 };
 }
 
