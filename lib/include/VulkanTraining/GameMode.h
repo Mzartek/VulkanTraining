@@ -33,6 +33,8 @@ public:
     void MainLoop();
 
 private:
+    void CreateSwapchain();
+    void DeleteSwapchain();
     void RecreateSwapchain();
 
     std::string m_shadersPath;
