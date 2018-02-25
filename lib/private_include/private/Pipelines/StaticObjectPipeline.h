@@ -4,7 +4,7 @@
 #include "IGraphicsPipeline.h"
 
 #include "../Swapchain.h"
-#include "../Shader.h"
+#include "../ShadersCollector.h"
 
 #include <glm/glm.hpp>
 
@@ -21,7 +21,7 @@ public:
 
     using Index = uint32_t;
 
-    StaticObjectPipeline(Swapchain& swapchain, const std::string& shadersPath);
+    StaticObjectPipeline(Swapchain& swapchain, const ShadersCollector& shadersCollector);
     ~StaticObjectPipeline() override;
 
     Swapchain& GetRelatedSwapchain() const;
@@ -37,9 +37,6 @@ public:
 
 private:
     Swapchain& m_swapchain;
-
-    Shader m_vertexShader;
-    Shader m_fragmentShader;
 
     VkViewport m_viewport;
 

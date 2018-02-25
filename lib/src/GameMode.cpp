@@ -34,12 +34,12 @@ void InternalOnWindowResized(GLFWwindow* window, int width, int height)
 namespace VT
 {
 GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
-    : m_shadersPath(shadersPath)
-    , m_instance(nullptr)
+    : m_instance(nullptr)
     , m_window(nullptr)
     , m_surface(nullptr)
     , m_physicalDevice(nullptr)
     , m_device(nullptr)
+    , m_shadersCollector(nullptr)
     , m_swapchain(nullptr)
     , m_staticObjectPipeline(nullptr)
     , m_staticObjectDrawable(nullptr)
@@ -61,6 +61,9 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     m_device = new Device(*m_physicalDevice, *m_surface, enableValidationLayers);
     assert(m_device);
 
+    m_shadersCollector = new ShadersCollector(*m_device, shadersPath);
+    assert(m_shadersCollector);
+
     CreateSwapchain();
 }
 
@@ -68,6 +71,7 @@ GameMode::~GameMode()
 {
     DeleteSwapchain();
 
+    delete m_shadersCollector;
     delete m_device;
     delete m_physicalDevice;
     delete m_surface;
@@ -108,7 +112,7 @@ void GameMode::CreateSwapchain()
     m_swapchain = new Swapchain(*m_device);
     assert(m_swapchain);
 
-    m_staticObjectPipeline = new StaticObjectPipeline(*m_swapchain, m_shadersPath);
+    m_staticObjectPipeline = new StaticObjectPipeline(*m_swapchain, *m_shadersCollector);
     assert(m_staticObjectPipeline);
 
     m_staticObjectDrawable = new StaticObjectDrawable(*m_staticObjectPipeline, vertices, indices);

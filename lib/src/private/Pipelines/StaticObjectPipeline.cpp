@@ -1,32 +1,11 @@
 #include <private/Pipelines/StaticObjectPipeline.h>
 
-#include <boost/filesystem.hpp>
-
 #include <cstddef>
-
-namespace fs = boost::filesystem;
-
-namespace
-{
-    std::string GetVertexShaderPath(const std::string& shadersPath)
-    {
-        const fs::path fullPath = fs::path(shadersPath) / "StaticObject/StaticObject.vert";
-        return fullPath.string();
-    }
-
-    std::string GetFragmentShaderPath(const std::string& shadersPath)
-    {
-        const fs::path fullPath = fs::path(shadersPath) / "StaticObject/StaticObject.frag";
-        return fullPath.string();
-    }
-}
 
 namespace VT
 {
-StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const std::string& shadersPath)
+StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const ShadersCollector& shadersCollector)
     : m_swapchain(swapchain)
-    , m_vertexShader(m_swapchain.GetRelatedDevice(), GetVertexShaderPath(shadersPath))
-    , m_fragmentShader(m_swapchain.GetRelatedDevice(), GetFragmentShaderPath(shadersPath))
     , m_viewport({})
     , m_pipelineLayout(VK_NULL_HANDLE)
     , m_renderPass(VK_NULL_HANDLE)
@@ -35,13 +14,13 @@ StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const std::stri
     VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-    vertShaderStageInfo.module = m_vertexShader.GetShaderModule();
+    vertShaderStageInfo.module = shadersCollector.GetVertexStaticObject().GetShaderModule();
     vertShaderStageInfo.pName = "main";
 
     VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
     fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-    fragShaderStageInfo.module = m_fragmentShader.GetShaderModule();
+    fragShaderStageInfo.module = shadersCollector.GetFragmentStaticObject().GetShaderModule();
     fragShaderStageInfo.pName = "main";
 
     VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };

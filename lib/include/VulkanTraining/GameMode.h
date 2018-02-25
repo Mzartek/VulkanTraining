@@ -12,6 +12,7 @@ class Window;
 class Surface;
 class PhysicalDevice;
 class Device;
+class ShadersCollector;
 class Swapchain;
 class StaticObjectPipeline;
 class StaticObjectDrawable;
@@ -37,13 +38,12 @@ private:
     void DeleteSwapchain();
     void RecreateSwapchain();
 
-    std::string m_shadersPath;
-
     Instance* m_instance;
     Window* m_window;
     Surface* m_surface;
     PhysicalDevice* m_physicalDevice;
     Device* m_device;
+    ShadersCollector* m_shadersCollector;
     Swapchain* m_swapchain;
     StaticObjectPipeline* m_staticObjectPipeline;
     StaticObjectDrawable* m_staticObjectDrawable;
