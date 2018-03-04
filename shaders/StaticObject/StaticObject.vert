@@ -20,6 +20,6 @@ out gl_PerVertex
 
 void main()
 {
-  gl_Position = vec4(inPosition, 1.0);
+  gl_Position = matrices.projection * matrices.view * matrices.model * vec4(inPosition, 1.0);
   outTexCoord = inTexCoord;
 }
