@@ -76,8 +76,11 @@ VkSurfaceKHR CreateSurface(VkInstance instance, VT::winid_t winId, VT::SurfacePl
     case VT::SurfacePlatform::WAYLAND:
         surface = CreateWAYLANDSurface(instance, winId);
         break;
-    }
 #endif
+
+     default:
+        throw std::runtime_error("Not supported SurfacePlatform");
+    }
 
     return surface;
 }

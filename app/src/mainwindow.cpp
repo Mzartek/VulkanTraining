@@ -3,7 +3,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_viewerWindow(new ViewerWindow(this, "Viewer"))
 {
     ui->setupUi(this);
 }
