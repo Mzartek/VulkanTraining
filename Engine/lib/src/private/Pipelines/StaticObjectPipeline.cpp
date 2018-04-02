@@ -2,6 +2,11 @@
 
 #include <cstddef>
 
+namespace
+{
+
+}
+
 namespace VT
 {
 StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const ShadersCollector& shadersCollector)
