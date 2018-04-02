@@ -1,11 +1,8 @@
 #include <private/Pipelines/StaticObjectPipeline.h>
 
 #include <cstddef>
-
-namespace
-{
-
-}
+#include <array>
+#include <stdexcept>
 
 namespace VT
 {

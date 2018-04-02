@@ -71,12 +71,9 @@ VkExtent2D SwapchainManager::GetExtent2D() const
     if (m_surfaceCapabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         return m_surfaceCapabilities.currentExtent;
 
-    uint32_t windowWidth = m_surface.GetRelatedWindow().GetWidth();
-    uint32_t windowHeight = m_surface.GetRelatedWindow().GetHeight();
-
     VkExtent2D extent2D;
-    extent2D.width = std::max(m_surfaceCapabilities.minImageExtent.width, std::min(m_surfaceCapabilities.maxImageExtent.width, windowWidth));
-    extent2D.height = std::max(m_surfaceCapabilities.minImageExtent.height, std::min(m_surfaceCapabilities.maxImageExtent.height, windowHeight));
+    extent2D.width = std::max(m_surfaceCapabilities.minImageExtent.width, std::min(m_surfaceCapabilities.maxImageExtent.width, m_surface.GetWidth()));
+    extent2D.height = std::max(m_surfaceCapabilities.minImageExtent.height, std::min(m_surfaceCapabilities.maxImageExtent.height, m_surface.GetHeight()));
 
     return extent2D;
 }

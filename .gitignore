@@ -34,3 +34,6 @@
 
 # Temp Files
 *~
+
+# QT Files
+CMakeLists.txt.user

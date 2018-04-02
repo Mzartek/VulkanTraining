@@ -1,4 +1,4 @@
-#include <private/Drawable/StaticObjectDrawable.h>
+#include <private/Drawables/StaticObjectDrawable.h>
 
 #include <stdexcept>
 

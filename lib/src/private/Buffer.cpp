@@ -1,6 +1,8 @@
 #include <private/Buffer.h>
 
 #include <cstring>
+#include <stdexcept>
+#include <array>
 
 namespace
 {

@@ -1,25 +1,27 @@
 #ifndef VT_SURFACE_INCLUDE_H
 #define VT_SURFACE_INCLUDE_H
 
+#include <VulkanTraining/SurfacePlatform.h>
+
 #include "Instance.h"
-#include "Window.h"
 
 namespace VT
 {
 class Surface : public NonCopyableObject
 {
 public:
-    Surface(Instance& instance, Window& window);
+    Surface(Instance& instance, winid_t winId, SurfacePlatform surfacePlatform);
     ~Surface() override;
 
+    virtual uint32_t GetWidth() const;
+    virtual uint32_t GetHeight() const;
+
     Instance& GetRelatedInstance() const;
-    Window& GetRelatedWindow() const;
 
     VkSurfaceKHR GetSurface() const;
 
 private:
     Instance& m_instance;
-    Window& m_window;
 
     VkSurfaceKHR m_surface;
 };

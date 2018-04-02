@@ -1,6 +1,6 @@
 #include <VulkanTraining/GameMode.h>
 
-#include <private/Drawable/StaticObjectDrawable.h>
+#include <private/Drawables/StaticObjectDrawable.h>
 
 #include <cassert>
 
@@ -21,19 +21,11 @@ const std::vector<VT::StaticObjectPipeline::Vertex> vertices =
 };
 
 const std::vector<VT::StaticObjectPipeline::Index> indices = { 0, 1, 2, 2, 1, 3 };
-
-void InternalOnWindowResized(GLFWwindow* window, int width, int height)
-{
-    if (width == 0 || height == 0) return;
-
-    VT::GameMode* gameMode = static_cast<VT::GameMode*>(glfwGetWindowUserPointer(window));
-    gameMode->OnWindowResized(width, height);
-}
 }
 
 namespace VT
 {
-GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
+GameMode::GameMode(const std::string& title, winid_t winId, SurfacePlatform surfacePlatform, const std::string& shadersPath)
     : m_instance(nullptr)
     , m_window(nullptr)
     , m_surface(nullptr)
@@ -44,15 +36,10 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     , m_staticObjectPipeline(nullptr)
     , m_staticObjectDrawable(nullptr)
 {
-    glfwInit();
-
     m_instance = new Instance(title, enableValidationLayers);
     assert(m_instance);
 
-    m_window = new Window(width, height, title, this, InternalOnWindowResized);
-    assert(m_window);
-
-    m_surface = new Surface(*m_instance, *m_window);
+    m_surface = new Surface(*m_instance, winId, surfacePlatform);
     assert(m_surface);
 
     m_physicalDevice = new PhysicalDevice(*m_instance);
@@ -75,34 +62,25 @@ GameMode::~GameMode()
     delete m_device;
     delete m_physicalDevice;
     delete m_surface;
-    delete m_window;
     delete m_instance;
-
-    glfwTerminate();
 }
 
-void GameMode::Launch()
+void GameMode::Draw()
 {
-    while (!glfwWindowShouldClose(m_window->GetWindow()))
+    try
     {
-        glfwPollEvents();
-
-        try
-        {
-            m_swapchain->LoadNextImage();
-        }
-        catch (SwapchainOutOfDateException& ex)
-        {
-            continue;
-        }
-
-        m_staticObjectDrawable->Draw();
-
-        m_swapchain->PresentImage();
+        m_swapchain->LoadNextImage();
     }
+    catch (SwapchainOutOfDateException& ex)
+    {
+    }
+
+    m_staticObjectDrawable->Draw();
+
+    m_swapchain->PresentImage();
 }
 
-void GameMode::OnWindowResized(int /*width*/, int /*height*/)
+void GameMode::UpdateSwapchain()
 {
     RecreateSwapchain();
 }
