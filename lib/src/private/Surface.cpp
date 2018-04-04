@@ -2,116 +2,58 @@
 
 #include <stdexcept>
 
-namespace
-{
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-VkSurfaceKHR CreateWIN32Surface(VkInstance /*instance*/, VT::winid_t /*winId*/)
-{
-    VkSurfaceKHR surface = VK_NULL_HANDLE;
-
-    throw std::runtime_error("VK_USE_PLATFORM_WIN32_KHR not supported yet");
-
-    return surface;
-}
-#endif
-
-#if defined(VK_USE_PLATFORM_XLIB_KHR)
-VkSurfaceKHR CreateXLIBSurface(VkInstance /*instance*/, VT::winid_t /*winId*/)
-{
-    VkSurfaceKHR surface = VK_NULL_HANDLE;
-
-    throw std::runtime_error("VK_USE_PLATFORM_XLIB_KHR not supported yet");
-
-    return surface;
-}
-#endif
-
-#if defined(VK_USE_PLATFORM_XCB_KHR)
-VkSurfaceKHR CreateXCBSurface(VkInstance /*instance*/, VT::winid_t /*winId*/)
-{
-    VkSurfaceKHR surface = VK_NULL_HANDLE;
-
-    throw std::runtime_error("VK_USE_PLATFORM_XCB_KHR not supported yet");
-
-    return surface;
-}
-#endif
-
-#if defined(VK_USE_PLATFORM_WAYLAND_KHR)
-VkSurfaceKHR CreateWAYLANDSurface(VkInstance /*instance*/, VT::winid_t /*winId*/)
-{
-    VkSurfaceKHR surface = VK_NULL_HANDLE;
-
-    throw std::runtime_error("VK_USE_PLATFORM_WAYLAND_KHR not supported yet");
-
-    return surface;
-}
-#endif
-
-VkSurfaceKHR CreateSurface(VkInstance instance, VT::winid_t winId, VT::SurfacePlatform surfacePlatform)
-{
-    VkSurfaceKHR surface = VK_NULL_HANDLE;
-
-    switch(surfacePlatform)
-    {
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    case VT::SurfacePlatform::WIN32:
-        surface = CreateWIN32Surface(instance, winId);
-        break;
-#endif
-
-#if defined(VK_USE_PLATFORM_XLIB_KHR)
-    case VT::SurfacePlatform::XLIB:
-        surface = CreateXLIBSurface(instance, winId);
-        break;
-#endif
-
-#if defined(VK_USE_PLATFORM_XCB_KHR)
-    case VT::SurfacePlatform::XCB:
-        surface = CreateXCBSurface(instance, winId);
-        break;
-#endif
-
-#if defined(VK_USE_PLATFORM_WAYLAND_KHR)
-    case VT::SurfacePlatform::WAYLAND:
-        surface = CreateWAYLANDSurface(instance, winId);
-        break;
-#endif
-
-     default:
-        throw std::runtime_error("Not supported SurfacePlatform");
-    }
-
-    return surface;
-}
-}
-
 namespace VT
 {
-Surface::Surface(Instance& instance, winid_t winId, SurfacePlatform surfacePlatform)
+Surface::Surface(Instance& instance, int width, int height, const std::string& title, void* userPointer, GLFWwindowsizefun sizeCallback)
     : m_instance(instance)
-    , m_surface(CreateSurface(m_instance.GetInstance(), winId, surfacePlatform))
+    , m_window(nullptr)
+    , m_surface(VK_NULL_HANDLE)
 {
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+    m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    if (m_window == nullptr)
+        throw std::runtime_error("Failed to create window");
+
+    glfwSetWindowUserPointer(m_window, userPointer);
+    glfwSetWindowSizeCallback(m_window, sizeCallback);
+
+    VkResult result = glfwCreateWindowSurface(m_instance.GetInstance(), m_window, nullptr, &m_surface);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to create surface");
 }
 
 Surface::~Surface()
 {
     vkDestroySurfaceKHR(m_instance.GetInstance(), m_surface, nullptr);
+
+    glfwDestroyWindow(m_window);
 }
 
 uint32_t Surface::GetWidth() const
 {
-    return 0;
+    int width = 0;
+    glfwGetWindowSize(m_window, &width, nullptr);
+
+    return width;;
 }
 
 uint32_t Surface::GetHeight() const
 {
-    return 0;
+    int height = 0;
+    glfwGetWindowSize(m_window, nullptr, &height);
+
+    return height;
 }
 
 Instance& Surface::GetRelatedInstance() const
 {
     return m_instance;
+}
+
+GLFWwindow* Surface::GetWindow() const
+{
+    return m_window;
 }
 
 VkSurfaceKHR Surface::GetSurface() const

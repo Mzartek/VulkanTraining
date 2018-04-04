@@ -10,21 +10,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/CMakeMod
 
 find_package(Boost REQUIRED filesystem program_options)
 find_package(Vulkan REQUIRED)
+find_package(GLFW REQUIRED)
 find_package(GLM REQUIRED)
 find_package(Assimp REQUIRED)
 find_package(FBX REQUIRED)
 find_package(GLSLANG REQUIRED)
-find_package(Qt5Core)
-find_package(Qt5Widgets)
-
-if(UNIX)
-	find_package(ECM REQUIRED NO_MODULE)
-	set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${ECM_FIND_MODULE_DIR}")
-	
-	find_package(X11)
-	find_package(XCB)
-	find_package(Wayland)
-endif()
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
 
 if(MSVC)
   if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")

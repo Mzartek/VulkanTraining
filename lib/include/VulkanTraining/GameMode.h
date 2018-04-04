@@ -2,7 +2,6 @@
 #define VT_GAME_MODE_INCLUDE_H
 
 #include "Export.h"
-#include "SurfacePlatform.h"
 
 #include <string>
 
@@ -21,20 +20,19 @@ class StaticObjectDrawable;
 class LIB_INTERFACE GameMode
 {
 public:
-    GameMode(const std::string& title, winid_t winId, SurfacePlatform surfacePlatform, const std::string& shadersPath);
+    GameMode(int width, int height, const std::string& title, const std::string& shadersPath);
     virtual ~GameMode();
     GameMode(const GameMode& other) = delete;
     GameMode(GameMode&& other) = delete;
     GameMode& operator=(const GameMode& other) = delete;
     GameMode& operator=(GameMode&& other) = delete;
 
-    void Draw();
+    void Launch();
     void UpdateSwapchain();
 
 private:
     void CreateSwapchain();
     void DeleteSwapchain();
-    void RecreateSwapchain();
 
     Instance* m_instance;
     Window* m_window;

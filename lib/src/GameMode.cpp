@@ -21,11 +21,19 @@ const std::vector<VT::StaticObjectPipeline::Vertex> vertices =
 };
 
 const std::vector<VT::StaticObjectPipeline::Index> indices = { 0, 1, 2, 2, 1, 3 };
+
+void WindowSizeCallback(GLFWwindow* window, int width, int height)
+{
+    if (width == 0 || height == 0) return;
+
+    VT::GameMode* gameMode = static_cast<VT::GameMode*>(glfwGetWindowUserPointer(window));
+    gameMode->UpdateSwapchain();
+}
 }
 
 namespace VT
 {
-GameMode::GameMode(const std::string& title, winid_t winId, SurfacePlatform surfacePlatform, const std::string& shadersPath)
+GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
     : m_instance(nullptr)
     , m_window(nullptr)
     , m_surface(nullptr)
@@ -36,10 +44,12 @@ GameMode::GameMode(const std::string& title, winid_t winId, SurfacePlatform surf
     , m_staticObjectPipeline(nullptr)
     , m_staticObjectDrawable(nullptr)
 {
+    glfwInit();
+
     m_instance = new Instance(title, enableValidationLayers);
     assert(m_instance);
 
-    m_surface = new Surface(*m_instance, winId, surfacePlatform);
+    m_surface = new Surface(*m_instance, width, height, title, this, WindowSizeCallback);
     assert(m_surface);
 
     m_physicalDevice = new PhysicalDevice(*m_instance);
@@ -63,26 +73,35 @@ GameMode::~GameMode()
     delete m_physicalDevice;
     delete m_surface;
     delete m_instance;
+
+    glfwTerminate();
 }
 
-void GameMode::Draw()
+void GameMode::Launch()
 {
-    try
+    while (!glfwWindowShouldClose(m_surface->GetWindow()))
     {
-        m_swapchain->LoadNextImage();
-    }
-    catch (SwapchainOutOfDateException& ex)
-    {
-    }
+        glfwPollEvents();
 
-    m_staticObjectDrawable->Draw();
+        try
+        {
+            m_swapchain->LoadNextImage();
+        }
+        catch (SwapchainOutOfDateException& ex)
+        {
+            continue;
+        }
 
-    m_swapchain->PresentImage();
+        m_staticObjectDrawable->Draw();
+
+        m_swapchain->PresentImage();
+    }
 }
 
 void GameMode::UpdateSwapchain()
 {
-    RecreateSwapchain();
+    DeleteSwapchain();
+    CreateSwapchain();
 }
 
 void GameMode::CreateSwapchain()
@@ -111,11 +130,5 @@ void GameMode::DeleteSwapchain()
     delete m_staticObjectDrawable;
     delete m_staticObjectPipeline;
     delete m_swapchain;
-}
-
-void GameMode::RecreateSwapchain()
-{
-    DeleteSwapchain();
-    CreateSwapchain();
 }
 }
