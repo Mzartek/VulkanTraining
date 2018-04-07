@@ -1,7 +1,7 @@
 #include "viewerwindow.h"
 
-ViewerWindow::ViewerWindow(QWidget *parent, const QString &windowTitle) :
-    QWidget(parent),
-    m_gameMode(this->size().width(), this->size().height(), windowTitle.toStdString(), "")
+ViewerWindow::ViewerWindow(QObject *parent, int width, int height, const QString &windowTitle) :
+    QObject(parent),
+    m_gameMode(width, height, windowTitle.toStdString(), "./shaders")
 {
 }

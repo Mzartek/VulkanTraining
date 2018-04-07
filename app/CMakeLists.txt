@@ -15,3 +15,8 @@ target_link_libraries(ViewerApp
 	ViewerLib
 	Qt5::Core
 	Qt5::Widgets)
+
+add_custom_command(TARGET ViewerApp POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/lib/shaders
+	$<TARGET_FILE_DIR:ViewerApp>/shaders)
