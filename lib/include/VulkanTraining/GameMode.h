@@ -4,6 +4,11 @@
 #include "Export.h"
 
 #include <string>
+#include <functional>
+#include <mutex>
+#include <atomic>
+
+class GLFWwindow;
 
 namespace VT
 {
@@ -17,6 +22,12 @@ class Swapchain;
 class StaticObjectPipeline;
 class StaticObjectDrawable;
 
+struct EventCallbacks
+{
+    std::function<void()> onStart;
+    std::function<void()> onStop;
+};
+
 class LIB_INTERFACE GameMode
 {
 public:
@@ -27,12 +38,17 @@ public:
     GameMode& operator=(const GameMode& other) = delete;
     GameMode& operator=(GameMode&& other) = delete;
 
-    void Launch();
-    void UpdateSwapchain();
+    void Launch(EventCallbacks& eventCallbacks);
+    void Stop();
 
 private:
+    static void WindowSizeCallback(GLFWwindow* window, int width, int height);
+
     void CreateSwapchain();
     void DeleteSwapchain();
+
+    std::mutex m_launchMutex;
+    std::atomic<bool> m_closeWindow;
 
     Instance* m_instance;
     Window* m_window;

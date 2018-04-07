@@ -14,9 +14,14 @@ add_executable(ViewerApp
 target_link_libraries(ViewerApp
 	ViewerLib
 	Qt5::Core
-	Qt5::Widgets)
+	Qt5::Widgets	
+	${CMAKE_THREAD_LIBS_INIT})
 
-add_custom_command(TARGET ViewerApp POST_BUILD
+set(COPY_SHADERS_COMMAND
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_SOURCE_DIR}/lib/shaders
 	$<TARGET_FILE_DIR:ViewerApp>/shaders)
+
+add_custom_target(CopyShaders ${COPY_SHADERS_COMMAND})
+
+add_custom_command(TARGET ViewerApp POST_BUILD ${COPY_SHADERS_COMMAND})

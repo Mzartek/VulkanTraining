@@ -21,20 +21,13 @@ const std::vector<VT::StaticObjectPipeline::Vertex> vertices =
 };
 
 const std::vector<VT::StaticObjectPipeline::Index> indices = { 0, 1, 2, 2, 1, 3 };
-
-void WindowSizeCallback(GLFWwindow* window, int width, int height)
-{
-    if (width == 0 || height == 0) return;
-
-    VT::GameMode* gameMode = static_cast<VT::GameMode*>(glfwGetWindowUserPointer(window));
-    gameMode->UpdateSwapchain();
-}
 }
 
 namespace VT
 {
 GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
-    : m_instance(nullptr)
+    : m_closeWindow(false)
+    , m_instance(nullptr)
     , m_window(nullptr)
     , m_surface(nullptr)
     , m_physicalDevice(nullptr)
@@ -77,9 +70,25 @@ GameMode::~GameMode()
     glfwTerminate();
 }
 
-void GameMode::Launch()
+void GameMode::WindowSizeCallback(GLFWwindow* window, int width, int height)
 {
-    while (!glfwWindowShouldClose(m_surface->GetWindow()))
+    if (width == 0 || height == 0) return;
+
+    VT::GameMode* gameMode = static_cast<VT::GameMode*>(glfwGetWindowUserPointer(window));
+    gameMode->DeleteSwapchain();
+    gameMode->CreateSwapchain();
+}
+
+void GameMode::Launch(EventCallbacks& eventCallbacks)
+{
+    if (!m_launchMutex.try_lock()) return;
+
+    m_closeWindow = false;
+
+    if (eventCallbacks.onStart)
+        eventCallbacks.onStart();
+
+    while (!glfwWindowShouldClose(m_surface->GetWindow()) && !m_closeWindow)
     {
         glfwPollEvents();
 
@@ -96,12 +105,16 @@ void GameMode::Launch()
 
         m_swapchain->PresentImage();
     }
+
+    if (eventCallbacks.onStop)
+        eventCallbacks.onStop();
+
+    m_launchMutex.unlock();
 }
 
-void GameMode::UpdateSwapchain()
+void GameMode::Stop()
 {
-    DeleteSwapchain();
-    CreateSwapchain();
+    m_closeWindow = true;
 }
 
 void GameMode::CreateSwapchain()
