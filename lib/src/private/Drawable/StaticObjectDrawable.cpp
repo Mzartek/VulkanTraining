@@ -43,8 +43,6 @@ StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPip
 
         vkCmdBindPipeline(graphicsCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_staticObjectPipeline.GetGraphicsPipeline());
 
-        vkCmdSetViewport(graphicsCommandBuffers[i], 0, 1, &m_staticObjectPipeline.GetViewport());
-
         vkCmdBindVertexBuffers(graphicsCommandBuffers[i], 0, 1, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(graphicsCommandBuffers[i], m_indexBuffer.GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 

@@ -26,8 +26,6 @@ public:
 
     Swapchain& GetRelatedSwapchain() const;
 
-    const VkViewport& GetViewport() const;
-
     Device& GetRelatedDevice() const override;
 
     VkPipelineLayout GetPipelineLayout() const override;
@@ -37,8 +35,6 @@ public:
 
 private:
     Swapchain& m_swapchain;
-
-    VkViewport m_viewport;
 
     VkPipelineLayout m_pipelineLayout;
     VkRenderPass m_renderPass;
