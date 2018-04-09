@@ -28,6 +28,7 @@ public:
 
     Device& GetRelatedDevice() const override;
 
+    VkDescriptorSetLayout GetDescriptorSetLayout() const override;
     VkPipelineLayout GetPipelineLayout() const override;
     VkRenderPass GetRenderPass() const override;
     VkPipeline GetGraphicsPipeline() const override;
@@ -36,6 +37,7 @@ public:
 private:
     Swapchain& m_swapchain;
 
+    VkDescriptorSetLayout m_descriptorSetLayout;
     VkPipelineLayout m_pipelineLayout;
     VkRenderPass m_renderPass;
     VkPipeline m_graphicsPipeline;

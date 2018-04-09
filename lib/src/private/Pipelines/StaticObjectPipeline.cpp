@@ -6,12 +6,29 @@
 
 namespace
 {
-VkResult CreatePipelineLayout(VkDevice device, VkPipelineLayout& pipelineLayout)
+VkResult CreateDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout& descriptorSetLayout)
+{
+    VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};
+    descriptorSetLayoutBinding.binding = 0;
+    descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorSetLayoutBinding.descriptorCount = 1;
+    descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    descriptorSetLayoutBinding.pImmutableSamplers = nullptr;
+
+    VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};
+    descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descriptorSetLayoutCreateInfo.bindingCount = 1;
+    descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;
+
+    return vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
+}
+
+VkResult CreatePipelineLayout(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, VkPipelineLayout& pipelineLayout)
 {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
     pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutCreateInfo.setLayoutCount = 0;
-    pipelineLayoutCreateInfo.pSetLayouts = nullptr;
+    pipelineLayoutCreateInfo.setLayoutCount = 1;
+    pipelineLayoutCreateInfo.pSetLayouts = &descriptorSetLayout;
     pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
     pipelineLayoutCreateInfo.pPushConstantRanges = 0;
 
@@ -227,11 +244,16 @@ namespace VT
 {
 StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const ShadersCollector& shadersCollector)
     : m_swapchain(swapchain)
+    , m_descriptorSetLayout(VK_NULL_HANDLE)
     , m_pipelineLayout(VK_NULL_HANDLE)
     , m_renderPass(VK_NULL_HANDLE)
     , m_graphicsPipeline(VK_NULL_HANDLE)
 {
-    VkResult result = CreatePipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout);
+    VkResult result = CreateDescriptorSetLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorSetLayout);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to create descriptor set layout");
+
+    result = CreatePipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorSetLayout, m_pipelineLayout);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create pipeline layout");
 
@@ -269,6 +291,7 @@ StaticObjectPipeline::~StaticObjectPipeline()
     vkDestroyPipeline(m_swapchain.GetRelatedDevice().GetDevice(), m_graphicsPipeline, nullptr);
     vkDestroyRenderPass(m_swapchain.GetRelatedDevice().GetDevice(), m_renderPass, nullptr);
     vkDestroyPipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout, nullptr);
+    vkDestroyDescriptorSetLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorSetLayout, nullptr);
 }
 
 Swapchain& StaticObjectPipeline::GetRelatedSwapchain() const
@@ -279,6 +302,11 @@ Swapchain& StaticObjectPipeline::GetRelatedSwapchain() const
 Device& StaticObjectPipeline::GetRelatedDevice() const
 {
     return m_swapchain.GetRelatedDevice();
+}
+
+VkDescriptorSetLayout StaticObjectPipeline::GetDescriptorSetLayout() const
+{
+    return m_descriptorSetLayout;
 }
 
 VkPipelineLayout StaticObjectPipeline::GetPipelineLayout() const

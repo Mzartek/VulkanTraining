@@ -13,19 +13,18 @@ add_library(ViewerLib SHARED
 
 target_include_directories(ViewerLib PUBLIC
 	${LIB_INCLUDE_DIR}
-	${Boost_INCLUDE_DIRS}
-	${GLM_INCLUDE_DIRS})
+	${Boost_INCLUDE_DIRS})
 target_include_directories(ViewerLib PRIVATE
 	${LIB_PRIVATE_INCLUDE_DIR}
 	${Vulkan_INCLUDE_DIRS}
 	${GLFW_INCLUDE_DIRS}
+	${GLM_INCLUDE_DIRS}
 	${Assimp_INCLUDE_DIRS}
 	${FBX_INCLUDE_DIRS}
 	${GLSLANG_INCLUDE_DIRS})
 
-target_link_libraries(ViewerLib PUBLIC
-	${Boost_LIBRARIES})
 target_link_libraries(ViewerLib PRIVATE
+	${Boost_LIBRARIES}
 	${Vulkan_LIBRARIES}
 	${GLFW_LIBRARIES}
 	${Assimp_LIBRARIES}

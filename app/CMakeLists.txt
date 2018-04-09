@@ -14,7 +14,7 @@ add_executable(ViewerApp
 target_link_libraries(ViewerApp
 	ViewerLib
 	Qt5::Core
-	Qt5::Widgets	
+	Qt5::Widgets
 	${CMAKE_THREAD_LIBS_INIT})
 
 set(COPY_SHADERS_COMMAND

@@ -11,6 +11,7 @@ struct IGraphicsPipeline
 
     virtual Device& GetRelatedDevice() const = 0;
 
+    virtual VkDescriptorSetLayout GetDescriptorSetLayout() const = 0;
     virtual VkPipelineLayout GetPipelineLayout() const = 0;
     virtual VkRenderPass GetRenderPass() const = 0;
     virtual VkPipeline GetGraphicsPipeline() const = 0;

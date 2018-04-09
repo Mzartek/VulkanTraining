@@ -21,6 +21,7 @@ private:
 
     Buffer m_vertexBuffer;
     Buffer m_indexBuffer;
+    Buffer m_matricesBuffer;
 };
 }
 
