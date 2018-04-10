@@ -29,4 +29,5 @@ target_link_libraries(ViewerLib PRIVATE
 	${GLFW_LIBRARIES}
 	${Assimp_LIBRARIES}
 	${FBX_LIBRARIES}
-	${GLSLANG_LIBRARIES})
+	debug ${GLSLANG_DEBUG_LIBRARIES}
+	optimized ${GLSLANG_RELEASE_LIBRARIES})
