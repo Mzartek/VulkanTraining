@@ -1,6 +1,6 @@
 set(FBX_FOUND "FALSE")
 
-find_library(FBX_LIBRARY NAMES fbxsdk libfbxsdk)
+find_library(FBX_LIBRARY NAMES fbxsdk)
 find_path(FBX_INCLUDE_DIR fbxsdk.h)
 
 if (FBX_LIBRARY AND FBX_INCLUDE_DIR)

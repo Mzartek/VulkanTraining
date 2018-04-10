@@ -1,6 +1,6 @@
 set(GLFW_FOUND "FALSE")
 
-find_library(GLFW_LIBRARY NAMES glfw3dll libglfw)
+find_library(GLFW_LIBRARY NAMES glfw3dll glfw)
 find_path(GLFW_INCLUDE_DIR GLFW/glfw3.h)
 
 if (GLFW_LIBRARY AND GLFW_INCLUDE_DIR)

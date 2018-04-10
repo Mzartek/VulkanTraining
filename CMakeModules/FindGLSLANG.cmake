@@ -1,10 +1,10 @@
 set(GLSLANG_FOUND "FALSE")
 
-find_library(SPIRV_RELEASE_LIBRARY NAMES SPIRV libSPIRV)
-find_library(glslang_RELEASE_LIBRARY NAMES glslang libglslang)
-find_library(OGLCompiler_RELEASE_LIBRARY NAMES OGLCompiler libOGLCompiler)
-find_library(OSDependent_RELEASE_LIBRARY NAMES OSDependent libOSDependent)
-find_library(HLSL_RELEASE_LIBRARY NAMES HLSL libHLSL)
+find_library(SPIRV_RELEASE_LIBRARY NAMES SPIRV)
+find_library(glslang_RELEASE_LIBRARY NAMES glslang)
+find_library(OGLCompiler_RELEASE_LIBRARY NAMES OGLCompiler)
+find_library(OSDependent_RELEASE_LIBRARY NAMES OSDependent)
+find_library(HLSL_RELEASE_LIBRARY NAMES HLSL)
 
 if(MSVC)
 	find_library(SPIRV_DEBUG_LIBRARY NAMES SPIRVd)

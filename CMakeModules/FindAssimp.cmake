@@ -1,6 +1,6 @@
 set(Assimp_FOUND "FALSE")
 
-find_library(Assimp_LIBRARY NAMES assimp libassimp)
+find_library(Assimp_LIBRARY NAMES assimp)
 find_path(Assimp_INCLUDE_DIR assimp/version.h)
 
 if (Assimp_LIBRARY AND Assimp_INCLUDE_DIR)
