@@ -3,12 +3,15 @@
 
 #include "Export.h"
 
-#include <string>
 #include <functional>
-#include <mutex>
-#include <atomic>
 
-class GLFWwindow;
+namespace std
+{
+	class mutex;
+	template<typename T> struct atomic;
+}
+
+struct GLFWwindow;
 
 namespace VT
 {
@@ -24,15 +27,15 @@ class StaticObjectDrawable;
 
 struct EventCallbacks
 {
-    std::function<void()> onStart;
-    std::function<void()> onStop;
+	std::function<void()> onStart;
+	std::function<void()> onStop;
 };
 
-class LIB_INTERFACE GameMode
+class LIB_INTERFACE GameMode final
 {
 public:
     GameMode(int width, int height, const std::string& title, const std::string& shadersPath);
-    virtual ~GameMode();
+    ~GameMode();
     GameMode(const GameMode& other) = delete;
     GameMode(GameMode&& other) = delete;
     GameMode& operator=(const GameMode& other) = delete;
@@ -47,8 +50,8 @@ private:
     void CreateSwapchain();
     void DeleteSwapchain();
 
-    std::mutex m_launchMutex;
-    std::atomic<bool> m_closeWindow;
+    std::mutex* m_launchMutex;
+    std::atomic<bool>* m_closeWindow;
 
     Instance* m_instance;
     Window* m_window;

@@ -3,6 +3,8 @@
 #include <private/Drawables/StaticObjectDrawable.h>
 
 #include <cassert>
+#include <mutex>
+#include <atomic>
 
 namespace
 {
@@ -26,7 +28,8 @@ const std::vector<VT::StaticObjectPipeline::Index> indices = { 0, 1, 2, 2, 1, 3 
 namespace VT
 {
 GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
-    : m_closeWindow(false)
+    : m_launchMutex(nullptr)
+	, m_closeWindow(nullptr)
     , m_instance(nullptr)
     , m_window(nullptr)
     , m_surface(nullptr)
@@ -38,6 +41,12 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
     , m_staticObjectDrawable(nullptr)
 {
     glfwInit();
+
+	m_launchMutex = new std::mutex;
+	assert(m_instance);
+	
+	m_closeWindow = new std::atomic<bool>;
+	assert(m_closeWindow);
 
     m_instance = new Instance(title, enableValidationLayers);
     assert(m_instance);
@@ -66,6 +75,9 @@ GameMode::~GameMode()
     delete m_physicalDevice;
     delete m_surface;
     delete m_instance;
+	delete m_launchMutex;
+	delete m_closeWindow;
+	delete m_launchMutex;
 
     glfwTerminate();
 }
@@ -81,7 +93,7 @@ void GameMode::WindowSizeCallback(GLFWwindow* window, int width, int height)
 
 void GameMode::Launch(EventCallbacks& eventCallbacks)
 {
-    if (!m_launchMutex.try_lock()) return;
+    if (!m_launchMutex->try_lock()) return;
 
     m_closeWindow = false;
 
@@ -109,12 +121,12 @@ void GameMode::Launch(EventCallbacks& eventCallbacks)
     if (eventCallbacks.onStop)
         eventCallbacks.onStop();
 
-    m_launchMutex.unlock();
+    m_launchMutex->unlock();
 }
 
 void GameMode::Stop()
 {
-    m_closeWindow = true;
+    *m_closeWindow = true;
 }
 
 void GameMode::CreateSwapchain()
