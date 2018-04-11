@@ -115,31 +115,17 @@ void CopyBuffer(VT::Device& device, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDe
 
 namespace VT
 {
-Buffer::Buffer(Device& device, BufferType bufferType, const void* bufferData, VkDeviceSize bufferSize)
+Buffer::Buffer(Device& device, BufferType bufferType, VkDeviceSize bufferSize)
     : m_device(device)
+    , m_bufferSize(bufferSize)
     , m_buffer(VK_NULL_HANDLE)
     , m_bufferMemory(VK_NULL_HANDLE)
 {
-    VkBuffer stagingBuffer = VK_NULL_HANDLE;
-    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
-
-    CreateBuffer(m_device,
-        bufferSize,
-        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        stagingBuffer,
-        stagingBufferMemory);
-
-    void* tmpBufferData = nullptr;
-    vkMapMemory(m_device.GetDevice(), stagingBufferMemory, 0, bufferSize, 0, &tmpBufferData);
-    std::memcpy(tmpBufferData, bufferData, static_cast<size_t>(bufferSize));
-    vkUnmapMemory(m_device.GetDevice(), stagingBufferMemory);
-
     switch (bufferType)
     {
     case BufferType::Vertex:
         CreateBuffer(m_device,
-            bufferSize,
+            m_bufferSize,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             m_buffer,
@@ -147,7 +133,7 @@ Buffer::Buffer(Device& device, BufferType bufferType, const void* bufferData, Vk
         break;
     case BufferType::Index:
         CreateBuffer(m_device,
-            bufferSize,
+            m_bufferSize,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             m_buffer,
@@ -155,7 +141,7 @@ Buffer::Buffer(Device& device, BufferType bufferType, const void* bufferData, Vk
         break;
     case BufferType::Uniform:
         CreateBuffer(m_device,
-            bufferSize,
+            m_bufferSize,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             m_buffer,
@@ -164,18 +150,41 @@ Buffer::Buffer(Device& device, BufferType bufferType, const void* bufferData, Vk
     default:
         throw std::runtime_error("Buffer type not supported");
     }
+}
 
-    CopyBuffer(m_device, stagingBuffer, m_buffer, bufferSize);
-
-    vkFreeMemory(m_device.GetDevice(), stagingBufferMemory, nullptr);
-    vkDestroyBuffer(m_device.GetDevice(), stagingBuffer, nullptr);
+Buffer::Buffer(Device& device, BufferType bufferType, VkDeviceSize bufferSize, const void* bufferData)
+    : Buffer(device, bufferType, bufferSize)
+{
+    UpdateData(bufferData);
 }
 
 Buffer::~Buffer()
 {
-
     vkFreeMemory(m_device.GetDevice(), m_bufferMemory, nullptr);
     vkDestroyBuffer(m_device.GetDevice(), m_buffer, nullptr);
+}
+
+void Buffer::UpdateData(const void* bufferData)
+{
+    VkBuffer stagingBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
+
+    CreateBuffer(m_device,
+        m_bufferSize,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        stagingBuffer,
+        stagingBufferMemory);
+
+    void* tmpBufferData = nullptr;
+    vkMapMemory(m_device.GetDevice(), stagingBufferMemory, 0, m_bufferSize, 0, &tmpBufferData);
+    std::memcpy(tmpBufferData, bufferData, static_cast<size_t>(m_bufferSize));
+    vkUnmapMemory(m_device.GetDevice(), stagingBufferMemory);
+
+    CopyBuffer(m_device, stagingBuffer, m_buffer, m_bufferSize);
+
+    vkFreeMemory(m_device.GetDevice(), stagingBufferMemory, nullptr);
+    vkDestroyBuffer(m_device.GetDevice(), stagingBuffer, nullptr);
 }
 
 Device& Buffer::GetRelatedDevice() const

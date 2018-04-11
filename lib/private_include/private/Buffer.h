@@ -10,8 +10,11 @@ enum class BufferType { Vertex, Index, Uniform };
 class Buffer : public NonCopyableObject
 {
 public:
-    Buffer(Device& device, BufferType bufferType, const void* bufferData, VkDeviceSize bufferSize);
+    Buffer(Device& device, BufferType bufferType, VkDeviceSize bufferSize);
+    Buffer(Device& device, BufferType bufferType, VkDeviceSize bufferSize, const void* bufferData);
     ~Buffer() override;
+
+    void UpdateData(const void* bufferData);
 
     Device& GetRelatedDevice() const;
 
@@ -20,6 +23,8 @@ public:
 
 private:
     Device& m_device;
+
+    VkDeviceSize m_bufferSize;
 
     VkBuffer m_buffer;
     VkDeviceMemory m_bufferMemory;

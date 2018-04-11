@@ -19,6 +19,8 @@ public:
 private:
     StaticObjectPipeline& m_staticObjectPipeline;
 
+    glm::mat4 m_modelMatrix;
+
     Buffer m_vertexBuffer;
     Buffer m_indexBuffer;
     Buffer m_matricesBuffer;
