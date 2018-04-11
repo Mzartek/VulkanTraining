@@ -86,7 +86,7 @@ void GameMode::WindowSizeCallback(GLFWwindow* window, int width, int height)
 {
     if (width == 0 || height == 0) return;
 
-    VT::GameMode* gameMode = static_cast<VT::GameMode*>(glfwGetWindowUserPointer(window));
+    GameMode* gameMode = static_cast<GameMode*>(glfwGetWindowUserPointer(window));
     gameMode->DeleteSwapchain();
     gameMode->CreateSwapchain();
 }
