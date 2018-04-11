@@ -1,9 +1,7 @@
 #ifndef VT_LAYERS_MANAGER_INCLUDE_H
 #define VT_LAYERS_MANAGER_INCLUDE_H
 
-#include <vulkan/vulkan.h>
-
-#include <vector>
+#include "../Externals.h"
 
 namespace VT
 {

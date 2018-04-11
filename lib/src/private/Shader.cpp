@@ -1,11 +1,5 @@
 #include <private/Shader.h>
 
-#include <fstream>
-
-#include <boost/filesystem.hpp>
-
-#include <SPIRV/GlslangToSpv.h>
-
 namespace
 {
     std::vector<char> ReadFile(const std::string& filename)

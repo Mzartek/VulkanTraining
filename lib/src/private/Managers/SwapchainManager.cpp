@@ -1,9 +1,5 @@
 #include <private/Managers/SwapchainManager.h>
 
-#include <stdexcept>
-#include <limits>
-#include <algorithm>
-
 namespace VT
 {
 SwapchainManager::SwapchainManager(const PhysicalDevice& physicalDevice, const Surface& surface)

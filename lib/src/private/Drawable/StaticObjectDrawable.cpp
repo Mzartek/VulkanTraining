@@ -1,7 +1,5 @@
 #include <private/Drawables/StaticObjectDrawable.h>
 
-#include <stdexcept>
-
 namespace VT
 {
 StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPipeline,

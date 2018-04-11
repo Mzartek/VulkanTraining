@@ -3,8 +3,6 @@
 
 #include "Instance.h"
 
-#include <vector>
-
 namespace VT
 {
 class PhysicalDevice : public NonCopyableObject

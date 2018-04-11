@@ -3,9 +3,6 @@
 #include <private/Managers/InstanceExtensionsManager.h>
 #include <private/Managers/InstanceLayersManager.h>
 
-#include <iostream>
-#include <cstring>
-
 namespace
 {
 VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(

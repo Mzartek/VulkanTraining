@@ -1,9 +1,5 @@
 #include <private/Pipelines/StaticObjectPipeline.h>
 
-#include <cstddef>
-#include <array>
-#include <stdexcept>
-
 namespace
 {
 VkResult CreateDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout& descriptorSetLayout)

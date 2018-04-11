@@ -6,8 +6,6 @@
 #include "../Swapchain.h"
 #include "../ShadersCollector.h"
 
-#include <glm/glm.hpp>
-
 namespace VT
 {
 class StaticObjectPipeline : public NonCopyableObject, public IGraphicsPipeline

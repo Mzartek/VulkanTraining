@@ -1,7 +1,5 @@
 #include <private/Drawables/BaseDrawable.h>
 
-#include <stdexcept>
-
 namespace VT
 {
 BaseDrawable::BaseDrawable(IGraphicsPipeline& graphicsPipeline)

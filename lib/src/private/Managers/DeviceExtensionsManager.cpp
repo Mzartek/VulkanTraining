@@ -1,7 +1,5 @@
 #include <private/Managers/DeviceExtensionsManager.h>
 
-#include <stdexcept>
-
 namespace VT
 {
 DeviceExtensionsManager::DeviceExtensionsManager(const PhysicalDevice& physicalDevice)

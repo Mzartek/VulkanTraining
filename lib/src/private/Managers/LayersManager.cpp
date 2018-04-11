@@ -1,7 +1,5 @@
 #include <private/Managers/LayersManager.h>
 
-#include <cstring>
-
 namespace VT
 {
 bool LayersManager::CheckLayerSupport(const char* layerName)

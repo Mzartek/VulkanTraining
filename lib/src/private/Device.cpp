@@ -4,9 +4,6 @@
 #include <private/Managers/DeviceExtensionsManager.h>
 #include <private/Managers/DeviceLayersManager.h>
 
-#include <set>
-#include <stdexcept>
-
 namespace VT
 {
 Device::Device(PhysicalDevice& physicalDevice, Surface& surface, bool enableValidationLayers)

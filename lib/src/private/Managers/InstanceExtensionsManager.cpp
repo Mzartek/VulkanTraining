@@ -1,9 +1,5 @@
 #include <private/Managers/InstanceExtensionsManager.h>
 
-#include <GLFW/glfw3.h>
-
-#include <stdexcept>
-
 namespace VT
 {
 InstanceExtensionsManager::InstanceExtensionsManager()

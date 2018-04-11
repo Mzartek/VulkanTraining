@@ -1,7 +1,5 @@
 #include <private/Managers/ExtensionsManager.h>
 
-#include <cstring>
-
 namespace VT
 {
 bool ExtensionsManager::CheckExtensionSupport(const char* extensionName)

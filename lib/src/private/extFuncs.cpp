@@ -1,4 +1,4 @@
-#include <vulkan/vulkan.h>
+#include <private/Externals.h>
 
 VkResult vkCreateDebugReportCallbackEXT(
     VkInstance                                  instance,

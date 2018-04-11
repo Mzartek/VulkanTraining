@@ -3,10 +3,6 @@
 
 #include "NonCopyableObject.h"
 
-#include <vulkan/vulkan.h>
-
-#include <string>
-
 namespace VT
 {
 class Instance : public NonCopyableObject

@@ -1,9 +1,5 @@
 #include <private/PhysicalDevice.h>
 
-#include <algorithm>
-#include <stdexcept>
-#include <map>
-
 namespace
 {
 int RatePhysicalDeviceSuitability(VkPhysicalDevice physicalDevice)

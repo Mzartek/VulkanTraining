@@ -1,7 +1,5 @@
 #include <private/Managers/InstanceLayersManager.h>
 
-#include <stdexcept>
-
 namespace VT
 {
 InstanceLayersManager::InstanceLayersManager()

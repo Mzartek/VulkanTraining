@@ -1,7 +1,5 @@
 #include <private/Surface.h>
 
-#include <stdexcept>
-
 namespace VT
 {
 Surface::Surface(Instance& instance, int width, int height, const std::string& title, void* userPointer, GLFWwindowsizefun sizeCallback)

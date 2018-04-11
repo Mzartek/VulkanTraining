@@ -1,6 +1,8 @@
 #ifndef VT_NON_COPYABLE_OBJECT_INCLUDE_H
 #define VT_NON_COPYABLE_OBJECT_INCLUDE_H
 
+#include "Externals.h"
+
 namespace VT
 {
 class NonCopyableObject

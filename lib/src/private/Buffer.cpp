@@ -1,9 +1,5 @@
 #include <private/Buffer.h>
 
-#include <cstring>
-#include <stdexcept>
-#include <array>
-
 namespace
 {
 uint32_t FindMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
