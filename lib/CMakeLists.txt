@@ -28,12 +28,5 @@ target_link_libraries(ViewerLib PRIVATE
 	${Vulkan_LIBRARIES}
 	${GLFW_LIBRARIES}
 	${Assimp_LIBRARIES}
-	${FBX_LIBRARIES})
-
-foreach(loop_var ${GLSLANG_DEBUG_LIBRARIES})
-	target_link_libraries(ViewerLib PRIVATE debug ${loop_var})
-endforeach()
-
-foreach(loop_var ${GLSLANG_RELEASE_LIBRARIES})
-	target_link_libraries(ViewerLib PRIVATE optimized ${loop_var})
-endforeach()
+	${FBX_LIBRARIES}
+	${GLSLANG_LIBRARIES})
