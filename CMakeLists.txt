@@ -8,6 +8,10 @@ endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
+if(MSVC)
+	set(Boost_USE_STATIC_LIBS ON)
+endif()
+
 find_package(Boost REQUIRED filesystem)
 find_package(Vulkan REQUIRED)
 find_package(GLFW REQUIRED)
