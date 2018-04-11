@@ -108,7 +108,7 @@ void GameMode::Launch(EventCallbacks& eventCallbacks)
         {
             m_swapchain->LoadNextImage();
         }
-        catch (SwapchainOutOfDateException& ex)
+        catch (SwapchainOutOfDateException&)
         {
             continue;
         }

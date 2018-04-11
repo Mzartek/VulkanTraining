@@ -3,7 +3,7 @@
 
 #include <boost/config.hpp>
 
-#ifdef VulkanTrainingEngine_EXPORTS
+#ifdef ViewerLib_EXPORTS
 #   define LIB_INTERFACE BOOST_SYMBOL_EXPORT
 #else
 #   define LIB_INTERFACE BOOST_SYMBOL_IMPORT
