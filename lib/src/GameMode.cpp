@@ -44,7 +44,7 @@ GameMode::GameMode(int width, int height, const std::string& title, const std::s
 
 	m_launchMutex = new std::mutex;
 	assert(m_instance);
-	
+
 	m_closeWindow = new std::atomic<bool>;
 	assert(m_closeWindow);
 
@@ -95,12 +95,12 @@ void GameMode::Launch(EventCallbacks& eventCallbacks)
 {
     if (!m_launchMutex->try_lock()) return;
 
-    m_closeWindow = false;
+    *m_closeWindow = false;
 
     if (eventCallbacks.onStart)
         eventCallbacks.onStart();
 
-    while (!glfwWindowShouldClose(m_surface->GetWindow()) && !m_closeWindow)
+    while (!glfwWindowShouldClose(m_surface->GetWindow()) && !*m_closeWindow)
     {
         glfwPollEvents();
 
