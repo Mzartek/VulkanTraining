@@ -3,65 +3,35 @@
 
 #include "Export.h"
 
-#include <functional>
-
-namespace std
-{
-	class mutex;
-	template<typename T> struct atomic;
-}
-
-struct GLFWwindow;
-
 namespace VT
 {
-class Instance;
-class Window;
-class Surface;
-class PhysicalDevice;
-class Device;
-class ShadersCollector;
-class Swapchain;
-class StaticObjectPipeline;
-class StaticObjectDrawable;
+struct GameModePrivate;
 
-struct EventCallbacks
-{
-	std::function<void()> onStart;
-	std::function<void()> onStop;
-};
-
-class LIB_INTERFACE GameMode final
+class LIB_INTERFACE GameMode
 {
 public:
-    GameMode(int width, int height, const std::string& title, const std::string& shadersPath);
+    GameMode(int width, int height, const char* title, const char* shadersPath);
     ~GameMode();
     GameMode(const GameMode& other) = delete;
     GameMode(GameMode&& other) = delete;
     GameMode& operator=(const GameMode& other) = delete;
     GameMode& operator=(GameMode&& other) = delete;
 
-    void Launch(EventCallbacks& eventCallbacks);
+    void Start();
     void Stop();
 
-private:
-    static void WindowSizeCallback(GLFWwindow* window, int width, int height);
+protected:
+    virtual void OnStart() = 0;
+    virtual void OnStop() = 0;
 
+private:
     void CreateSwapchain();
     void DeleteSwapchain();
 
-    std::mutex* m_launchMutex;
-    std::atomic<bool>* m_closeWindow;
+    void Launch();
 
-    Instance* m_instance;
-    Window* m_window;
-    Surface* m_surface;
-    PhysicalDevice* m_physicalDevice;
-    Device* m_device;
-    ShadersCollector* m_shadersCollector;
-    Swapchain* m_swapchain;
-    StaticObjectPipeline* m_staticObjectPipeline;
-    StaticObjectDrawable* m_staticObjectDrawable;
+    friend struct GameModePrivate;
+    GameModePrivate* m_private;
 };
 }
 

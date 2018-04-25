@@ -1,13 +1,11 @@
 #ifndef VIEWERWINDOW_H
 #define VIEWERWINDOW_H
 
-#include <thread>
-
 #include <QObject>
 
 #include <VulkanTraining/GameMode.h>
 
-class ViewerWindow : public QObject
+class ViewerWindow : public QObject, public VT::GameMode
 {
     Q_OBJECT
 
@@ -16,12 +14,8 @@ public:
     ~ViewerWindow();
 
 private:
-    void onStart();
-    void onStop();
-
-    VT::GameMode m_gameMode;
-    std::thread m_gameModeThread;
-    bool m_gameModeStopping;
+    void OnStart() override;
+    void OnStop() override;
 };
 
 #endif

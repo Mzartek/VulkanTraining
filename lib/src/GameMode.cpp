@@ -3,6 +3,7 @@
 #include <private/Drawables/StaticObjectDrawable.h>
 
 #include <cassert>
+#include <thread>
 #include <mutex>
 #include <atomic>
 
@@ -27,62 +28,25 @@ const std::vector<VT::StaticObjectPipeline::Index> indices = { 0, 1, 2, 2, 1, 3 
 
 namespace VT
 {
-GameMode::GameMode(int width, int height, const std::string& title, const std::string& shadersPath)
-    : m_launchMutex(nullptr)
-	, m_closeWindow(nullptr)
-    , m_instance(nullptr)
-    , m_window(nullptr)
-    , m_surface(nullptr)
-    , m_physicalDevice(nullptr)
-    , m_device(nullptr)
-    , m_shadersCollector(nullptr)
-    , m_swapchain(nullptr)
-    , m_staticObjectPipeline(nullptr)
-    , m_staticObjectDrawable(nullptr)
+struct GameModePrivate
 {
-    glfwInit();
+    static void WindowSizeCallback(GLFWwindow* window, int width, int height);
 
-	m_launchMutex = new std::mutex;
-	assert(m_instance);
+    std::thread gameModeThread;
+    std::mutex launchMutex;
+    std::atomic<bool> closeWindow;
 
-	m_closeWindow = new std::atomic<bool>;
-	assert(m_closeWindow);
+    Instance* instance = nullptr;
+    Surface* surface = nullptr;
+    PhysicalDevice* physicalDevice = nullptr;
+    Device* device = nullptr;
+    ShadersCollector* shadersCollector = nullptr;
+    Swapchain* swapchain = nullptr;
+    StaticObjectPipeline* staticObjectPipeline = nullptr;
+    StaticObjectDrawable* staticObjectDrawable = nullptr;
+};
 
-    m_instance = new Instance(title, enableValidationLayers);
-    assert(m_instance);
-
-    m_surface = new Surface(*m_instance, width, height, title, this, WindowSizeCallback);
-    assert(m_surface);
-
-    m_physicalDevice = new PhysicalDevice(*m_instance);
-    assert(m_physicalDevice);
-
-    m_device = new Device(*m_physicalDevice, *m_surface, enableValidationLayers);
-    assert(m_device);
-
-    m_shadersCollector = new ShadersCollector(*m_device, shadersPath);
-    assert(m_shadersCollector);
-
-    CreateSwapchain();
-}
-
-GameMode::~GameMode()
-{
-    DeleteSwapchain();
-
-    delete m_shadersCollector;
-    delete m_device;
-    delete m_physicalDevice;
-    delete m_surface;
-    delete m_instance;
-	delete m_launchMutex;
-	delete m_closeWindow;
-	delete m_launchMutex;
-
-    glfwTerminate();
-}
-
-void GameMode::WindowSizeCallback(GLFWwindow* window, int width, int height)
+void GameModePrivate::WindowSizeCallback(GLFWwindow* window, int width, int height)
 {
     if (width == 0 || height == 0) return;
 
@@ -91,69 +55,114 @@ void GameMode::WindowSizeCallback(GLFWwindow* window, int width, int height)
     gameMode->CreateSwapchain();
 }
 
-void GameMode::Launch(EventCallbacks& eventCallbacks)
+GameMode::GameMode(int width, int height, const char* title, const char* shadersPath)
+    : m_private(new GameModePrivate)
 {
-    if (!m_launchMutex->try_lock()) return;
+    glfwInit();
 
-    *m_closeWindow = false;
+    m_private->instance = new Instance(title, enableValidationLayers);
+    assert(m_private->instance);
 
-    if (eventCallbacks.onStart)
-        eventCallbacks.onStart();
+    m_private->surface = new Surface(*m_private->instance, width, height, title, this, m_private->WindowSizeCallback);
+    assert(m_private->surface);
 
-    while (!glfwWindowShouldClose(m_surface->GetWindow()) && !*m_closeWindow)
+    m_private->physicalDevice = new PhysicalDevice(*m_private->instance);
+    assert(m_private->physicalDevice);
+
+    m_private->device = new Device(*m_private->physicalDevice, *m_private->surface, enableValidationLayers);
+    assert(m_private->device);
+
+    m_private->shadersCollector = new ShadersCollector(*m_private->device, shadersPath);
+    assert(m_private->shadersCollector);
+
+    CreateSwapchain();
+}
+
+GameMode::~GameMode()
+{
+    DeleteSwapchain();
+
+    delete m_private->shadersCollector;
+    delete m_private->device;
+    delete m_private->physicalDevice;
+    delete m_private->surface;
+    delete m_private->instance;
+
+    glfwTerminate();
+
+    delete m_private;
+}
+
+void GameMode::Start()
+{
+    m_private->gameModeThread = std::thread([this]()
+    {
+        this->Launch();
+    });
+}
+
+void GameMode::Stop()
+{
+    m_private->closeWindow = true;
+    m_private->gameModeThread.join();
+}
+
+void GameMode::CreateSwapchain()
+{
+    m_private->swapchain = new Swapchain(*m_private->device);
+    assert(m_private->swapchain);
+
+    m_private->staticObjectPipeline = new StaticObjectPipeline(*m_private->swapchain, *m_private->shadersCollector);
+    assert(m_private->staticObjectPipeline);
+
+    m_private->staticObjectDrawable = new StaticObjectDrawable(*m_private->staticObjectPipeline, vertices, indices);
+    assert(m_private->staticObjectDrawable);
+}
+
+void GameMode::DeleteSwapchain()
+{
+    for (VkQueue transferQueue : m_private->device->GetTransferQueues())
+        vkQueueWaitIdle(transferQueue);
+    for (VkQueue graphicsQueue : m_private->device->GetGraphicsQueues())
+        vkQueueWaitIdle(graphicsQueue);
+    for (VkQueue computeQueue : m_private->device->GetComputeQueues())
+        vkQueueWaitIdle(computeQueue);
+    for (VkQueue presentQueue : m_private->device->GetPresentQueues())
+        vkQueueWaitIdle(presentQueue);
+
+    delete m_private->staticObjectDrawable;
+    delete m_private->staticObjectPipeline;
+    delete m_private->swapchain;
+}
+
+void GameMode::Launch()
+{
+    if (!m_private->launchMutex.try_lock()) return;
+
+    m_private->closeWindow = false;
+
+    OnStart();
+
+    while (!glfwWindowShouldClose(m_private->surface->GetWindow()) && !m_private->closeWindow)
     {
         glfwPollEvents();
 
         try
         {
-            m_swapchain->LoadNextImage();
+            m_private->swapchain->LoadNextImage();
         }
         catch (SwapchainOutOfDateException&)
         {
             continue;
         }
 
-        m_staticObjectDrawable->Draw();
+        m_private->staticObjectDrawable->Draw();
 
-        m_swapchain->PresentImage();
+        m_private->swapchain->PresentImage();
     }
 
-    if (eventCallbacks.onStop)
-        eventCallbacks.onStop();
+    OnStop();
 
-    m_launchMutex->unlock();
-}
-
-void GameMode::Stop()
-{
-    *m_closeWindow = true;
-}
-
-void GameMode::CreateSwapchain()
-{
-    m_swapchain = new Swapchain(*m_device);
-    assert(m_swapchain);
-
-    m_staticObjectPipeline = new StaticObjectPipeline(*m_swapchain, *m_shadersCollector);
-    assert(m_staticObjectPipeline);
-
-    m_staticObjectDrawable = new StaticObjectDrawable(*m_staticObjectPipeline, vertices, indices);
-    assert(m_staticObjectDrawable);
-}
-
-void GameMode::DeleteSwapchain()
-{
-    for (VkQueue transferQueue : m_device->GetTransferQueues())
-        vkQueueWaitIdle(transferQueue);
-    for (VkQueue graphicsQueue : m_device->GetGraphicsQueues())
-        vkQueueWaitIdle(graphicsQueue);
-    for (VkQueue computeQueue : m_device->GetComputeQueues())
-        vkQueueWaitIdle(computeQueue);
-    for (VkQueue presentQueue : m_device->GetPresentQueues())
-        vkQueueWaitIdle(presentQueue);
-
-    delete m_staticObjectDrawable;
-    delete m_staticObjectPipeline;
-    delete m_swapchain;
+    m_private->launchMutex.unlock();
 }
 }

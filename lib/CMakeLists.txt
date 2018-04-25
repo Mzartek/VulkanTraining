@@ -12,10 +12,10 @@ add_library(ViewerLib SHARED
 	${LIB_SOURCE_FILES})
 
 target_include_directories(ViewerLib PUBLIC
-	${LIB_INCLUDE_DIR}
-	${Boost_INCLUDE_DIRS})
+	${LIB_INCLUDE_DIR})
 target_include_directories(ViewerLib PRIVATE
 	${LIB_PRIVATE_INCLUDE_DIR}
+	${Boost_INCLUDE_DIRS}
 	${Vulkan_INCLUDE_DIRS}
 	${GLFW_INCLUDE_DIRS}
 	${GLM_INCLUDE_DIRS}

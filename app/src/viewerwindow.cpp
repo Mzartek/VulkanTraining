@@ -4,35 +4,21 @@
 
 ViewerWindow::ViewerWindow(QObject *parent, int width, int height, const QString &windowTitle) :
     QObject(parent),
-    m_gameMode(width, height, windowTitle.toStdString(), "./shaders"),
-    m_gameModeStopping(false)
+    VT::GameMode(width, height, windowTitle.toStdString().c_str(), "./shaders")
 {
-    m_gameModeThread = std::thread([this]()
-    {
-        VT::EventCallbacks eventCallbacks = {};
-        eventCallbacks.onStart = std::bind(&ViewerWindow::onStart, this);
-        eventCallbacks.onStop = std::bind(&ViewerWindow::onStop, this);
-
-        m_gameMode.Launch(eventCallbacks);
-    });
+    this->Start();
 }
 
 ViewerWindow::~ViewerWindow()
 {
-    m_gameMode.Stop();
-    m_gameModeThread.join();
+    this->Stop();
 }
 
-void ViewerWindow::onStart()
+void ViewerWindow::OnStart()
 {
-    m_gameModeStopping = false;
 }
 
-void ViewerWindow::onStop()
+void ViewerWindow::OnStop()
 {
-    if (!m_gameModeStopping)
-    {
-        m_gameModeStopping = true;
-        QApplication::quit();
-    }
+    QApplication::quit();
 }
