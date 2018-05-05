@@ -9,7 +9,6 @@ StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPip
     , m_staticObjectPipeline(staticObjectPipeline)
     , m_vertexBuffer(m_staticObjectPipeline.GetRelatedDevice(), BufferType::Vertex, sizeof(vertices[0]) * vertices.size(), vertices.data())
     , m_indexBuffer(m_staticObjectPipeline.GetRelatedDevice(), BufferType::Index, sizeof(indices[0]) * indices.size(), indices.data())
-    , m_matricesBuffer(m_staticObjectPipeline.GetRelatedDevice(), BufferType::Uniform, sizeof(VT::StaticObjectPipeline::Matrices))
 {
     const std::vector<VkCommandBuffer> graphicsCommandBuffers = this->GetGraphicsCommandBuffers();
     const std::vector<VkFramebuffer> framebuffers = m_staticObjectPipeline.GetFramebuffers();
