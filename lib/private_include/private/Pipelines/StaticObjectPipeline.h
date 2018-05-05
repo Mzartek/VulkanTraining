@@ -36,6 +36,8 @@ private:
     Swapchain& m_swapchain;
 
     VkDescriptorSetLayout m_descriptorSetLayout;
+    VkDescriptorPool m_descriptorPool;
+    VkDescriptorSet m_descriptorSet;
     VkPipelineLayout m_pipelineLayout;
     VkRenderPass m_renderPass;
     VkPipeline m_graphicsPipeline;

@@ -19,6 +19,33 @@ VkResult CreateDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout& descr
     return vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &descriptorSetLayout);
 }
 
+VkResult CreateDescriptorPool(VkDevice device, VkDescriptorPool& descriptorPool)
+{
+    VkDescriptorPoolSize descriptorPoolSize = {};
+    descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorPoolSize.descriptorCount = 1;
+
+    VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};
+    descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptorPoolCreateInfo.poolSizeCount = 1;
+    descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;
+
+    return vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
+}
+
+VkResult AllocateDescriptorSet(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, VkDescriptorPool descriptorPool, VkDescriptorSet& descriptorSet)
+{
+    VkDescriptorSetLayout descriptorSetLayouts[] = { descriptorSetLayout };
+
+    VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};
+    descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    descriptorSetAllocateInfo.descriptorPool = descriptorPool;
+    descriptorSetAllocateInfo.descriptorSetCount = 1;
+    descriptorSetAllocateInfo.pSetLayouts = descriptorSetLayouts;
+
+    return vkAllocateDescriptorSets(device, &descriptorSetAllocateInfo, &descriptorSet);
+}
+
 VkResult CreatePipelineLayout(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, VkPipelineLayout& pipelineLayout)
 {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
@@ -249,6 +276,14 @@ StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const ShadersCo
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create descriptor set layout");
 
+    result = CreateDescriptorPool(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorPool);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to create descriptor pool");
+
+    result = AllocateDescriptorSet(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorSetLayout, m_descriptorPool, m_descriptorSet);
+    if (result != VK_SUCCESS)
+        throw std::runtime_error("Failed to allocate descriptor set");
+
     result = CreatePipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorSetLayout, m_pipelineLayout);
     if (result != VK_SUCCESS)
         throw std::runtime_error("Failed to create pipeline layout");
@@ -287,6 +322,8 @@ StaticObjectPipeline::~StaticObjectPipeline()
     vkDestroyPipeline(m_swapchain.GetRelatedDevice().GetDevice(), m_graphicsPipeline, nullptr);
     vkDestroyRenderPass(m_swapchain.GetRelatedDevice().GetDevice(), m_renderPass, nullptr);
     vkDestroyPipelineLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_pipelineLayout, nullptr);
+    vkFreeDescriptorSets(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorPool, 1, &m_descriptorSet);
+    vkDestroyDescriptorPool(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorPool, nullptr);
     vkDestroyDescriptorSetLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorSetLayout, nullptr);
 }
 
