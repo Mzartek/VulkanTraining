@@ -5,6 +5,7 @@
 
 #include "../Swapchain.h"
 #include "../ShadersCollector.h"
+#include "../Transform.h"
 
 namespace VT
 {
@@ -26,11 +27,15 @@ public:
 
     Device& GetRelatedDevice() const override;
 
-    VkDescriptorSetLayout GetDescriptorSetLayout() const override;
+    VkDescriptorSetLayout GetDescriptorSetLayout() const;
+    VkDescriptorPool GetDescriptorPool() const;
+    VkDescriptorSet GetDescriptorSet() const;
     VkPipelineLayout GetPipelineLayout() const override;
     VkRenderPass GetRenderPass() const override;
     VkPipeline GetGraphicsPipeline() const override;
     const std::vector<VkFramebuffer>& GetFramebuffers() const override;
+
+    Transform& GetTransform();
 
 private:
     Swapchain& m_swapchain;
@@ -42,6 +47,8 @@ private:
     VkRenderPass m_renderPass;
     VkPipeline m_graphicsPipeline;
     std::vector<VkFramebuffer> m_framebuffers;
+
+    Transform m_transform;
 };
 }
 

@@ -27,8 +27,10 @@ VkResult CreateDescriptorPool(VkDevice device, VkDescriptorPool& descriptorPool)
 
     VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};
     descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptorPoolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
     descriptorPoolCreateInfo.poolSizeCount = 1;
     descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;
+    descriptorPoolCreateInfo.maxSets = 1;
 
     return vkCreateDescriptorPool(device, &descriptorPoolCreateInfo, nullptr, &descriptorPool);
 }
@@ -268,9 +270,12 @@ namespace VT
 StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const ShadersCollector& shadersCollector)
     : m_swapchain(swapchain)
     , m_descriptorSetLayout(VK_NULL_HANDLE)
+    , m_descriptorPool(VK_NULL_HANDLE)
+    , m_descriptorSet(VK_NULL_HANDLE)
     , m_pipelineLayout(VK_NULL_HANDLE)
     , m_renderPass(VK_NULL_HANDLE)
     , m_graphicsPipeline(VK_NULL_HANDLE)
+    , m_transform(m_swapchain.GetRelatedDevice())
 {
     VkResult result = CreateDescriptorSetLayout(m_swapchain.GetRelatedDevice().GetDevice(), m_descriptorSetLayout);
     if (result != VK_SUCCESS)
@@ -313,6 +318,24 @@ StaticObjectPipeline::StaticObjectPipeline(Swapchain& swapchain, const ShadersCo
         if (result != VK_SUCCESS)
             throw std::runtime_error("Failed to create framebuffer!");
     }
+
+    VkDescriptorBufferInfo descriptorBufferInfo = {};
+    descriptorBufferInfo.buffer = m_transform.GetMatricesBuffer().GetBuffer();
+    descriptorBufferInfo.offset = 0;
+    descriptorBufferInfo.range = sizeof(Transform::Matrices);
+
+    VkWriteDescriptorSet writeDescriptorSet = {};
+    writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    writeDescriptorSet.dstSet = m_descriptorSet;
+    writeDescriptorSet.dstBinding = 0;
+    writeDescriptorSet.dstArrayElement = 0;
+    writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    writeDescriptorSet.descriptorCount = 1;
+    writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;
+    writeDescriptorSet.pImageInfo = nullptr;
+    writeDescriptorSet.pTexelBufferView = nullptr;
+
+    vkUpdateDescriptorSets(m_swapchain.GetRelatedDevice().GetDevice(), 1, &writeDescriptorSet, 0, nullptr);
 }
 
 StaticObjectPipeline::~StaticObjectPipeline()
@@ -342,6 +365,16 @@ VkDescriptorSetLayout StaticObjectPipeline::GetDescriptorSetLayout() const
     return m_descriptorSetLayout;
 }
 
+VkDescriptorPool StaticObjectPipeline::GetDescriptorPool() const
+{
+    return m_descriptorPool;
+}
+
+VkDescriptorSet StaticObjectPipeline::GetDescriptorSet() const
+{
+    return m_descriptorSet;
+}
+
 VkPipelineLayout StaticObjectPipeline::GetPipelineLayout() const
 {
     return m_pipelineLayout;
@@ -360,5 +393,10 @@ VkPipeline StaticObjectPipeline::GetGraphicsPipeline() const
 const std::vector<VkFramebuffer>& StaticObjectPipeline::GetFramebuffers() const
 {
     return m_framebuffers;
+}
+
+Transform& StaticObjectPipeline::GetTransform()
+{
+    return m_transform;
 }
 }

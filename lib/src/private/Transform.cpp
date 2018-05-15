@@ -38,7 +38,12 @@ void Transform::SetModel(const glm::vec3& translation, const glm::quat& rotation
         glm::scale(glm::mat4(1.0f), scale);
 }
 
-void Transform::UpdateBuffer()
+const Buffer& Transform::GetMatricesBuffer() const
+{
+    return m_matricesBuffer;
+}
+
+void Transform::UpdateMatricesBuffer()
 {
     m_matricesBuffer.UpdateData(&m_matrices);
 }

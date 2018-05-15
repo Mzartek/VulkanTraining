@@ -10,6 +10,13 @@ namespace VT
 class Transform
 {
 public:
+    struct Matrices
+    {
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+    };
+
     Transform(Device& device);
 
     void SetPerspectiveProjection(float fov, float width, float height, float near, float far);
@@ -20,16 +27,12 @@ public:
     void SetModel(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale);
     void SetModel(const glm::vec3& translation, const glm::quat& rotation, const glm::vec3& scale);
 
-    void UpdateBuffer();
+    const Buffer& GetMatricesBuffer() const;
+
+    void UpdateMatricesBuffer();
 
 private:
-    struct
-    {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 projection;
-    } m_matrices;
-
+    Matrices m_matrices;
     Buffer m_matricesBuffer;
 };
 }

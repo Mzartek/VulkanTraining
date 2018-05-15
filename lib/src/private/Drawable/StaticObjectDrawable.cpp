@@ -44,6 +44,9 @@ StaticObjectDrawable::StaticObjectDrawable(StaticObjectPipeline& staticObjectPip
         vkCmdBindVertexBuffers(graphicsCommandBuffers[i], 0, 1, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(graphicsCommandBuffers[i], m_indexBuffer.GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
+        VkDescriptorSet descriptorSet = m_staticObjectPipeline.GetDescriptorSet();
+        vkCmdBindDescriptorSets(graphicsCommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_staticObjectPipeline.GetPipelineLayout(), 0, 1, &descriptorSet, 0, nullptr);
+
         vkCmdDrawIndexed(graphicsCommandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(graphicsCommandBuffers[i]);
