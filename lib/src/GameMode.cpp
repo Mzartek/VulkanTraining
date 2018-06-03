@@ -1,6 +1,6 @@
 #include <VulkanTraining/GameMode.h>
 
-#include <private/Drawables/StaticObjectDrawable.h>
+#include <private/Pipelines/StaticObjectPipeline.h>
 
 #include <cassert>
 #include <thread>
@@ -43,7 +43,6 @@ struct GameModePrivate
     ShadersCollector* shadersCollector = nullptr;
     Swapchain* swapchain = nullptr;
     StaticObjectPipeline* staticObjectPipeline = nullptr;
-    StaticObjectDrawable* staticObjectDrawable = nullptr;
 };
 
 void GameModePrivate::WindowSizeCallback(GLFWwindow* window, int width, int height)
@@ -114,9 +113,6 @@ void GameMode::CreateSwapchain()
 
     m_private->staticObjectPipeline = new StaticObjectPipeline(*m_private->swapchain, *m_private->shadersCollector);
     assert(m_private->staticObjectPipeline);
-
-    m_private->staticObjectDrawable = new StaticObjectDrawable(*m_private->staticObjectPipeline, vertices, indices);
-    assert(m_private->staticObjectDrawable);
 }
 
 void GameMode::DeleteSwapchain()
@@ -130,7 +126,6 @@ void GameMode::DeleteSwapchain()
     for (VkQueue presentQueue : m_private->device->GetPresentQueues())
         vkQueueWaitIdle(presentQueue);
 
-    delete m_private->staticObjectDrawable;
     delete m_private->staticObjectPipeline;
     delete m_private->swapchain;
 }
@@ -155,8 +150,6 @@ void GameMode::Launch()
         {
             continue;
         }
-
-        m_private->staticObjectDrawable->Draw();
 
         m_private->swapchain->PresentImage();
     }

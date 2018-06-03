@@ -1,7 +1,7 @@
 #ifndef VT_CAMERA_INCLUDE_H
 #define VT_CAMERA_INCLUDE_H
 
-#include "Export.h"
+#include "../Export.h"
 
 namespace VT
 {

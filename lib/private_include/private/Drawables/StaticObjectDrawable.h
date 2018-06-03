@@ -16,6 +16,8 @@ public:
 
     void Draw() override;
 
+    StaticObjectPipeline& GetRelatedStaticObjectPipeline() const;
+
 private:
     StaticObjectPipeline& m_staticObjectPipeline;
 

@@ -1,4 +1,4 @@
-#include <VulkanTraining/OrthographicCamera.h>
+#include <VulkanTraining/Cameras/OrthographicCamera.h>
 
 namespace VT
 {

@@ -1,4 +1,4 @@
-#include <VulkanTraining/PerspectiveCamera.h>
+#include <VulkanTraining/Cameras/PerspectiveCamera.h>
 
 namespace VT
 {
