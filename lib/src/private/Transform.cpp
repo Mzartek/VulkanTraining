@@ -12,7 +12,7 @@ void Transform::SetPerspectiveProjection(float fov, float width, float height, f
     m_matrices.projection = glm::perspectiveFov(fov, width, height, near, far);
 }
 
-void Transform::SetOrthogonalProjection(float left, float right, float bottom, float top, float near, float far)
+void Transform::SetOrthographicProjection(float left, float right, float bottom, float top, float near, float far)
 {
     m_matrices.projection = glm::ortho(left, right, bottom, top, near, far);
 }
